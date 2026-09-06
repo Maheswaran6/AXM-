@@ -2,395 +2,531 @@
 <html lang="en">
 
 <head>
+    <meta charset="utf-8">
 
-  <meta charset="utf-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
 
-  <meta
-    name="viewport"
-    content="width=device-width,initial-scale=1"
-  >
+    <title>AXM Machine</title>
 
-  <title>AXM Machine</title>
+    <link
+        rel="stylesheet"
+        href="/style.css"
+    >
 
-  <link rel="stylesheet" href="/style.css">
+    <style>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+        .qr-container {
+            width: 280px;
+            height: 280px;
+            margin: 25px auto;
+            background: #ffffff;
+            border: 2px solid #d9e2ec;
+            border-radius: 15px;
 
-  <style>
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-    .qr-container {
-      width: 260px;
-      height: 260px;
-      margin: 25px auto;
-      background: white;
-      border: 2px solid #d9e2ec;
-      border-radius: 12px;
+            overflow: hidden;
+        }
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+        .qr-container img {
+            width: 240px;
+            height: 240px;
+            display: block;
+        }
 
-    #qr {
-      width: 220px;
-      height: 220px;
-    }
+        .upload-url {
+            max-width: 700px;
+            margin: 15px auto;
+            word-break: break-all;
+            font-size: 14px;
+            color: #315b86;
+        }
 
-    #qr img {
-      width: 220px !important;
-      height: 220px !important;
-      display: block;
-    }
+        .error {
+            color: #d92727;
+            font-weight: bold;
+        }
 
-    .upload-url {
-      max-width: 650px;
-      margin: 15px auto;
-      word-break: break-all;
-      font-size: 14px;
-      color: #315b86;
-    }
+        .success {
+            color: #079447;
+            font-weight: bold;
+        }
 
-    .error {
-      color: red;
-      font-weight: bold;
-    }
+        .button {
+            cursor: pointer;
+            text-decoration: none;
+            border: none;
+            display: inline-block;
+        }
 
-    .success {
-      color: #008f4c;
-      font-weight: bold;
-    }
+        .button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
 
-    .button {
-      cursor: pointer;
-      text-decoration: none;
-      border: none;
-    }
+        #job {
+            text-align: center;
+        }
 
-  </style>
+    </style>
 
 </head>
 
-
 <body>
-
 
 <header>
 
-  <div class="brand">
+    <div class="brand">
 
-    <span class="logo">AXM</span>
+        <span class="logo">AXM</span>
 
-    <div>
+        <div>
+            <b>AXM</b>
 
-      <b>AXM</b>
-
-      <small>
-        AUTOMATIC XEROX MACHINE • NIET • COIMBATORE
-      </small>
+            <small>
+                AUTOMATIC XEROX MACHINE • NIET • COIMBATORE
+            </small>
+        </div>
 
     </div>
 
-  </div>
-
-  <span class="ready">
-    ● READY
-  </span>
+    <span class="ready">
+        ● READY
+    </span>
 
 </header>
-
 
 
 <main>
 
 <section class="panel">
 
+    <h1>
+        Send Document From Phone
+    </h1>
 
-  <h1>
-    Send Document From Phone
-  </h1>
-
-
-  <p>
-    Scan this QR code using the customer's phone.
-  </p>
-
-
-
-  <!-- QR CODE -->
-
-  <div class="qr-container">
-
-    <div id="qr"></div>
-
-  </div>
-
-
-
-  <!-- UPLOAD ADDRESS -->
-
-  <p
-    id="url"
-    class="upload-url"
-  ></p>
-
-
-
-  <button
-    class="button"
-    onclick="newQR()"
-  >
-    GENERATE NEW QR
-  </button>
-
-
-
-  <hr>
-
-
-
-  <!-- DOCUMENT STATUS -->
-
-  <div id="job">
-
-    <h2>
-      Waiting for document…
-    </h2>
-
-    <p class="muted">
-      Scan the QR code from the customer's phone.
+    <p>
+        Scan this QR code using the customer's phone.
     </p>
 
-  </div>
 
+    <!-- ================================================= -->
+    <!-- QR CODE -->
+    <!-- ================================================= -->
+
+    <div class="qr-container">
+
+        <img
+            id="qr"
+            alt="AXM Upload QR Code"
+        >
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- UPLOAD URL -->
+    <!-- ================================================= -->
+
+    <p
+        id="url"
+        class="upload-url"
+    >
+        Generating secure upload link...
+    </p>
+
+
+    <p
+        id="qrMessage"
+        class="muted"
+    ></p>
+
+
+    <button
+        id="newQrButton"
+        class="button"
+        type="button"
+        onclick="newQR()"
+    >
+        GENERATE NEW QR
+    </button>
+
+
+    <hr>
+
+
+    <!-- ================================================= -->
+    <!-- DOCUMENT STATUS -->
+    <!-- ================================================= -->
+
+    <div id="job">
+
+        <h2>
+            Waiting for document…
+        </h2>
+
+        <p class="muted">
+            Scan the QR code from the customer's phone.
+        </p>
+
+    </div>
 
 </section>
 
 </main>
 
 
-
 <script>
-
 
 let last = 0;
 
+let generatingQR = false;
 
 
-/* ==========================================
-   GENERATE QR
-   ========================================== */
+/* ============================================================
+   GENERATE SECURE QR
+   ============================================================ */
 
-function newQR() {
+async function newQR() {
 
-  const qrBox =
-    document.getElementById("qr");
+    if (generatingQR) {
+        return;
+    }
 
-  const urlBox =
-    document.getElementById("url");
+    generatingQR = true;
 
+    const qr =
+        document.getElementById("qr");
 
-  /*
-   * IMPORTANT:
-   * Customer's phone will open upload.html
-   */
+    const url =
+        document.getElementById("url");
 
-  const uploadUrl =
-    window.location.origin + "/upload.html";
+    const message =
+        document.getElementById("qrMessage");
 
-
-  /*
-   * Clear old QR
-   */
-
-  qrBox.innerHTML = "";
+    const button =
+        document.getElementById("newQrButton");
 
 
+    button.disabled = true;
 
-  /*
-   * Check QR library
-   */
+    qr.removeAttribute("src");
 
-  if (typeof QRCode === "undefined") {
+    url.textContent =
+        "Generating secure upload link...";
 
-    qrBox.innerHTML =
-      '<p class="error">QR library failed to load.</p>';
+    message.className =
+        "muted";
 
-    return;
-
-  }
-
+    message.textContent =
+        "";
 
 
-  /*
-   * Generate QR
-   */
+    try {
 
-  new QRCode(qrBox, {
-
-    text: uploadUrl,
-
-    width: 220,
-
-    height: 220,
-
-    colorDark: "#000000",
-
-    colorLight: "#ffffff",
-
-    correctLevel: QRCode.CorrectLevel.H
-
-  });
+        const response =
+            await fetch(
+                "/api/machine-qr",
+                {
+                    method: "GET",
+                    cache: "no-store"
+                }
+            );
 
 
+        const text =
+            await response.text();
 
-  /*
-   * Display upload URL
-   */
 
-  urlBox.textContent =
-    uploadUrl;
+        let data;
+
+
+        try {
+
+            data =
+                JSON.parse(text);
+
+        } catch {
+
+            throw new Error(
+                "AXM server returned an invalid QR response."
+            );
+
+        }
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.error ||
+                "Unable to generate QR code."
+            );
+
+        }
+
+
+        if (!data.qr) {
+
+            throw new Error(
+                "QR code was not returned by the server."
+            );
+
+        }
+
+
+        qr.src =
+            data.qr;
+
+
+        url.textContent =
+            data.uploadUrl ||
+            "";
+
+
+        message.className =
+            "success";
+
+        message.textContent =
+            "✓ Secure QR code ready. Customer can scan now.";
+
+
+        /*
+         * Start a fresh event position.
+         * This prevents old document events from
+         * immediately appearing as a new document.
+         */
+
+        last = 0;
+
+
+        document.getElementById(
+            "job"
+        ).innerHTML = `
+
+            <h2>
+                Waiting for document…
+            </h2>
+
+            <p class="muted">
+                Scan the QR code from the customer's phone.
+            </p>
+
+        `;
+
+
+    } catch (error) {
+
+        console.error(
+            "QR ERROR:",
+            error
+        );
+
+
+        qr.removeAttribute("src");
+
+
+        url.textContent =
+            "";
+
+
+        message.className =
+            "error";
+
+
+        message.textContent =
+            error.message ||
+            "Unable to connect to AXM server.";
+
+    } finally {
+
+        generatingQR = false;
+
+        button.disabled = false;
+
+    }
 
 }
 
 
-
-/* ==========================================
-   CHECK FOR DOCUMENT
-   ========================================== */
+/* ============================================================
+   POLL SERVER EVENTS
+   ============================================================ */
 
 async function poll() {
 
-  try {
+    try {
 
-    const response =
-      await fetch(
-        "/api/events?since=" + last
-      );
+        const response =
+            await fetch(
+                "/api/events?since=" +
+                encodeURIComponent(last),
+                {
+                    cache: "no-store"
+                }
+            );
 
 
-    if (!response.ok) {
+        if (!response.ok) {
+            return;
+        }
 
-      return;
+
+        const events =
+            await response.json();
+
+
+        if (!Array.isArray(events)) {
+            return;
+        }
+
+
+        for (
+            const event of events
+        ) {
+
+            if (event.id) {
+
+                last =
+                    Math.max(
+                        last,
+                        Number(event.id)
+                    );
+
+            }
+
+
+            if (
+                event.type ===
+                "document_received"
+                &&
+                event.job
+            ) {
+
+                render(
+                    event.job
+                );
+
+            }
+
+        }
+
+
+    } catch (error) {
+
+        console.log(
+            "Waiting for document..."
+        );
 
     }
-
-
-    const events =
-      await response.json();
-
-
-    for (const event of events) {
-
-
-      if (event.id) {
-
-        last =
-          Math.max(last, event.id);
-
-      }
-
-
-      if (event.job) {
-
-        render(event.job);
-
-      }
-
-    }
-
-  }
-
-  catch (error) {
-
-    console.log(
-      "Waiting for document..."
-    );
-
-  }
 
 }
 
 
-
-/* ==========================================
-   SHOW DOCUMENT
-   ========================================== */
+/* ============================================================
+   SHOW DOCUMENT RECEIVED
+   ============================================================ */
 
 function render(job) {
 
-
-  const filename =
-    job.filename || "Document";
-
-
-  const status =
-    job.status || "Received";
+    const filename =
+        job.filename ||
+        "Document";
 
 
-  document.getElementById("job").innerHTML = `
+    const status =
+        job.status ||
+        "RECEIVED";
 
-    <h2 class="success">
-      Document received
-    </h2>
 
-    <p>
-      <b>${escapeHTML(filename)}</b>
-    </p>
+    document.getElementById(
+        "job"
+    ).innerHTML = `
 
-    <p>
-      Status:
-      <b>${escapeHTML(status)}</b>
-    </p>
+        <h2 class="success">
+            ✓ Document received
+        </h2>
 
-    <a
-      class="button"
-      href="/options.html"
-    >
-      CONTINUE
-    </a>
+        <p>
+            <b>${escapeHTML(filename)}</b>
+        </p>
 
-  `;
+        <p>
+            Status:
+            <b>${escapeHTML(status)}</b>
+        </p>
+
+        <p class="success">
+            The document has been successfully received by AXM.
+        </p>
+
+        <a
+            class="button"
+            href="/options.html"
+        >
+            CONTINUE
+        </a>
+
+    `;
 
 }
 
 
-
-/* ==========================================
-   SECURITY
-   ========================================== */
+/* ============================================================
+   HTML ESCAPE
+   ============================================================ */
 
 function escapeHTML(value) {
 
-  return String(value)
+    return String(value ?? "")
 
-    .replaceAll("&", "&amp;")
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
 
-    .replaceAll("<", "&lt;")
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
 
-    .replaceAll(">", "&gt;")
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
 
-    .replaceAll('"', "&quot;")
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
 
-    .replaceAll("'", "&#039;");
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
 
 }
 
 
-
-/* ==========================================
+/* ============================================================
    START
-   ========================================== */
+   ============================================================ */
 
 newQR();
 
 setInterval(
-  poll,
-  1000
+    poll,
+    1000
 );
 
-
 </script>
-
 
 </body>
 
