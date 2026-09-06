@@ -1,63 +1,234 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
 
-<meta charset="utf-8">
+    <meta charset="UTF-8">
 
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1"
->
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>AXM — Print Options</title>
+    <title>AXM — Print Options</title>
 
-<link
-  rel="stylesheet"
-  href="/style.css"
->
+    <link
+        rel="stylesheet"
+        href="/style.css"
+    >
 
-<style>
+    <style>
 
-.choices {
-  display: flex;
-  justify-content: center;
-  gap: 14px;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
-}
+        * {
+            box-sizing: border-box;
+        }
 
-.choice-btn {
-  padding: 16px 22px;
-  border-radius: 12px;
-  border: 2px solid #d4deeb;
-  background: white;
-  font-weight: 700;
-  cursor: pointer;
-  transition: 0.15s;
-}
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #eef5fb;
+            color: #12365d;
+        }
 
-.choice-btn:hover {
-  transform: translateY(-1px);
-}
+        main {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 15px;
+        }
 
-.choice-btn.selected {
-  background: #0b57d0;
-  color: white;
-  border-color: #0b57d0;
-  box-shadow: 0 0 0 4px rgba(11,87,208,0.15);
-}
+        .panel {
+            width: 100%;
+            max-width: 850px;
+            background: #ffffff;
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+        }
 
-#selectedInfo {
-  margin: 15px 0;
-  padding: 12px;
-  border-radius: 10px;
-  background: #edf5ff;
-  color: #0b57d0;
-  font-weight: 700;
-}
+        h1 {
+            text-align: center;
+            margin: 0 0 10px;
+            font-size: 38px;
+            color: #103b68;
+        }
 
-</style>
+        .subtitle {
+            text-align: center;
+            color: #607d9b;
+            margin-bottom: 35px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 21px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #12365d;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .option-button {
+            min-height: 75px;
+            border: 2px solid #cbd9e7;
+            background: #ffffff;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #12365d;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .option-button:hover {
+            border-color: #1769e0;
+        }
+
+        .option-button.selected {
+            background: #1769e0;
+            border-color: #1769e0;
+            color: #ffffff;
+            box-shadow: 0 5px 15px rgba(23, 105, 224, 0.25);
+        }
+
+        .selected-display {
+            margin-top: 12px;
+            padding: 12px 15px;
+            background: #f1f6fb;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            color: #1769e0;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .input-box {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-box label {
+            font-weight: bold;
+            font-size: 17px;
+        }
+
+        .input-box input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #cbd9e7;
+            border-radius: 10px;
+            font-size: 18px;
+            color: #12365d;
+            outline: none;
+        }
+
+        .input-box input:focus {
+            border-color: #1769e0;
+        }
+
+        .amount-box {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 15px;
+            background: #f3f7fb;
+            text-align: center;
+        }
+
+        .amount-label {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .amount {
+            margin-top: 8px;
+            font-size: 38px;
+            font-weight: bold;
+            color: #103b68;
+        }
+
+        .summary {
+            margin-top: 15px;
+            font-size: 15px;
+            color: #607d9b;
+        }
+
+        .continue-button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            background: #f4c51b;
+            color: #103b68;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .continue-button:hover {
+            background: #eab900;
+        }
+
+        .continue-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #message {
+            margin-top: 18px;
+            text-align: center;
+            font-weight: bold;
+            min-height: 22px;
+        }
+
+        .error {
+            color: #d92727;
+        }
+
+        .success {
+            color: #079447;
+        }
+
+        .loading {
+            color: #1769e0;
+        }
+
+        @media (max-width: 600px) {
+
+            .panel {
+                padding: 25px 18px;
+            }
+
+            h1 {
+                font-size: 30px;
+            }
+
+            .options {
+                grid-template-columns: 1fr;
+            }
+
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
 
 </head>
 
@@ -65,335 +236,616 @@
 
 <main>
 
-<section class="panel">
+    <section class="panel">
 
-<h1>Print Options</h1>
+        <h1>Print Options</h1>
 
-<div id="file">
-  Loading...
-</div>
+        <p class="subtitle">
+            Select your printing requirements
+        </p>
 
-<h2>Colour</h2>
 
-<div class="choices">
+        <!-- ========================================= -->
+        <!-- COLOUR -->
+        <!-- ========================================= -->
 
-<button
-  id="bwBtn"
-  class="choice-btn selected"
-  onclick="pickColor('bw')"
->
-  Black &amp; White ₹2
-</button>
+        <div class="section">
 
-<button
-  id="colorBtn"
-  class="choice-btn"
-  onclick="pickColor('color')"
->
-  Colour ₹5
-</button>
+            <div class="section-title">
+                1. Select Colour
+            </div>
 
-</div>
+            <div class="options">
 
-<h2>Sides</h2>
+                <button
+                    type="button"
+                    id="bwButton"
+                    class="option-button selected"
+                    onclick="selectColour('Black & White')"
+                >
+                    ⚫ Black & White
+                </button>
 
-<div class="choices">
+                <button
+                    type="button"
+                    id="colourButton"
+                    class="option-button"
+                    onclick="selectColour('Colour')"
+                >
+                    🌈 Colour
+                </button>
 
-<button
-  id="singleBtn"
-  class="choice-btn selected"
-  onclick="pickSides('single')"
->
-  Single Side
-</button>
+            </div>
 
-<button
-  id="doubleBtn"
-  class="choice-btn"
-  onclick="pickSides('double')"
->
-  Double Side
-</button>
+            <div
+                id="colourDisplay"
+                class="selected-display"
+            >
+                Selected: Black & White
+            </div>
 
-</div>
+        </div>
 
-<div id="selectedInfo">
-  Black &amp; White • Single Side
-</div>
 
-<label>
+        <!-- ========================================= -->
+        <!-- SIDES -->
+        <!-- ========================================= -->
 
-  Pages
+        <div class="section">
 
-  <input
-    id="pages"
-    type="number"
-    min="1"
-    value="1"
-  >
+            <div class="section-title">
+                2. Select Sides
+            </div>
 
-</label>
+            <div class="options">
 
-<br>
+                <button
+                    type="button"
+                    id="singleButton"
+                    class="option-button selected"
+                    onclick="selectSides('Single Side')"
+                >
+                    📄 Single Side
+                </button>
 
-<label>
+                <button
+                    type="button"
+                    id="doubleButton"
+                    class="option-button"
+                    onclick="selectSides('Double Side')"
+                >
+                    📑 Double Side
+                </button>
 
-  Copies
+            </div>
 
-  <input
-    id="copies"
-    type="number"
-    min="1"
-    value="1"
-  >
+            <div
+                id="sidesDisplay"
+                class="selected-display"
+            >
+                Selected: Single Side
+            </div>
 
-</label>
+        </div>
 
-<h2 id="amount">
-  Amount: ₹2
-</h2>
 
-<button
-  class="button"
-  onclick="save()"
->
-  CONTINUE TO PAYMENT
-</button>
+        <!-- ========================================= -->
+        <!-- PAGES + COPIES -->
+        <!-- ========================================= -->
 
-<p class="muted">
-  Your selected Colour, Side, Pages and Copies
-  will be saved before opening payment.
-</p>
+        <div class="section">
 
-</section>
+            <div class="section-title">
+                3. Pages and Copies
+            </div>
+
+            <div class="input-row">
+
+                <div class="input-box">
+
+                    <label for="pages">
+                        Number of Pages
+                    </label>
+
+                    <input
+                        id="pages"
+                        type="number"
+                        min="1"
+                        value="1"
+                        oninput="calculateAmount()"
+                    >
+
+                </div>
+
+
+                <div class="input-box">
+
+                    <label for="copies">
+                        Number of Copies
+                    </label>
+
+                    <input
+                        id="copies"
+                        type="number"
+                        min="1"
+                        value="1"
+                        oninput="calculateAmount()"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================================= -->
+        <!-- AMOUNT -->
+        <!-- ========================================= -->
+
+        <div class="amount-box">
+
+            <div class="amount-label">
+                Total Amount
+            </div>
+
+            <div
+                id="amount"
+                class="amount"
+            >
+                ₹2
+            </div>
+
+            <div
+                id="summary"
+                class="summary"
+            >
+                Black & White • Single Side •
+                1 page • 1 copy
+            </div>
+
+        </div>
+
+
+        <!-- ========================================= -->
+        <!-- CONTINUE -->
+        <!-- ========================================= -->
+
+        <button
+            id="continueButton"
+            class="continue-button"
+            type="button"
+            onclick="continueToPayment()"
+        >
+            CONTINUE TO PAYMENT
+        </button>
+
+
+        <div id="message"></div>
+
+    </section>
 
 </main>
 
+
 <script>
 
-let color = "bw";
-let sides = "single";
+/* ============================================================
+   CURRENT SELECTION
+   ============================================================ */
 
-// ======================================================
-// COLOUR
-// ======================================================
+let selectedColour = "Black & White";
 
-function pickColor(value) {
+let selectedSides = "Single Side";
 
-  color =
-    value;
+let currentAmount = 2;
 
-  document
-    .querySelector("#bwBtn")
-    .classList.toggle(
-      "selected",
-      color === "bw"
-    );
 
-  document
-    .querySelector("#colorBtn")
-    .classList.toggle(
-      "selected",
-      color === "color"
-    );
+/* ============================================================
+   SELECT COLOUR
+   ============================================================ */
 
-  update();
-}
+function selectColour(value) {
 
-// ======================================================
-// SIDES
-// ======================================================
+    selectedColour = value;
 
-function pickSides(value) {
+    const bwButton =
+        document.getElementById("bwButton");
 
-  sides =
-    value;
+    const colourButton =
+        document.getElementById("colourButton");
 
-  document
-    .querySelector("#singleBtn")
-    .classList.toggle(
-      "selected",
-      sides === "single"
-    );
+    if (value === "Black & White") {
 
-  document
-    .querySelector("#doubleBtn")
-    .classList.toggle(
-      "selected",
-      sides === "double"
-    );
+        bwButton.classList.add("selected");
 
-  update();
-}
+        colourButton.classList.remove("selected");
 
-// ======================================================
-// UPDATE UI
-// ======================================================
+    } else {
 
-function update() {
+        colourButton.classList.add("selected");
 
-  let pages =
-    Number(
-      document.querySelector(
-        "#pages"
-      ).value
-    );
+        bwButton.classList.remove("selected");
 
-  let copies =
-    Number(
-      document.querySelector(
-        "#copies"
-      ).value
-    );
-
-  if (!Number.isFinite(pages) || pages < 1) {
-    pages = 1;
-  }
-
-  if (!Number.isFinite(copies) || copies < 1) {
-    copies = 1;
-  }
-
-  pages =
-    Math.floor(pages);
-
-  copies =
-    Math.floor(copies);
-
-  const rate =
-    color === "color"
-      ? 5
-      : 2;
-
-  const sheets =
-    sides === "double"
-      ? Math.ceil(pages / 2)
-      : pages;
-
-  const total =
-    rate *
-    sheets *
-    copies;
-
-  document.querySelector(
-    "#amount"
-  ).textContent =
-    "Amount: ₹" + total;
-
-  document.querySelector(
-    "#selectedInfo"
-  ).textContent =
-    (
-      color === "color"
-        ? "Colour"
-        : "Black & White"
-    )
-    +
-    " • "
-    +
-    (
-      sides === "double"
-        ? "Double Side"
-        : "Single Side"
-    );
-}
-
-// ======================================================
-// SAVE OPTIONS
-// ======================================================
-
-async function save() {
-
-  const pages =
-    Math.max(
-      1,
-      Math.floor(
-        Number(
-          document.querySelector(
-            "#pages"
-          ).value
-        ) || 1
-      )
-    );
-
-  const copies =
-    Math.max(
-      1,
-      Math.floor(
-        Number(
-          document.querySelector(
-            "#copies"
-          ).value
-        ) || 1
-      )
-    );
-
-  try {
-
-    const response =
-      await fetch(
-        "/api/job/options",
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type":
-              "application/json"
-          },
-
-          body:
-            JSON.stringify({
-              color,
-              sides,
-              pages,
-              copies
-            })
-        }
-      );
-
-    const data =
-      await response.json();
-
-    if (!response.ok) {
-
-      alert(
-        data.error ||
-        "Unable to save options."
-      );
-
-      return;
     }
 
-    window.location.href =
-      "/payment.html";
+    document.getElementById(
+        "colourDisplay"
+    ).textContent =
+        "Selected: " + value;
 
-  } catch (error) {
-
-    alert(
-      "Server connection failed."
-    );
-  }
+    calculateAmount();
 }
 
-// ======================================================
-// INPUT EVENTS
-// ======================================================
 
-document
-  .querySelector("#pages")
-  .addEventListener(
-    "input",
-    update
-  );
+/* ============================================================
+   SELECT SIDES
+   ============================================================ */
 
-document
-  .querySelector("#copies")
-  .addEventListener(
-    "input",
-    update
-  );
+function selectSides(value) {
 
-update();
+    selectedSides = value;
+
+    const singleButton =
+        document.getElementById("singleButton");
+
+    const doubleButton =
+        document.getElementById("doubleButton");
+
+    if (value === "Single Side") {
+
+        singleButton.classList.add("selected");
+
+        doubleButton.classList.remove("selected");
+
+    } else {
+
+        doubleButton.classList.add("selected");
+
+        singleButton.classList.remove("selected");
+
+    }
+
+    document.getElementById(
+        "sidesDisplay"
+    ).textContent =
+        "Selected: " + value;
+
+    calculateAmount();
+}
+
+
+/* ============================================================
+   CALCULATE AMOUNT
+   ============================================================ */
+
+function calculateAmount() {
+
+    let pages =
+        Number(
+            document.getElementById("pages").value
+        );
+
+    let copies =
+        Number(
+            document.getElementById("copies").value
+        );
+
+
+    if (!Number.isFinite(pages) || pages < 1) {
+        pages = 1;
+    }
+
+    if (!Number.isFinite(copies) || copies < 1) {
+        copies = 1;
+    }
+
+
+    pages = Math.floor(pages);
+
+    copies = Math.floor(copies);
+
+
+    /*
+        AXM PRICE
+
+        Black & White = ₹2 per page
+        Colour        = ₹5 per page
+
+        Single/Double side is recorded as
+        a print option.
+    */
+
+    let rate;
+
+    if (selectedColour === "Colour") {
+
+        rate = 5;
+
+    } else {
+
+        rate = 2;
+
+    }
+
+
+    currentAmount =
+        pages *
+        copies *
+        rate;
+
+
+    document.getElementById(
+        "amount"
+    ).textContent =
+        "₹" + currentAmount;
+
+
+    document.getElementById(
+        "summary"
+    ).textContent =
+        selectedColour +
+        " • " +
+        selectedSides +
+        " • " +
+        pages +
+        " page" +
+        (pages === 1 ? "" : "s") +
+        " • " +
+        copies +
+        " cop" +
+        (copies === 1 ? "y" : "ies");
+}
+
+
+/* ============================================================
+   CONTINUE TO PAYMENT
+   ============================================================ */
+
+async function continueToPayment() {
+
+    const button =
+        document.getElementById(
+            "continueButton"
+        );
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+
+    let pages =
+        Number(
+            document.getElementById("pages").value
+        );
+
+    let copies =
+        Number(
+            document.getElementById("copies").value
+        );
+
+
+    if (
+        !Number.isFinite(pages) ||
+        pages < 1
+    ) {
+
+        message.className = "error";
+
+        message.textContent =
+            "Please enter a valid number of pages.";
+
+        return;
+    }
+
+
+    if (
+        !Number.isFinite(copies) ||
+        copies < 1
+    ) {
+
+        message.className = "error";
+
+        message.textContent =
+            "Please enter a valid number of copies.";
+
+        return;
+    }
+
+
+    pages = Math.floor(pages);
+
+    copies = Math.floor(copies);
+
+
+    calculateAmount();
+
+
+    button.disabled = true;
+
+    message.className = "loading";
+
+    message.textContent =
+        "Saving your print options...";
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/options",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        colour:
+                            selectedColour,
+
+                        sides:
+                            selectedSides,
+
+                        pages:
+                            pages,
+
+                        copies:
+                            copies,
+
+                        amount:
+                            currentAmount
+
+                    })
+                }
+            );
+
+
+        /*
+            Read text first.
+
+            This prevents:
+            Unexpected token '<'
+            when the server accidentally
+            sends HTML instead of JSON.
+        */
+
+        const text =
+            await response.text();
+
+
+        let result;
+
+
+        try {
+
+            result =
+                JSON.parse(text);
+
+        } catch (jsonError) {
+
+            console.error(
+                "Server returned:",
+                text
+            );
+
+            throw new Error(
+                "Server returned an invalid response. Please redeploy the latest server.js."
+            );
+        }
+
+
+        if (
+            !response.ok ||
+            !result.success
+        ) {
+
+            throw new Error(
+                result.error ||
+                result.message ||
+                "Unable to save print options."
+            );
+        }
+
+
+        /*
+            Save job locally so payment.html
+            can also read it.
+        */
+
+        if (result.job) {
+
+            sessionStorage.setItem(
+                "axmJob",
+                JSON.stringify(
+                    result.job
+                )
+            );
+
+        } else {
+
+            sessionStorage.setItem(
+                "axmJob",
+                JSON.stringify({
+
+                    colour:
+                        selectedColour,
+
+                    sides:
+                        selectedSides,
+
+                    pages:
+                        pages,
+
+                    copies:
+                        copies,
+
+                    amount:
+                        currentAmount,
+
+                    paymentStatus:
+                        "PENDING"
+
+                })
+            );
+
+        }
+
+
+        message.className =
+            "success";
+
+        message.textContent =
+            "✓ Options saved. Opening payment...";
+
+
+        /*
+            Small delay so the user can see
+            the successful message.
+        */
+
+        setTimeout(
+            function () {
+
+                window.location.href =
+                    "/payment.html";
+
+            },
+            400
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "OPTIONS ERROR:",
+            error
+        );
+
+
+        message.className =
+            "error";
+
+
+        message.textContent =
+            error.message ||
+            "Server connection failed.";
+
+
+        button.disabled = false;
+    }
+}
+
+
+/* ============================================================
+   INITIAL CALCULATION
+   ============================================================ */
+
+calculateAmount();
 
 </script>
 
