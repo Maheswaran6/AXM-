@@ -1,462 +1,402 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AXM - Print Options</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<meta charset="utf-8">
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Arial, sans-serif;
-      background: #f7f9fc;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #102a43;
-    }
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1"
+>
 
-    .container {
-      width: 100%;
-      max-width: 600px;
-      padding: 30px 20px;
-      text-align: center;
-    }
+<title>AXM — Print Options</title>
 
-    .card {
-      background: white;
-      border-radius: 18px;
-      padding: 35px 25px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-    }
+<link
+  rel="stylesheet"
+  href="/style.css"
+>
 
-    h1 {
-      margin-top: 0;
-      font-size: 34px;
-      margin-bottom: 30px;
-    }
+<style>
 
-    h2 {
-      font-size: 23px;
-      margin: 20px 0 15px;
-    }
+.choices {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
 
-    .button-group {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
+.choice-btn {
+  padding: 16px 22px;
+  border-radius: 12px;
+  border: 2px solid #d4deeb;
+  background: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.15s;
+}
 
-    .option-btn {
-      min-width: 145px;
-      padding: 15px 20px;
-      border: 2px solid #d5dfeb;
-      border-radius: 12px;
-      background: white;
-      color: #102a43;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
+.choice-btn:hover {
+  transform: translateY(-1px);
+}
 
-    .option-btn:hover {
-      border-color: #2563eb;
-      transform: translateY(-2px);
-    }
+.choice-btn.selected {
+  background: #0b57d0;
+  color: white;
+  border-color: #0b57d0;
+  box-shadow: 0 0 0 4px rgba(11,87,208,0.15);
+}
 
-    /* SELECTED BUTTON */
-    .option-btn.selected {
-      background: #2563eb;
-      color: white;
-      border-color: #2563eb;
-      box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
-      transform: translateY(-2px);
-    }
+#selectedInfo {
+  margin: 15px 0;
+  padding: 12px;
+  border-radius: 10px;
+  background: #edf5ff;
+  color: #0b57d0;
+  font-weight: 700;
+}
 
-    .option-btn.selected::before {
-      content: "✓ ";
-      font-size: 18px;
-    }
+</style>
 
-    .input-row {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 15px;
-      margin: 15px 0;
-    }
-
-    .input-row label {
-      width: 80px;
-      text-align: right;
-      font-size: 17px;
-      font-weight: bold;
-    }
-
-    .input-row input {
-      width: 120px;
-      padding: 12px;
-      border: 2px solid #d5dfeb;
-      border-radius: 10px;
-      font-size: 17px;
-      text-align: center;
-    }
-
-    .amount {
-      margin-top: 25px;
-      font-size: 25px;
-      font-weight: bold;
-    }
-
-    #selected-info {
-      margin-top: 12px;
-      font-size: 14px;
-      color: #52667a;
-    }
-
-    .payment-btn {
-      margin-top: 30px;
-      width: 100%;
-      max-width: 300px;
-      padding: 16px;
-      border: none;
-      border-radius: 12px;
-      background: #f5c518;
-      color: #102a43;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .payment-btn:hover {
-      background: #eab900;
-      transform: translateY(-2px);
-    }
-
-    .payment-btn:active {
-      transform: scale(0.98);
-    }
-
-    .note {
-      margin-top: 25px;
-      color: #64748b;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    @media (max-width: 500px) {
-      h1 {
-        font-size: 28px;
-      }
-
-      .option-btn {
-        width: 100%;
-        max-width: 260px;
-      }
-
-      .input-row {
-        justify-content: center;
-      }
-    }
-  </style>
 </head>
 
 <body>
 
-  <div class="container">
+<main>
 
-    <div class="card">
+<section class="panel">
 
-      <h1>Print Options</h1>
+<h1>Print Options</h1>
 
-      <!-- COLOUR -->
-      <h2>Colour</h2>
+<div id="file">
+  Loading...
+</div>
 
-      <div class="button-group">
+<h2>Colour</h2>
 
-        <button
-          type="button"
-          class="option-btn selected"
-          id="bwBtn"
-          onclick="selectColour('bw')">
-          Black & White ₹2
-        </button>
+<div class="choices">
 
-        <button
-          type="button"
-          class="option-btn"
-          id="colourBtn"
-          onclick="selectColour('colour')">
-          Colour ₹5
-        </button>
+<button
+  id="bwBtn"
+  class="choice-btn selected"
+  onclick="pickColor('bw')"
+>
+  Black &amp; White ₹2
+</button>
 
-      </div>
+<button
+  id="colorBtn"
+  class="choice-btn"
+  onclick="pickColor('color')"
+>
+  Colour ₹5
+</button>
 
+</div>
 
-      <!-- SIDES -->
-      <h2>Sides</h2>
+<h2>Sides</h2>
 
-      <div class="button-group">
+<div class="choices">
 
-        <button
-          type="button"
-          class="option-btn selected"
-          id="singleBtn"
-          onclick="selectSides('single')">
-          Single Side
-        </button>
+<button
+  id="singleBtn"
+  class="choice-btn selected"
+  onclick="pickSides('single')"
+>
+  Single Side
+</button>
 
-        <button
-          type="button"
-          class="option-btn"
-          id="doubleBtn"
-          onclick="selectSides('double')">
-          Double Side
-        </button>
+<button
+  id="doubleBtn"
+  class="choice-btn"
+  onclick="pickSides('double')"
+>
+  Double Side
+</button>
 
-      </div>
+</div>
 
+<div id="selectedInfo">
+  Black &amp; White • Single Side
+</div>
 
-      <!-- PAGES -->
-      <div class="input-row">
-        <label for="pages">Pages</label>
+<label>
 
-        <input
-          type="number"
-          id="pages"
-          value="1"
-          min="1"
-          oninput="calculateAmount()">
-      </div>
+  Pages
 
+  <input
+    id="pages"
+    type="number"
+    min="1"
+    value="1"
+  >
 
-      <!-- COPIES -->
-      <div class="input-row">
-        <label for="copies">Copies</label>
+</label>
 
-        <input
-          type="number"
-          id="copies"
-          value="1"
-          min="1"
-          oninput="calculateAmount()">
-      </div>
+<br>
 
+<label>
 
-      <!-- AMOUNT -->
-      <div class="amount">
-        Amount: ₹<span id="amount">2</span>
-      </div>
+  Copies
 
-      <div id="selected-info">
-        Black & White • Single Side
-      </div>
+  <input
+    id="copies"
+    type="number"
+    min="1"
+    value="1"
+  >
 
+</label>
 
-      <!-- PAYMENT -->
-      <button
-        type="button"
-        class="payment-btn"
-        onclick="continueToPayment()">
-        CONTINUE TO PAYMENT
-      </button>
+<h2 id="amount">
+  Amount: ₹2
+</h2>
 
+<button
+  class="button"
+  onclick="save()"
+>
+  CONTINUE TO PAYMENT
+</button>
 
-      <div class="note">
-        For development only, the next page contains a test-success
-        button. Real Razorpay verification must be configured before
-        accepting real money.
-      </div>
+<p class="muted">
+  Your selected Colour, Side, Pages and Copies
+  will be saved before opening payment.
+</p>
+
+</section>
 
-    </div>
+</main>
+
+<script>
 
-  </div>
-
-
-  <script>
-
-    // DEFAULT OPTIONS
-    let selectedColour = "bw";
-    let selectedSides = "single";
-
-
-    // -----------------------------
-    // COLOUR SELECTION
-    // -----------------------------
-    function selectColour(colour) {
-
-      selectedColour = colour;
-
-      const bwBtn = document.getElementById("bwBtn");
-      const colourBtn = document.getElementById("colourBtn");
-
-      // Remove selected state
-      bwBtn.classList.remove("selected");
-      colourBtn.classList.remove("selected");
-
-      // Add selected state
-      if (colour === "bw") {
-        bwBtn.classList.add("selected");
-      } else {
-        colourBtn.classList.add("selected");
-      }
-
-      calculateAmount();
-    }
-
-
-    // -----------------------------
-    // SIDES SELECTION
-    // -----------------------------
-    function selectSides(sides) {
-
-      selectedSides = sides;
-
-      const singleBtn = document.getElementById("singleBtn");
-      const doubleBtn = document.getElementById("doubleBtn");
-
-      // Remove selected state
-      singleBtn.classList.remove("selected");
-      doubleBtn.classList.remove("selected");
-
-      // Add selected state
-      if (sides === "single") {
-        singleBtn.classList.add("selected");
-      } else {
-        doubleBtn.classList.add("selected");
-      }
-
-      calculateAmount();
-    }
-
-
-    // -----------------------------
-    // CALCULATE AMOUNT
-    // -----------------------------
-    function calculateAmount() {
-
-      let pages = parseInt(
-        document.getElementById("pages").value
-      ) || 1;
-
-      let copies = parseInt(
-        document.getElementById("copies").value
-      ) || 1;
-
-      if (pages < 1) pages = 1;
-      if (copies < 1) copies = 1;
-
-      document.getElementById("pages").value = pages;
-      document.getElementById("copies").value = copies;
-
-
-      // Price per printed page
-      let pricePerPage;
-
-      if (selectedColour === "bw") {
-        pricePerPage = 2;
-      } else {
-        pricePerPage = 5;
-      }
-
-
-      // Double side uses two pages per sheet.
-      // The total number of pages is still charged based
-      // on the pages selected.
-      let total = pricePerPage * pages * copies;
-
-
-      document.getElementById("amount").textContent = total;
-
-
-      updateSelectedInfo();
-    }
-
-
-    // -----------------------------
-    // DISPLAY CURRENT SELECTION
-    // -----------------------------
-    function updateSelectedInfo() {
-
-      const colourText =
-        selectedColour === "bw"
-          ? "Black & White"
-          : "Colour";
-
-      const sidesText =
-        selectedSides === "single"
-          ? "Single Side"
-          : "Double Side";
-
-      document.getElementById("selected-info").textContent =
-        colourText + " • " + sidesText;
-    }
-
-
-    // -----------------------------
-    // CONTINUE TO PAYMENT
-    // -----------------------------
-    function continueToPayment() {
-
-      const pages =
-        parseInt(document.getElementById("pages").value) || 1;
-
-      const copies =
-        parseInt(document.getElementById("copies").value) || 1;
-
-      const amount =
-        parseInt(document.getElementById("amount").textContent) || 0;
-
-
-      // Save selection in browser
-      const printOptions = {
-
-        colour: selectedColour,
-
-        colourName:
-          selectedColour === "bw"
-            ? "Black & White"
-            : "Colour",
-
-        sides: selectedSides,
-
-        sidesName:
-          selectedSides === "single"
-            ? "Single Side"
-            : "Double Side",
-
-        pages: pages,
-
-        copies: copies,
-
-        amount: amount
-      };
-
-
-      localStorage.setItem(
-        "axmPrintOptions",
-        JSON.stringify(printOptions)
+let color = "bw";
+let sides = "single";
+
+// ======================================================
+// COLOUR
+// ======================================================
+
+function pickColor(value) {
+
+  color =
+    value;
+
+  document
+    .querySelector("#bwBtn")
+    .classList.toggle(
+      "selected",
+      color === "bw"
+    );
+
+  document
+    .querySelector("#colorBtn")
+    .classList.toggle(
+      "selected",
+      color === "color"
+    );
+
+  update();
+}
+
+// ======================================================
+// SIDES
+// ======================================================
+
+function pickSides(value) {
+
+  sides =
+    value;
+
+  document
+    .querySelector("#singleBtn")
+    .classList.toggle(
+      "selected",
+      sides === "single"
+    );
+
+  document
+    .querySelector("#doubleBtn")
+    .classList.toggle(
+      "selected",
+      sides === "double"
+    );
+
+  update();
+}
+
+// ======================================================
+// UPDATE UI
+// ======================================================
+
+function update() {
+
+  let pages =
+    Number(
+      document.querySelector(
+        "#pages"
+      ).value
+    );
+
+  let copies =
+    Number(
+      document.querySelector(
+        "#copies"
+      ).value
+    );
+
+  if (!Number.isFinite(pages) || pages < 1) {
+    pages = 1;
+  }
+
+  if (!Number.isFinite(copies) || copies < 1) {
+    copies = 1;
+  }
+
+  pages =
+    Math.floor(pages);
+
+  copies =
+    Math.floor(copies);
+
+  const rate =
+    color === "color"
+      ? 5
+      : 2;
+
+  const sheets =
+    sides === "double"
+      ? Math.ceil(pages / 2)
+      : pages;
+
+  const total =
+    rate *
+    sheets *
+    copies;
+
+  document.querySelector(
+    "#amount"
+  ).textContent =
+    "Amount: ₹" + total;
+
+  document.querySelector(
+    "#selectedInfo"
+  ).textContent =
+    (
+      color === "color"
+        ? "Colour"
+        : "Black & White"
+    )
+    +
+    " • "
+    +
+    (
+      sides === "double"
+        ? "Double Side"
+        : "Single Side"
+    );
+}
+
+// ======================================================
+// SAVE OPTIONS
+// ======================================================
+
+async function save() {
+
+  const pages =
+    Math.max(
+      1,
+      Math.floor(
+        Number(
+          document.querySelector(
+            "#pages"
+          ).value
+        ) || 1
+      )
+    );
+
+  const copies =
+    Math.max(
+      1,
+      Math.floor(
+        Number(
+          document.querySelector(
+            "#copies"
+          ).value
+        ) || 1
+      )
+    );
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/job/options",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+              color,
+              sides,
+              pages,
+              copies
+            })
+        }
       );
 
+    const data =
+      await response.json();
 
-      // Go to payment page
-      window.location.href =
-        "payment.html";
+    if (!response.ok) {
+
+      alert(
+        data.error ||
+        "Unable to save options."
+      );
+
+      return;
     }
 
+    window.location.href =
+      "/payment.html";
 
-    // Initial calculation
-    calculateAmount();
+  } catch (error) {
 
-  </script>
+    alert(
+      "Server connection failed."
+    );
+  }
+}
+
+// ======================================================
+// INPUT EVENTS
+// ======================================================
+
+document
+  .querySelector("#pages")
+  .addEventListener(
+    "input",
+    update
+  );
+
+document
+  .querySelector("#copies")
+  .addEventListener(
+    "input",
+    update
+  );
+
+update();
+
+</script>
 
 </body>
+
 </html>
