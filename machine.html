@@ -1,11 +1,344 @@
 <!doctype html>
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AXM Machine</title><link rel="stylesheet" href="/style.css"></head>
-<body><header><div class="brand"><span class="logo">AXM</span><div><b>AXM</b><small>AUTOMATIC XEROX MACHINE • NIET • COIMBATORE</small></div></div><span class="ready">● READY</span></header>
-<main><section class="panel"><h1>Send Document From Phone</h1><p>Scan this QR code using the customer's phone.</p><img id="qr" class="qr" alt="Upload QR"><p id="url" class="muted"></p><button class="button" onclick="newQR()">GENERATE NEW QR</button><hr><div id="job"><h2>Waiting for document…</h2></div></section></main>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>AXM Machine</title>
+
+  <link rel="stylesheet" href="/style.css">
+
+  <!-- QR CODE LIBRARY -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+  <style>
+    .qr-box {
+      width: 260px;
+      min-height: 260px;
+      margin: 20px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 15px;
+      box-sizing: border-box;
+    }
+
+    #qr {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #qr img,
+    #qr canvas {
+      width: 220px !important;
+      height: 220px !important;
+    }
+
+    .upload-url {
+      margin: 15px auto;
+      max-width: 600px;
+      word-break: break-all;
+      font-size: 14px;
+      color: #315b86;
+    }
+
+    .button {
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .status {
+      margin-top: 20px;
+    }
+
+    .success {
+      color: #008f4c;
+      font-weight: bold;
+    }
+
+    .error {
+      color: #d93025;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">
+    <span class="logo">AXM</span>
+
+    <div>
+      <b>AXM</b>
+      <small>
+        AUTOMATIC XEROX MACHINE • NIET • COIMBATORE
+      </small>
+    </div>
+  </div>
+
+  <span class="ready">● READY</span>
+</header>
+
+
+<main>
+
+  <section class="panel">
+
+    <h1>Send Document From Phone</h1>
+
+    <p>
+      Scan this QR code using the customer's phone.
+    </p>
+
+
+    <!-- QR CODE -->
+    <div class="qr-box">
+      <div id="qr"></div>
+    </div>
+
+
+    <!-- UPLOAD URL -->
+    <p id="url" class="upload-url"></p>
+
+
+    <!-- NEW QR -->
+    <button class="button" onclick="newQR()">
+      GENERATE NEW QR
+    </button>
+
+
+    <hr>
+
+
+    <!-- JOB STATUS -->
+    <div id="job">
+      <h2>Waiting for document…</h2>
+      <p class="muted">
+        Scan the QR code from the customer's phone.
+      </p>
+    </div>
+
+  </section>
+
+</main>
+
+
 <script>
-let last=0;
-async function newQR(){const r=await fetch('/api/machine-qr');const x=await r.json();document.querySelector('#qr').src=x.qr;document.querySelector('#url').textContent=x.uploadUrl;}
-async function poll(){const r=await fetch('/api/events?since='+last);const x=await r.json();for(const e of x){last=Math.max(last,e.id);if(e.job) render(e.job);} }
-function render(j){document.querySelector('#job').innerHTML=`<h2>Document received</h2><p><b>${j.filename}</b></p><p>Status: ${j.status}</p><a class="button" href="/options.html">CONTINUE</a>`;}
-newQR();setInterval(poll,1000);
-</script></body></html>
+
+let last = 0;
+
+
+/*
+--------------------------------------------------
+GET SERVER ADDRESS
+--------------------------------------------------
+*/
+
+function getBaseUrl() {
+
+  return window.location.origin;
+
+}
+
+
+/*
+--------------------------------------------------
+GENERATE QR
+--------------------------------------------------
+*/
+
+function newQR() {
+
+  const qrContainer = document.getElementById("qr");
+
+  const urlElement = document.getElementById("url");
+
+
+  /*
+  Customer phone will open this page.
+  */
+
+  const uploadUrl =
+    getBaseUrl() + "/upload.html";
+
+
+  /*
+  Clear previous QR
+  */
+
+  qrContainer.innerHTML = "";
+
+
+  /*
+  Generate QR
+  */
+
+  new QRCode(qrContainer, {
+
+    text: uploadUrl,
+
+    width: 220,
+
+    height: 220,
+
+    colorDark: "#000000",
+
+    colorLight: "#ffffff",
+
+    correctLevel: QRCode.CorrectLevel.H
+
+  });
+
+
+  /*
+  Show URL below QR
+  */
+
+  urlElement.textContent = uploadUrl;
+
+}
+
+
+/*
+--------------------------------------------------
+POLL SERVER FOR DOCUMENT
+--------------------------------------------------
+*/
+
+async function poll() {
+
+  try {
+
+    const response =
+      await fetch("/api/events?since=" + last);
+
+
+    if (!response.ok) {
+
+      return;
+
+    }
+
+
+    const events =
+      await response.json();
+
+
+    for (const event of events) {
+
+      if (event.id) {
+
+        last =
+          Math.max(last, event.id);
+
+      }
+
+
+      if (event.job) {
+
+        render(event.job);
+
+      }
+
+    }
+
+  }
+
+  catch (error) {
+
+    console.log(
+      "Waiting for server..."
+    );
+
+  }
+
+}
+
+
+/*
+--------------------------------------------------
+SHOW RECEIVED DOCUMENT
+--------------------------------------------------
+*/
+
+function render(job) {
+
+  const filename =
+    job.filename || "Document";
+
+
+  const status =
+    job.status || "Received";
+
+
+  document.getElementById("job").innerHTML = `
+
+    <h2 class="success">
+      Document received
+    </h2>
+
+    <p>
+      <b>${escapeHTML(filename)}</b>
+    </p>
+
+    <p>
+      Status:
+      <b>${escapeHTML(status)}</b>
+    </p>
+
+    <a
+      class="button"
+      href="/options.html"
+    >
+      CONTINUE
+    </a>
+
+  `;
+
+}
+
+
+/*
+--------------------------------------------------
+SECURITY
+--------------------------------------------------
+*/
+
+function escapeHTML(value) {
+
+  return String(value)
+
+    .replaceAll("&", "&amp;")
+
+    .replaceAll("<", "&lt;")
+
+    .replaceAll(">", "&gt;")
+
+    .replaceAll('"', "&quot;")
+
+    .replaceAll("'", "&#039;");
+
+}
+
+
+/*
+--------------------------------------------------
+START
+--------------------------------------------------
+*/
+
+newQR();
+
+setInterval(poll, 1000);
+
+</script>
+
+</body>
+</html>
