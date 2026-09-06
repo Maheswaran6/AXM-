@@ -1,19 +1,29 @@
 <!doctype html>
 <html lang="en">
+
 <head>
+
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
 
   <title>AXM — Send Document</title>
 
-  <link rel="stylesheet" href="/style.css">
+  <link
+    rel="stylesheet"
+    href="/style.css"
+  >
 
   <style>
+
     .upload-card {
       max-width: 650px;
-      margin: 60px auto;
+      margin: 50px auto;
       padding: 35px;
-      background: white;
+      background: #ffffff;
       border-radius: 22px;
       box-shadow: 0 15px 40px rgba(0,0,0,0.08);
       text-align: center;
@@ -21,7 +31,6 @@
 
     .upload-card h1 {
       color: #123d69;
-      margin-bottom: 15px;
     }
 
     .upload-card p {
@@ -30,21 +39,22 @@
 
     #file {
       width: 100%;
-      padding: 15px;
+      box-sizing: border-box;
+      padding: 16px;
       margin: 25px 0;
       border: 2px dashed #cbd8e8;
       border-radius: 12px;
-      box-sizing: border-box;
       background: #f8fbff;
     }
 
     .button {
+      width: 100%;
       border: none;
       cursor: pointer;
-      padding: 15px 28px;
+      padding: 16px;
       border-radius: 10px;
-      font-weight: bold;
       font-size: 16px;
+      font-weight: bold;
     }
 
     .button:disabled {
@@ -57,7 +67,7 @@
       margin-top: 25px;
     }
 
-    #progressBarBackground {
+    #progressBackground {
       width: 100%;
       height: 18px;
       background: #e5eaf0;
@@ -73,227 +83,281 @@
     }
 
     #progressText {
-      margin-top: 10px;
       font-weight: bold;
     }
 
     #msg {
       margin-top: 20px;
       font-weight: bold;
-      min-height: 25px;
+      line-height: 1.5;
     }
 
     .success {
-      color: #079447 !important;
+      color: #078a45 !important;
     }
 
     .error {
       color: #d93025 !important;
     }
 
-    .waiting {
+    .working {
       color: #123d69 !important;
     }
+
+    #debug {
+      display: none;
+      margin-top: 20px;
+      padding: 15px;
+      background: #f5f5f5;
+      border-radius: 10px;
+      text-align: left;
+      font-family: monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
   </style>
+
 </head>
+
 
 <body>
 
 <main>
 
-  <section class="upload-card">
+<section class="upload-card">
 
-    <h1>AXM — Send Document</h1>
+  <h1>AXM — Send Document</h1>
 
-    <p>
-      Select <b>one PDF or one image</b>
-      to send to the AXM machine.
-    </p>
-
-    <form id="form">
-
-      <input
-        id="file"
-        name="document"
-        type="file"
-        accept=".pdf,image/jpeg,image/png,image/webp"
-        required
-      >
-
-      <button
-        id="sendButton"
-        class="button"
-        type="submit"
-      >
-        SEND TO AXM
-      </button>
-
-    </form>
+  <p>
+    Select <b>one PDF or one image</b>
+    to send to the AXM machine.
+  </p>
 
 
-    <div id="progressBox">
+  <form id="form">
 
-      <div id="progressBarBackground">
+    <input
+      id="file"
+      name="document"
+      type="file"
+      accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp"
+      required
+    >
 
-        <div id="progressBar"></div>
+    <button
+      id="sendButton"
+      class="button"
+      type="submit"
+    >
+      SEND TO AXM
+    </button>
 
-      </div>
+  </form>
 
-      <p id="progressText">
-        0%
-      </p>
+
+  <div id="progressBox">
+
+    <div id="progressBackground">
+
+      <div id="progressBar"></div>
 
     </div>
 
+    <p id="progressText">
+      0%
+    </p>
 
-    <p id="msg"></p>
+  </div>
 
-  </section>
+
+  <p id="msg"></p>
+
+  <pre id="debug"></pre>
+
+</section>
 
 </main>
 
 
 <script>
 
-const form = document.getElementById("form");
+const form =
+  document.getElementById("form");
 
-const fileInput = document.getElementById("file");
+const fileInput =
+  document.getElementById("file");
 
-const sendButton = document.getElementById("sendButton");
+const sendButton =
+  document.getElementById("sendButton");
 
-const msg = document.getElementById("msg");
+const msg =
+  document.getElementById("msg");
 
-const progressBox = document.getElementById("progressBox");
+const progressBox =
+  document.getElementById("progressBox");
 
-const progressBar = document.getElementById("progressBar");
+const progressBar =
+  document.getElementById("progressBar");
 
-const progressText = document.getElementById("progressText");
+const progressText =
+  document.getElementById("progressText");
 
-
-form.addEventListener("submit", function(event) {
-
-  event.preventDefault();
-
-
-  const files = fileInput.files;
+const debug =
+  document.getElementById("debug");
 
 
-  // ------------------------------------------------
-  // Check file
-  // ------------------------------------------------
+form.addEventListener(
+  "submit",
+  function(event) {
 
-  if (!files || files.length !== 1) {
+    event.preventDefault();
 
-    msg.className = "error";
+
+    debug.style.display = "none";
+
+    debug.textContent = "";
+
+
+    const files =
+      fileInput.files;
+
+
+    if (!files || files.length !== 1) {
+
+      msg.className = "error";
+
+      msg.textContent =
+        "Please select exactly one document.";
+
+      return;
+
+    }
+
+
+    const file =
+      files[0];
+
+
+    console.log(
+      "Selected file:",
+      file.name
+    );
+
+    console.log(
+      "File type:",
+      file.type
+    );
+
+    console.log(
+      "File size:",
+      file.size
+    );
+
+
+    /*
+      Maximum file size:
+      25 MB
+    */
+
+    const maxSize =
+      25 * 1024 * 1024;
+
+
+    if (file.size > maxSize) {
+
+      msg.className = "error";
+
+      msg.textContent =
+        "File is larger than 25 MB.";
+
+      return;
+
+    }
+
+
+    /*
+      Start UI
+    */
+
+    sendButton.disabled = true;
+
+    sendButton.textContent =
+      "UPLOADING...";
+
+
+    progressBox.style.display =
+      "block";
+
+
+    progressBar.style.width =
+      "0%";
+
+
+    progressText.textContent =
+      "0%";
+
+
+    msg.className =
+      "working";
 
     msg.textContent =
-      "Please select exactly one document.";
-
-    return;
-
-  }
+      "Connecting to AXM...";
 
 
-  const file = files[0];
+    /*
+      IMPORTANT
+      Server expects:
+      document
+    */
+
+    const formData =
+      new FormData();
 
 
-  // ------------------------------------------------
-  // Maximum file size = 25 MB
-  // Same as server limit
-  // ------------------------------------------------
-
-  const maxSize =
-    25 * 1024 * 1024;
+    formData.append(
+      "document",
+      file
+    );
 
 
-  if (file.size > maxSize) {
+    /*
+      XMLHttpRequest
+    */
 
-    msg.className = "error";
-
-    msg.textContent =
-      "File is too large. Maximum size is 25 MB.";
-
-    return;
-
-  }
+    const xhr =
+      new XMLHttpRequest();
 
 
-  // ------------------------------------------------
-  // Disable button
-  // ------------------------------------------------
-
-  sendButton.disabled = true;
-
-  sendButton.textContent =
-    "UPLOADING...";
+    xhr.open(
+      "POST",
+      "/api/upload",
+      true
+    );
 
 
-  progressBox.style.display =
-    "block";
+    /*
+      Give the upload 3 minutes.
+    */
+
+    xhr.timeout =
+      180000;
 
 
-  progressBar.style.width =
-    "0%";
+    /*
+      Progress
+    */
 
+    xhr.upload.onprogress =
+      function(event) {
 
-  progressText.textContent =
-    "0%";
+        if (!event.lengthComputable) {
 
+          return;
 
-  msg.className = "waiting";
+        }
 
-  msg.textContent =
-    "Connecting to AXM...";
-
-
-  // ------------------------------------------------
-  // FormData
-  // IMPORTANT:
-  // field name = document
-  // ------------------------------------------------
-
-  const formData =
-    new FormData();
-
-  formData.append(
-    "document",
-    file
-  );
-
-
-  // ------------------------------------------------
-  // XMLHttpRequest
-  // This gives real upload progress.
-  // ------------------------------------------------
-
-  const xhr =
-    new XMLHttpRequest();
-
-
-  xhr.open(
-    "POST",
-    "/api/upload",
-    true
-  );
-
-
-  // ------------------------------------------------
-  // Timeout
-  // 2 minutes
-  // ------------------------------------------------
-
-  xhr.timeout =
-    120000;
-
-
-  // ------------------------------------------------
-  // Upload progress
-  // ------------------------------------------------
-
-  xhr.upload.onprogress =
-    function(event) {
-
-      if (event.lengthComputable) {
 
         const percent =
           Math.round(
@@ -306,7 +370,9 @@ form.addEventListener("submit", function(event) {
 
 
         progressText.textContent =
-          "Uploading: " + percent + "%";
+          "Uploading: " +
+          percent +
+          "%";
 
 
         if (percent < 100) {
@@ -314,109 +380,253 @@ form.addEventListener("submit", function(event) {
           msg.textContent =
             "Sending document to AXM...";
 
-        } else {
-
-          msg.textContent =
-            "Upload complete. AXM is processing the document...";
-
         }
 
-      }
-
-    };
+      };
 
 
-  // ------------------------------------------------
-  // SUCCESS
-  // ------------------------------------------------
+    /*
+      RESPONSE
+    */
 
-  xhr.onload =
-    function() {
+    xhr.onload =
+      function() {
 
-      sendButton.disabled =
-        false;
+        console.log(
+          "HTTP status:",
+          xhr.status
+        );
 
-      sendButton.textContent =
-        "SEND TO AXM";
-
-
-      let response;
-
-
-      try {
-
-        response =
-          JSON.parse(xhr.responseText);
-
-      } catch (error) {
-
-        msg.className =
-          "error";
-
-        msg.textContent =
-          "AXM returned an invalid response.";
-
-        console.error(
-          "Server response:",
+        console.log(
+          "Response:",
           xhr.responseText
         );
 
-        return;
 
-      }
+        sendButton.disabled =
+          false;
 
-
-      if (
-        xhr.status >= 200 &&
-        xhr.status < 300 &&
-        response.ok
-      ) {
-
-        progressBar.style.width =
-          "100%";
-
-        progressText.textContent =
-          "100% — COMPLETE";
+        sendButton.textContent =
+          "SEND TO AXM";
 
 
-        msg.className =
-          "success";
+        /*
+          Read response as TEXT first.
 
-        msg.textContent =
-          "✓ Document sent successfully to AXM. You can now return to the machine.";
+          This is important because
+          the previous version assumed
+          every response was JSON.
+        */
 
-
-        // Prevent accidental second upload
-        fileInput.disabled =
-          true;
-
-        sendButton.style.display =
-          "none";
+        const raw =
+          xhr.responseText || "";
 
 
-      } else {
+        let data = null;
+
+
+        try {
+
+          data =
+            JSON.parse(raw);
+
+        } catch(error) {
+
+          /*
+            Server returned something
+            other than JSON.
+          */
+
+          console.error(
+            "Invalid JSON response:",
+            raw
+          );
+
+
+          msg.className =
+            "error";
+
+          msg.textContent =
+            "AXM server returned an unexpected response.";
+
+
+          debug.style.display =
+            "block";
+
+
+          debug.textContent =
+            "HTTP STATUS: " +
+            xhr.status +
+            "\n\nSERVER RESPONSE:\n" +
+            raw.substring(0, 3000);
+
+
+          return;
+
+        }
+
+
+        /*
+          SUCCESS
+        */
+
+        if (
+          xhr.status >= 200 &&
+          xhr.status < 300 &&
+          data.ok
+        ) {
+
+          progressBar.style.width =
+            "100%";
+
+
+          progressText.textContent =
+            "100% — COMPLETE";
+
+
+          msg.className =
+            "success";
+
+
+          msg.textContent =
+            "✓ Document successfully sent to AXM.";
+
+
+          fileInput.disabled =
+            true;
+
+
+          sendButton.style.display =
+            "none";
+
+
+          return;
+
+        }
+
+
+        /*
+          SERVER ERROR
+        */
 
         msg.className =
           "error";
 
+
         msg.textContent =
-          response.error ||
+          data.error ||
           "AXM could not accept the document.";
 
-      }
 
-    };
+        debug.style.display =
+          "block";
 
 
-  // ------------------------------------------------
-  // SERVER ERROR
-  // ------------------------------------------------
+        debug.textContent =
+          "HTTP STATUS: " +
+          xhr.status +
+          "\n\nSERVER RESPONSE:\n" +
+          raw;
 
-  xhr.onerror =
-    function() {
+      };
+
+
+    /*
+      NETWORK ERROR
+    */
+
+    xhr.onerror =
+      function() {
+
+        console.error(
+          "Network error"
+        );
+
+
+        sendButton.disabled =
+          false;
+
+
+        sendButton.textContent =
+          "SEND TO AXM";
+
+
+        msg.className =
+          "error";
+
+
+        msg.textContent =
+          "Cannot connect to AXM server.";
+
+      };
+
+
+    /*
+      TIMEOUT
+    */
+
+    xhr.ontimeout =
+      function() {
+
+        sendButton.disabled =
+          false;
+
+
+        sendButton.textContent =
+          "SEND TO AXM";
+
+
+        msg.className =
+          "error";
+
+
+        msg.textContent =
+          "Upload took too long and timed out.";
+
+      };
+
+
+    /*
+      ABORT
+    */
+
+    xhr.onabort =
+      function() {
+
+        sendButton.disabled =
+          false;
+
+
+        sendButton.textContent =
+          "SEND TO AXM";
+
+
+        msg.className =
+          "error";
+
+
+        msg.textContent =
+          "Upload was cancelled.";
+
+      };
+
+
+    /*
+      SEND FILE
+    */
+
+    try {
+
+      xhr.send(formData);
+
+    } catch(error) {
+
+      console.error(error);
+
 
       sendButton.disabled =
         false;
+
 
       sendButton.textContent =
         "SEND TO AXM";
@@ -425,88 +635,18 @@ form.addEventListener("submit", function(event) {
       msg.className =
         "error";
 
-      msg.textContent =
-        "Connection failed. AXM server could not be reached.";
-
-    };
-
-
-  // ------------------------------------------------
-  // TIMEOUT
-  // ------------------------------------------------
-
-  xhr.ontimeout =
-    function() {
-
-      sendButton.disabled =
-        false;
-
-      sendButton.textContent =
-        "SEND TO AXM";
-
-
-      msg.className =
-        "error";
 
       msg.textContent =
-        "Upload timed out. Please try again.";
+        "Unable to start upload.";
 
-    };
-
-
-  // ------------------------------------------------
-  // ABORT
-  // ------------------------------------------------
-
-  xhr.onabort =
-    function() {
-
-      sendButton.disabled =
-        false;
-
-      sendButton.textContent =
-        "SEND TO AXM";
-
-
-      msg.className =
-        "error";
-
-      msg.textContent =
-        "Upload was cancelled.";
-
-    };
-
-
-  // ------------------------------------------------
-  // SEND
-  // ------------------------------------------------
-
-  try {
-
-    xhr.send(formData);
-
-  } catch (error) {
-
-    sendButton.disabled =
-      false;
-
-    sendButton.textContent =
-      "SEND TO AXM";
-
-
-    msg.className =
-      "error";
-
-    msg.textContent =
-      "Unable to send the document.";
-
-    console.error(error);
+    }
 
   }
 
-});
+);
 
 </script>
 
 </body>
+
 </html>
