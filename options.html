@@ -1,14 +1,714 @@
-<!doctype html>
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AXM — Print Options</title><link rel="stylesheet" href="/style.css"></head>
-<body><main><section class="panel"><h1>Print Options</h1><div id="file"></div>
-<h2>Colour</h2><div class="choices"><button onclick="pick('color','bw',this)">Black & White ₹2</button><button onclick="pick('color','color',this)">Colour ₹5</button></div>
-<h2>Sides</h2><div class="choices"><button onclick="pick('sides','single',this)">Single Side</button><button onclick="pick('sides','double',this)">Double Side</button></div>
-<label>Pages <input id="pages" type="number" min="1" value="1"></label><label>Copies <input id="copies" type="number" min="1" value="1"></label>
-<h2 id="amount">Amount: ₹0</h2><button class="button" onclick="save()">CONTINUE TO PAYMENT</button><p class="muted">For development only, the next page contains a test-success button. Real Razorpay verification must be configured before accepting real money.</p></section></main>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AXM - Print Options</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #ffffff;
+            color: #111111;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 560px;
+            text-align: center;
+
+            padding: 35px 25px;
+
+            border-radius: 20px;
+        }
+
+        h1 {
+            margin: 0 0 28px;
+            font-size: 34px;
+            color: #123b63;
+        }
+
+        h2 {
+            margin: 18px 0 16px;
+            font-size: 25px;
+            color: #123b63;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .button-row {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: 2px solid #d5e0ed;
+            background: #ffffff;
+            color: #111111;
+
+            padding: 15px 20px;
+
+            border-radius: 12px;
+
+            font-size: 15px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                background 0.2s ease,
+                color 0.2s ease,
+                border-color 0.2s ease,
+                transform 0.15s ease,
+                box-shadow 0.2s ease;
+        }
+
+        button:hover {
+            border-color: #123b63;
+            transform: translateY(-1px);
+        }
+
+        /*
+         * SELECTED BUTTON
+         */
+        button.selected {
+            background: #123b63;
+            color: #ffffff;
+            border-color: #123b63;
+
+            box-shadow: 0 4px 12px rgba(18, 59, 99, 0.25);
+
+            transform: scale(1.03);
+        }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin: 15px 0;
+        }
+
+        .input-row label {
+            width: 80px;
+
+            text-align: right;
+
+            margin-right: 14px;
+
+            font-size: 17px;
+            font-weight: 700;
+
+            color: #123b63;
+        }
+
+        input {
+            width: 120px;
+
+            padding: 12px;
+
+            border: 1px solid #cbd8e6;
+            border-radius: 10px;
+
+            font-size: 16px;
+
+            outline: none;
+
+            text-align: center;
+        }
+
+        input:focus {
+            border-color: #123b63;
+            box-shadow: 0 0 0 3px rgba(18, 59, 99, 0.1);
+        }
+
+        #amount {
+            margin-top: 24px;
+
+            font-size: 25px;
+            font-weight: 800;
+
+            color: #123b63;
+        }
+
+        .payment-button {
+            margin-top: 28px;
+
+            width: 250px;
+
+            padding: 16px 20px;
+
+            border: none;
+
+            border-radius: 12px;
+
+            background: #f4c328;
+            color: #123b63;
+
+            font-size: 16px;
+            font-weight: 900;
+
+            cursor: pointer;
+
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+
+            transition:
+                transform 0.15s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .payment-button:hover {
+            transform: translateY(-2px);
+
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.16);
+        }
+
+        .payment-button:active {
+            transform: scale(0.98);
+        }
+
+        .note {
+            margin-top: 30px;
+
+            color: #65758b;
+
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .status {
+            margin-top: 15px;
+
+            min-height: 20px;
+
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 500px) {
+
+            .container {
+                padding: 25px 10px;
+            }
+
+            h1 {
+                font-size: 29px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+
+            button {
+                padding: 13px 15px;
+            }
+
+            .input-row label {
+                width: 65px;
+            }
+
+            .payment-button {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Print Options</h1>
+
+
+    <!-- ========================= -->
+    <!-- COLOUR -->
+    <!-- ========================= -->
+
+    <div class="section">
+
+        <h2>Colour</h2>
+
+        <div class="button-row">
+
+            <button
+                type="button"
+                data-color="bw"
+                onclick="selectColor('bw', this)"
+            >
+                Black &amp; White ₹2
+            </button>
+
+            <button
+                type="button"
+                data-color="color"
+                onclick="selectColor('color', this)"
+            >
+                Colour ₹5
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- SIDES -->
+    <!-- ========================= -->
+
+    <div class="section">
+
+        <h2>Sides</h2>
+
+        <div class="button-row">
+
+            <button
+                type="button"
+                data-sides="single"
+                onclick="selectSides('single', this)"
+            >
+                Single Side
+            </button>
+
+            <button
+                type="button"
+                data-sides="double"
+                onclick="selectSides('double', this)"
+            >
+                Double Side
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- PAGES -->
+    <!-- ========================= -->
+
+    <div class="input-row">
+
+        <label for="pages">
+            Pages
+        </label>
+
+        <input
+            id="pages"
+            type="number"
+            min="1"
+            value="1"
+        >
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- COPIES -->
+    <!-- ========================= -->
+
+    <div class="input-row">
+
+        <label for="copies">
+            Copies
+        </label>
+
+        <input
+            id="copies"
+            type="number"
+            min="1"
+            value="1"
+        >
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- AMOUNT -->
+    <!-- ========================= -->
+
+    <div id="amount">
+        Amount: ₹2
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- PAYMENT -->
+    <!-- ========================= -->
+
+    <button
+        type="button"
+        class="payment-button"
+        onclick="continueToPayment()"
+    >
+        CONTINUE TO PAYMENT
+    </button>
+
+
+    <!-- ========================= -->
+    <!-- STATUS -->
+    <!-- ========================= -->
+
+    <div
+        id="status"
+        class="status"
+    ></div>
+
+
+    <div class="note">
+        For development only, the next page contains a test-success
+        button. Real Razorpay verification must be configured before
+        accepting real money.
+    </div>
+
+</div>
+
+
 <script>
-let color='bw',sides='single';
-function pick(type,val,el){if(type==='color')color=val;else sides=val;update();}
-function update(){const pages=+document.querySelector('#pages').value||1,copies=+document.querySelector('#copies').value||1;const rate=color==='color'?5:2;const sheets=sides==='double'?Math.ceil(pages/2):pages;document.querySelector('#amount').textContent='Amount: ₹'+rate*sheets*copies;}
-async function save(){const pages=+document.querySelector('#pages').value||1,copies=+document.querySelector('#copies').value||1;const r=await fetch('/api/job/options',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({color,sides,pages,copies})});if(!r.ok){alert('No document waiting');return;}location='/payment.html';}
-document.querySelectorAll('input').forEach(x=>x.oninput=update);update();
-</script></body></html>
+
+    /*
+     * ==========================================
+     * CURRENT OPTIONS
+     * ==========================================
+     */
+
+    let selectedColor = "bw";
+
+    let selectedSides = "single";
+
+
+    /*
+     * ==========================================
+     * SELECT COLOUR
+     * ==========================================
+     */
+
+    function selectColor(value, clickedButton) {
+
+        selectedColor = value;
+
+        /*
+         * Remove selected state
+         * from all colour buttons
+         */
+        document
+            .querySelectorAll("[data-color]")
+            .forEach(function(button) {
+
+                button.classList.remove("selected");
+
+            });
+
+
+        /*
+         * Highlight clicked button
+         */
+        clickedButton.classList.add("selected");
+
+
+        updateAmount();
+    }
+
+
+    /*
+     * ==========================================
+     * SELECT SIDES
+     * ==========================================
+     */
+
+    function selectSides(value, clickedButton) {
+
+        selectedSides = value;
+
+        /*
+         * Remove selected state
+         * from all side buttons
+         */
+        document
+            .querySelectorAll("[data-sides]")
+            .forEach(function(button) {
+
+                button.classList.remove("selected");
+
+            });
+
+
+        /*
+         * Highlight clicked button
+         */
+        clickedButton.classList.add("selected");
+
+
+        updateAmount();
+    }
+
+
+    /*
+     * ==========================================
+     * CALCULATE AMOUNT
+     * ==========================================
+     */
+
+    function updateAmount() {
+
+        let pages =
+            parseInt(
+                document.getElementById("pages").value
+            ) || 1;
+
+
+        let copies =
+            parseInt(
+                document.getElementById("copies").value
+            ) || 1;
+
+
+        /*
+         * Prevent zero / negative values
+         */
+        pages = Math.max(1, pages);
+
+        copies = Math.max(1, copies);
+
+
+        /*
+         * Price per printed side
+         *
+         * B&W = ₹2
+         * Colour = ₹5
+         */
+
+        let rate =
+            selectedColor === "color"
+                ? 5
+                : 2;
+
+
+        /*
+         * Single Side:
+         *
+         * 4 pages = 4 sheets
+         *
+         * Double Side:
+         *
+         * 4 pages = 2 sheets
+         * 5 pages = 3 sheets
+         */
+
+        let sheets;
+
+        if (selectedSides === "double") {
+
+            sheets = Math.ceil(pages / 2);
+
+        } else {
+
+            sheets = pages;
+
+        }
+
+
+        /*
+         * Final amount
+         */
+
+        let total =
+            rate * sheets * copies;
+
+
+        /*
+         * Update screen
+         */
+
+        document.getElementById("amount").textContent =
+            "Amount: ₹" + total;
+    }
+
+
+    /*
+     * ==========================================
+     * CONTINUE TO PAYMENT
+     * ==========================================
+     */
+
+    async function continueToPayment() {
+
+        let pages =
+            parseInt(
+                document.getElementById("pages").value
+            ) || 1;
+
+
+        let copies =
+            parseInt(
+                document.getElementById("copies").value
+            ) || 1;
+
+
+        /*
+         * Validate values
+         */
+
+        pages = Math.max(1, pages);
+
+        copies = Math.max(1, copies);
+
+
+        /*
+         * Show status
+         */
+
+        const status =
+            document.getElementById("status");
+
+
+        status.textContent =
+            "Saving options...";
+
+
+        try {
+
+            /*
+             * Send options to AXM server
+             */
+
+            const response =
+                await fetch(
+                    "/api/job/options",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            color: selectedColor,
+
+                            sides: selectedSides,
+
+                            pages: pages,
+
+                            copies: copies
+
+                        })
+                    }
+                );
+
+
+            /*
+             * Server rejected request
+             */
+
+            if (!response.ok) {
+
+                status.textContent = "";
+
+                alert(
+                    "No document waiting."
+                );
+
+                return;
+            }
+
+
+            /*
+             * Success
+             */
+
+            status.textContent =
+                "Options saved. Opening payment...";
+
+
+            /*
+             * Go to payment page
+             */
+
+            window.location.href =
+                "/payment.html";
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            status.textContent = "";
+
+            alert(
+                "Unable to connect to AXM server."
+            );
+        }
+    }
+
+
+    /*
+     * ==========================================
+     * PAGE / COPY INPUT CHANGES
+     * ==========================================
+     */
+
+    document
+        .getElementById("pages")
+        .addEventListener(
+            "input",
+            updateAmount
+        );
+
+
+    document
+        .getElementById("copies")
+        .addEventListener(
+            "input",
+            updateAmount
+        );
+
+
+    /*
+     * ==========================================
+     * INITIAL SELECTION
+     * ==========================================
+     */
+
+    document
+        .querySelector(
+            '[data-color="bw"]'
+        )
+        .classList.add("selected");
+
+
+    document
+        .querySelector(
+            '[data-sides="single"]'
+        )
+        .classList.add("selected");
+
+
+    /*
+     * Initial amount
+     */
+
+    updateAmount();
+
+</script>
+
+</body>
+</html>
