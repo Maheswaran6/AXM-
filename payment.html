@@ -1,677 +1,649 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>AXM - Payment</title>
+<head>
+
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>AXM — Payment</title>
+
+  <link
+    rel="stylesheet"
+    href="/style.css"
+  >
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Arial, sans-serif;
-      background: #f7f9fc;
-      color: #102a43;
-
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 700px;
-      padding: 25px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 20px;
-      padding: 35px;
-      text-align: center;
-      box-shadow: 0 10px 35px rgba(0,0,0,0.08);
-    }
-
-    h1 {
-      margin-top: 0;
-      font-size: 34px;
-    }
-
-    .file-name {
-      font-size: 16px;
-      margin: 10px 0;
-      color: #52667a;
-      word-break: break-word;
-    }
-
-    .amount {
-      font-size: 28px;
-      font-weight: bold;
-      margin: 18px 0;
-    }
-
-    .summary {
-      background: #f5f8fc;
-      border-radius: 12px;
-      padding: 18px;
-      margin: 20px 0;
-      text-align: left;
-    }
-
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 7px 0;
-    }
 
     .payment-box {
-      border: 2px dashed #cbd8e6;
-      border-radius: 18px;
-      padding: 30px 20px;
       margin-top: 20px;
+      padding: 28px;
+      border: 2px dashed #d5dfed;
+      border-radius: 18px;
+      text-align: center;
     }
 
-    .payment-box h2 {
-      margin-top: 0;
+    .summary-card {
+      background: #f3f7fc;
+      border-radius: 15px;
+      padding: 18px;
+      margin: 20px 0;
     }
 
-    .pay-button {
-      margin-top: 25px;
+    .summary-card div {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      margin: 10px 0;
+    }
+
+    .fake-qr {
+      width: 180px;
+      height: 180px;
+      margin: 25px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background:
+        repeating-linear-gradient(
+          45deg,
+          #111 0px,
+          #111 8px,
+          #fff 8px,
+          #fff 16px
+        );
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .button {
       width: 100%;
       max-width: 330px;
-      padding: 17px;
+      padding: 16px;
       border: none;
       border-radius: 12px;
-
-      background: #f5c518;
-      color: #102a43;
-
-      font-size: 17px;
-      font-weight: bold;
+      background: #f5c400;
+      color: #062b55;
+      font-weight: 800;
+      font-size: 16px;
       cursor: pointer;
     }
 
-    .pay-button:hover {
-      background: #eab900;
+    .button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
-    .test-button {
-      margin-top: 15px;
-      width: 100%;
-      max-width: 330px;
-      padding: 14px;
-
-      border: 2px solid #2563eb;
-      border-radius: 12px;
-
+    .secondary {
+      margin-top: 14px;
       background: white;
-      color: #2563eb;
-
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .test-button:hover {
-      background: #2563eb;
-      color: white;
-    }
-
-    .message {
-      margin-top: 20px;
-      font-weight: bold;
+      border: 2px solid #2864ff;
+      color: #2864ff;
     }
 
     .success {
-      color: #15803d;
+      color: #12833b;
+      font-weight: 700;
     }
 
     .error {
       color: #dc2626;
+      font-weight: 700;
     }
 
-    .small-note {
-      margin-top: 25px;
-      color: #64748b;
-      font-size: 13px;
-      line-height: 1.5;
-    }
   </style>
+
 </head>
 
 <body>
 
-  <div class="container">
+<main>
 
-    <div class="card">
+<section class="panel">
 
-      <h1>UPI Payment</h1>
+  <h1>UPI Payment</h1>
 
-      <div class="file-name" id="fileName">
-        Print Document
-      </div>
+  <div id="summary">
+    Loading...
+  </div>
 
-      <div class="amount">
-        Amount: ₹<span id="amount">0</span>
-      </div>
+  <div class="payment-box">
 
+    <h2>Scan &amp; Pay</h2>
 
-      <!-- ORDER SUMMARY -->
+    <p id="paymentHelp">
+      Click PAY to open secure Razorpay Checkout.
+    </p>
 
-      <div class="summary">
-
-        <div class="summary-row">
-          <strong>Colour</strong>
-          <span id="colour">-</span>
-        </div>
-
-        <div class="summary-row">
-          <strong>Sides</strong>
-          <span id="sides">-</span>
-        </div>
-
-        <div class="summary-row">
-          <strong>Pages</strong>
-          <span id="pages">-</span>
-        </div>
-
-        <div class="summary-row">
-          <strong>Copies</strong>
-          <span id="copies">-</span>
-        </div>
-
-      </div>
-
-
-      <!-- PAYMENT -->
-
-      <div class="payment-box">
-
-        <h2>Scan & Pay</h2>
-
-        <p>
-          Complete the payment securely using Razorpay.
-        </p>
-
-        <button
-          id="payButton"
-          class="pay-button"
-          onclick="startPayment()">
-
-          PAY ₹<span id="payAmount">0</span>
-
-        </button>
-
-
-        <!-- DEVELOPMENT TEST -->
-
-        <button
-          class="test-button"
-          onclick="testPayment()">
-
-          TEST PAYMENT SUCCESS → PRINT
-
-        </button>
-
-      </div>
-
-
-      <div
-        id="message"
-        class="message">
-      </div>
-
-
-      <div class="small-note">
-
-        Test Payment is available only during development.
-        Real payments require Razorpay Test/Live API credentials
-        and server-side verification.
-
-      </div>
-
+    <div
+      class="fake-qr"
+      id="qrPlaceholder"
+    >
+      RAZORPAY<br>
+      PAYMENT
     </div>
+
+    <button
+      id="payBtn"
+      class="button"
+      onclick="startPayment()"
+    >
+      PAY NOW
+    </button>
+
+    <button
+      id="testBtn"
+      class="button secondary"
+      onclick="testPay()"
+      style="display:none"
+    >
+      TEST PAYMENT SUCCESS → PRINT
+    </button>
 
   </div>
 
+  <p
+    id="msg"
+    class="muted"
+  ></p>
 
-  <!-- Razorpay Checkout -->
+</section>
 
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</main>
 
+<script>
 
-  <script>
+let job = null;
 
-    // ============================================
-    // LOAD PRINT OPTIONS
-    // ============================================
+// ======================================================
+// ESCAPE HTML
+// ======================================================
 
-    const savedOptions =
-      localStorage.getItem("axmPrintOptions");
+function esc(value) {
 
+  return String(
+    value ?? ""
+  ).replace(
+    /[&<>'"]/g,
+    function(c) {
 
-    if (!savedOptions) {
-
-      document.getElementById("message").textContent =
-        "Print options not found. Please return to the options page.";
-
-      document.getElementById("message")
-        .className = "message error";
-
-    }
-
-
-    let printOptions = {};
-
-    try {
-
-      printOptions =
-        JSON.parse(savedOptions || "{}");
-
-    } catch (error) {
-
-      printOptions = {};
+      return {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "'": "&#39;",
+        '"': "&quot;"
+      }[c];
 
     }
+  );
+}
 
+// ======================================================
+// LOAD JOB
+// ======================================================
 
-    // ============================================
-    // DISPLAY OPTIONS
-    // ============================================
+async function load() {
 
-    const amount =
-      Number(printOptions.amount) || 0;
+  try {
 
+    const response =
+      await fetch("/api/job");
 
-    document.getElementById("amount")
-      .textContent = amount;
+    const data =
+      await response.json();
 
+    job =
+      data.job;
 
-    document.getElementById("payAmount")
-      .textContent = amount;
+    if (!job) {
 
+      window.location.href =
+        "/machine.html";
 
-    document.getElementById("colour")
-      .textContent =
-        printOptions.colourName || "-";
-
-
-    document.getElementById("sides")
-      .textContent =
-        printOptions.sidesName || "-";
-
-
-    document.getElementById("pages")
-      .textContent =
-        printOptions.pages || "-";
-
-
-    document.getElementById("copies")
-      .textContent =
-        printOptions.copies || "-";
-
-
-    // ============================================
-    // DOCUMENT NAME
-    // ============================================
-
-    const fileName =
-      localStorage.getItem("axmFileName");
-
-
-    if (fileName) {
-
-      document.getElementById("fileName")
-        .textContent = fileName;
-
+      return;
     }
 
+    const colorText =
+      job.color === "color"
+        ? "Colour"
+        : "Black & White";
 
-    // ============================================
-    // REAL RAZORPAY PAYMENT
-    // ============================================
+    const sidesText =
+      job.sides === "double"
+        ? "Double Side"
+        : "Single Side";
 
-    async function startPayment() {
+    document.querySelector(
+      "#summary"
+    ).innerHTML = `
 
-      if (amount <= 0) {
+      <p>
+        <b>${esc(job.filename)}</b>
+      </p>
 
-        showMessage(
-          "Invalid payment amount.",
-          true
-        );
+      <div class="summary-card">
 
-        return;
+        <div>
+          <b>Colour</b>
+          <span>${colorText}</span>
+        </div>
 
-      }
+        <div>
+          <b>Sides</b>
+          <span>${sidesText}</span>
+        </div>
 
+        <div>
+          <b>Pages</b>
+          <span>${job.pages || 1}</span>
+        </div>
 
-      const button =
-        document.getElementById("payButton");
+        <div>
+          <b>Copies</b>
+          <span>${job.copies || 1}</span>
+        </div>
 
+      </div>
 
-      button.disabled = true;
+      <h2>
+        Amount: ₹${Number(job.amount || 0)}
+      </h2>
+    `;
 
-      button.textContent =
-        "CREATING PAYMENT...";
+    // Check server
 
+    const healthResponse =
+      await fetch("/api/health");
 
-      try {
+    const health =
+      await healthResponse.json();
 
-        const response =
-          await fetch("/create-order", {
+    const payBtn =
+      document.querySelector("#payBtn");
 
-            method: "POST",
+    const testBtn =
+      document.querySelector("#testBtn");
 
-            headers: {
-              "Content-Type": "application/json"
-            },
+    const qr =
+      document.querySelector("#qrPlaceholder");
 
-            body: JSON.stringify({
+    const msg =
+      document.querySelector("#msg");
 
-              amount: amount,
+    if (
+      health.razorpayConfigured
+    ) {
 
-              currency: "INR",
+      payBtn.disabled =
+        false;
 
-              printOptions: printOptions
+      testBtn.style.display =
+        "none";
 
-            })
+      qr.innerHTML =
+        "CLICK PAY<br>TO CONTINUE";
 
-          });
+      msg.textContent =
+        "Razorpay is ready.";
 
+      msg.className =
+        "success";
 
-        const data =
-          await response.json();
+    } else {
 
+      payBtn.disabled =
+        true;
 
-        if (!response.ok || !data.order) {
+      testBtn.style.display =
+        "block";
 
-          throw new Error(
-            data.error ||
-            "Unable to create payment order."
-          );
+      qr.innerHTML =
+        "RAZORPAY<br>NOT CONFIGURED";
 
+      msg.textContent =
+        "Razorpay is not configured on the server.";
+
+      msg.className =
+        "error";
+    }
+
+  } catch (error) {
+
+    console.error(error);
+
+    document.querySelector(
+      "#msg"
+    ).textContent =
+      "Unable to load payment information.";
+
+  }
+}
+
+// ======================================================
+// START REAL RAZORPAY PAYMENT
+// ======================================================
+
+async function startPayment() {
+
+  if (!job) {
+    return;
+  }
+
+  const payBtn =
+    document.querySelector("#payBtn");
+
+  const msg =
+    document.querySelector("#msg");
+
+  payBtn.disabled =
+    true;
+
+  msg.className =
+    "muted";
+
+  msg.textContent =
+    "Creating secure Razorpay order...";
+
+  try {
+
+    // Create order on server
+
+    const response =
+      await fetch(
+        "/api/payment/create-order",
+        {
+          method: "POST"
         }
+      );
 
+    const data =
+      await response.json();
 
-        // ========================================
-        // RAZORPAY CHECKOUT
-        // ========================================
+    if (!response.ok) {
 
-        const options = {
+      throw new Error(
+        data.error ||
+        "Could not create payment order."
+      );
+    }
 
-          key: data.key,
+    // Razorpay Checkout options
 
-          amount: data.order.amount,
+    const options = {
 
-          currency: data.order.currency,
+      key:
+        data.keyId,
 
-          name: "AXM",
+      amount:
+        data.amount,
 
-          description:
-            "AXM Printing Service",
+      currency:
+        data.currency,
 
-          order_id:
-            data.order.id,
+      name:
+        "AXM Automatic Xerox Machine",
 
+      description:
+        `Printing - ${job.filename}`,
 
-          handler: async function(response) {
+      order_id:
+        data.orderId,
 
-            await verifyPayment(response);
+      handler:
+        async function(response) {
 
-          },
+          try {
 
+            msg.textContent =
+              "Verifying payment securely...";
 
-          prefill: {
+            // Send payment response
+            // to our server.
 
-            name: "",
+            const verifyResponse =
+              await fetch(
+                "/api/payment/verify",
+                {
+                  method: "POST",
 
-            email: "",
+                  headers: {
+                    "Content-Type":
+                      "application/json"
+                  },
 
-            contact: ""
+                  body:
+                    JSON.stringify(response)
+                }
+              );
 
-          },
+            const verified =
+              await verifyResponse.json();
 
+            if (!verifyResponse.ok) {
 
-          theme: {
-
-            color: "#2563eb"
-
-          },
-
-
-          modal: {
-
-            ondismiss: function() {
-
-              button.disabled = false;
-
-              button.innerHTML =
-                'PAY ₹<span id="payAmount">' +
-                amount +
-                '</span>';
-
+              throw new Error(
+                verified.error ||
+                "Payment verification failed."
+              );
             }
 
-          }
+            msg.className =
+              "success";
 
-        };
+            msg.textContent =
+              "Payment successful. Starting print...";
 
-
-        const razorpay =
-          new Razorpay(options);
-
-
-        razorpay.on(
-          "payment.failed",
-          function(response) {
-
-            showMessage(
-              "Payment failed. Please try again.",
-              true
+            await startPrinting(
+              verified.job.id
             );
 
-            button.disabled = false;
+          } catch (error) {
 
-            button.innerHTML =
-              'PAY ₹<span id="payAmount">' +
-              amount +
-              '</span>';
+            console.error(error);
+
+            msg.className =
+              "error";
+
+            msg.textContent =
+              error.message;
+
+            payBtn.disabled =
+              false;
+          }
+        },
+
+      modal: {
+
+        ondismiss:
+          function() {
+
+            payBtn.disabled =
+              false;
+
+            msg.textContent =
+              "Payment window closed.";
 
           }
-        );
+      },
 
+      theme: {
 
-        razorpay.open();
-
-
-      } catch (error) {
-
-        console.error(error);
-
-        showMessage(
-          error.message,
-          true
-        );
-
-        button.disabled = false;
-
-        button.innerHTML =
-          'PAY ₹<span id="payAmount">' +
-          amount +
-          '</span>';
-
+        color:
+          "#0b57d0"
       }
+    };
 
-    }
+    const razorpay =
+      new Razorpay(options);
 
+    razorpay.on(
+      "payment.failed",
+      function(response) {
 
-    // ============================================
-    // VERIFY PAYMENT
-    // ============================================
+        console.error(
+          "Payment failed:",
+          response
+        );
 
-    async function verifyPayment(paymentResponse) {
+        msg.className =
+          "error";
 
-      try {
-
-        const response =
-          await fetch("/verify-payment", {
-
-            method: "POST",
-
-            headers: {
-
-              "Content-Type":
-                "application/json"
-
-            },
-
-            body: JSON.stringify({
-
-              ...paymentResponse,
-
-              printOptions:
-                printOptions
-
-            })
-
-          });
-
-
-        const data =
-          await response.json();
-
-
-        if (!response.ok || !data.success) {
-
-          throw new Error(
-            data.error ||
-            "Payment verification failed."
+        msg.textContent =
+          "Payment failed: " +
+          (
+            response.error?.description ||
+            "Please try again."
           );
 
+        payBtn.disabled =
+          false;
+      }
+    );
+
+    razorpay.open();
+
+  } catch (error) {
+
+    console.error(error);
+
+    msg.className =
+      "error";
+
+    msg.textContent =
+      error.message;
+
+    payBtn.disabled =
+      false;
+  }
+}
+
+// ======================================================
+// START PRINT
+// ======================================================
+
+async function startPrinting(
+  jobId
+) {
+
+  const msg =
+    document.querySelector("#msg");
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/print/start",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+              jobId
+            })
         }
-
-
-        paymentSuccessful(
-          paymentResponse.razorpay_payment_id
-        );
-
-
-      } catch (error) {
-
-        showMessage(
-          error.message,
-          true
-        );
-
-      }
-
-    }
-
-
-    // ============================================
-    // TEST PAYMENT
-    // ============================================
-
-    function testPayment() {
-
-      if (amount <= 0) {
-
-        showMessage(
-          "Invalid amount.",
-          true
-        );
-
-        return;
-
-      }
-
-
-      paymentSuccessful(
-        "TEST_PAYMENT"
       );
 
+    const data =
+      await response.json();
+
+    if (!response.ok) {
+
+      throw new Error(
+        data.error ||
+        "Print start failed."
+      );
     }
 
+    msg.className =
+      "success";
 
-    // ============================================
-    // PAYMENT SUCCESS
-    // ============================================
+    msg.textContent =
+      "Payment successful. Printing started.";
 
-    function paymentSuccessful(
-      paymentId
-    ) {
+  } catch (error) {
 
-      localStorage.setItem(
+    msg.className =
+      "error";
 
-        "axmPayment",
+    msg.textContent =
+      error.message;
+  }
+}
 
-        JSON.stringify({
+// ======================================================
+// DEVELOPMENT TEST PAYMENT
+// ======================================================
 
-          success: true,
+async function testPay() {
 
-          paymentId:
-            paymentId,
+  const msg =
+    document.querySelector("#msg");
 
-          amount:
-            amount,
+  try {
 
-          printOptions:
-            printOptions,
+    msg.textContent =
+      "Testing payment...";
 
-          time:
-            new Date().toISOString()
-
-        })
-
+    const response =
+      await fetch(
+        "/api/payment/test-success",
+        {
+          method: "POST"
+        }
       );
 
+    const data =
+      await response.json();
 
-      showMessage(
-        "Payment successful! Redirecting...",
-        false
+    if (!response.ok) {
+
+      throw new Error(
+        data.error ||
+        "Test payment failed."
       );
-
-
-      setTimeout(function() {
-
-        window.location.href =
-          "print.html";
-
-      }, 1200);
-
     }
 
+    msg.className =
+      "success";
 
-    // ============================================
-    // MESSAGE
-    // ============================================
+    msg.textContent =
+      "Test payment successful.";
 
-    function showMessage(
-      message,
-      isError
-    ) {
+    await startPrinting(
+      data.job.id
+    );
 
-      const element =
-        document.getElementById("message");
+  } catch (error) {
 
+    msg.className =
+      "error";
 
-      element.textContent =
-        message;
+    msg.textContent =
+      error.message;
+  }
+}
 
+// ======================================================
+// START
+// ======================================================
 
-      element.className =
-        isError
-          ? "message error"
-          : "message success";
+load();
 
-    }
-
-  </script>
+</script>
 
 </body>
 </html>
