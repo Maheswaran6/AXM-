@@ -1,60 +1,58 @@
 <!doctype html>
 <html lang="en">
+
 <head>
+
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
 
   <title>AXM Machine</title>
 
   <link rel="stylesheet" href="/style.css">
 
-  <!-- QR CODE LIBRARY -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
-    .qr-box {
+
+    .qr-container {
       width: 260px;
-      min-height: 260px;
-      margin: 20px auto;
+      height: 260px;
+      margin: 25px auto;
+      background: white;
+      border: 2px solid #d9e2ec;
+      border-radius: 12px;
+
       display: flex;
       align-items: center;
       justify-content: center;
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      padding: 15px;
-      box-sizing: border-box;
     }
 
     #qr {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 220px;
+      height: 220px;
     }
 
-    #qr img,
-    #qr canvas {
+    #qr img {
       width: 220px !important;
       height: 220px !important;
+      display: block;
     }
 
     .upload-url {
+      max-width: 650px;
       margin: 15px auto;
-      max-width: 600px;
       word-break: break-all;
       font-size: 14px;
       color: #315b86;
     }
 
-    .button {
-      cursor: pointer;
-      border: none;
-      text-decoration: none;
-      display: inline-block;
-    }
-
-    .status {
-      margin-top: 20px;
+    .error {
+      color: red;
+      font-weight: bold;
     }
 
     .success {
@@ -62,125 +60,172 @@
       font-weight: bold;
     }
 
-    .error {
-      color: #d93025;
-      font-weight: bold;
+    .button {
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
     }
+
   </style>
+
 </head>
+
 
 <body>
 
+
 <header>
+
   <div class="brand">
+
     <span class="logo">AXM</span>
 
     <div>
+
       <b>AXM</b>
+
       <small>
         AUTOMATIC XEROX MACHINE • NIET • COIMBATORE
       </small>
+
     </div>
+
   </div>
 
-  <span class="ready">● READY</span>
+  <span class="ready">
+    ● READY
+  </span>
+
 </header>
+
 
 
 <main>
 
-  <section class="panel">
+<section class="panel">
 
-    <h1>Send Document From Phone</h1>
 
-    <p>
-      Scan this QR code using the customer's phone.
+  <h1>
+    Send Document From Phone
+  </h1>
+
+
+  <p>
+    Scan this QR code using the customer's phone.
+  </p>
+
+
+
+  <!-- QR CODE -->
+
+  <div class="qr-container">
+
+    <div id="qr"></div>
+
+  </div>
+
+
+
+  <!-- UPLOAD ADDRESS -->
+
+  <p
+    id="url"
+    class="upload-url"
+  ></p>
+
+
+
+  <button
+    class="button"
+    onclick="newQR()"
+  >
+    GENERATE NEW QR
+  </button>
+
+
+
+  <hr>
+
+
+
+  <!-- DOCUMENT STATUS -->
+
+  <div id="job">
+
+    <h2>
+      Waiting for document…
+    </h2>
+
+    <p class="muted">
+      Scan the QR code from the customer's phone.
     </p>
 
-
-    <!-- QR CODE -->
-    <div class="qr-box">
-      <div id="qr"></div>
-    </div>
+  </div>
 
 
-    <!-- UPLOAD URL -->
-    <p id="url" class="upload-url"></p>
-
-
-    <!-- NEW QR -->
-    <button class="button" onclick="newQR()">
-      GENERATE NEW QR
-    </button>
-
-
-    <hr>
-
-
-    <!-- JOB STATUS -->
-    <div id="job">
-      <h2>Waiting for document…</h2>
-      <p class="muted">
-        Scan the QR code from the customer's phone.
-      </p>
-    </div>
-
-  </section>
+</section>
 
 </main>
 
 
+
 <script>
+
 
 let last = 0;
 
 
-/*
---------------------------------------------------
-GET SERVER ADDRESS
---------------------------------------------------
-*/
 
-function getBaseUrl() {
-
-  return window.location.origin;
-
-}
-
-
-/*
---------------------------------------------------
-GENERATE QR
---------------------------------------------------
-*/
+/* ==========================================
+   GENERATE QR
+   ========================================== */
 
 function newQR() {
 
-  const qrContainer = document.getElementById("qr");
+  const qrBox =
+    document.getElementById("qr");
 
-  const urlElement = document.getElementById("url");
+  const urlBox =
+    document.getElementById("url");
 
 
   /*
-  Customer phone will open this page.
-  */
+   * IMPORTANT:
+   * Customer's phone will open upload.html
+   */
 
   const uploadUrl =
-    getBaseUrl() + "/upload.html";
+    window.location.origin + "/upload.html";
 
 
   /*
-  Clear previous QR
-  */
+   * Clear old QR
+   */
 
-  qrContainer.innerHTML = "";
+  qrBox.innerHTML = "";
+
 
 
   /*
-  Generate QR
-  */
+   * Check QR library
+   */
 
-  new QRCode(qrContainer, {
+  if (typeof QRCode === "undefined") {
+
+    qrBox.innerHTML =
+      '<p class="error">QR library failed to load.</p>';
+
+    return;
+
+  }
+
+
+
+  /*
+   * Generate QR
+   */
+
+  new QRCode(qrBox, {
 
     text: uploadUrl,
 
@@ -197,27 +242,30 @@ function newQR() {
   });
 
 
-  /*
-  Show URL below QR
-  */
 
-  urlElement.textContent = uploadUrl;
+  /*
+   * Display upload URL
+   */
+
+  urlBox.textContent =
+    uploadUrl;
 
 }
 
 
-/*
---------------------------------------------------
-POLL SERVER FOR DOCUMENT
---------------------------------------------------
-*/
+
+/* ==========================================
+   CHECK FOR DOCUMENT
+   ========================================== */
 
 async function poll() {
 
   try {
 
     const response =
-      await fetch("/api/events?since=" + last);
+      await fetch(
+        "/api/events?since=" + last
+      );
 
 
     if (!response.ok) {
@@ -232,6 +280,7 @@ async function poll() {
 
 
     for (const event of events) {
+
 
       if (event.id) {
 
@@ -254,7 +303,7 @@ async function poll() {
   catch (error) {
 
     console.log(
-      "Waiting for server..."
+      "Waiting for document..."
     );
 
   }
@@ -262,13 +311,13 @@ async function poll() {
 }
 
 
-/*
---------------------------------------------------
-SHOW RECEIVED DOCUMENT
---------------------------------------------------
-*/
+
+/* ==========================================
+   SHOW DOCUMENT
+   ========================================== */
 
 function render(job) {
+
 
   const filename =
     job.filename || "Document";
@@ -305,11 +354,10 @@ function render(job) {
 }
 
 
-/*
---------------------------------------------------
-SECURITY
---------------------------------------------------
-*/
+
+/* ==========================================
+   SECURITY
+   ========================================== */
 
 function escapeHTML(value) {
 
@@ -328,17 +376,22 @@ function escapeHTML(value) {
 }
 
 
-/*
---------------------------------------------------
-START
---------------------------------------------------
-*/
+
+/* ==========================================
+   START
+   ========================================== */
 
 newQR();
 
-setInterval(poll, 1000);
+setInterval(
+  poll,
+  1000
+);
+
 
 </script>
 
+
 </body>
+
 </html>
