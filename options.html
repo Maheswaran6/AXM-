@@ -1,0 +1,14 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AXM — Print Options</title><link rel="stylesheet" href="/style.css"></head>
+<body><main><section class="panel"><h1>Print Options</h1><div id="file"></div>
+<h2>Colour</h2><div class="choices"><button onclick="pick('color','bw',this)">Black & White ₹2</button><button onclick="pick('color','color',this)">Colour ₹5</button></div>
+<h2>Sides</h2><div class="choices"><button onclick="pick('sides','single',this)">Single Side</button><button onclick="pick('sides','double',this)">Double Side</button></div>
+<label>Pages <input id="pages" type="number" min="1" value="1"></label><label>Copies <input id="copies" type="number" min="1" value="1"></label>
+<h2 id="amount">Amount: ₹0</h2><button class="button" onclick="save()">CONTINUE TO PAYMENT</button><p class="muted">For development only, the next page contains a test-success button. Real Razorpay verification must be configured before accepting real money.</p></section></main>
+<script>
+let color='bw',sides='single';
+function pick(type,val,el){if(type==='color')color=val;else sides=val;update();}
+function update(){const pages=+document.querySelector('#pages').value||1,copies=+document.querySelector('#copies').value||1;const rate=color==='color'?5:2;const sheets=sides==='double'?Math.ceil(pages/2):pages;document.querySelector('#amount').textContent='Amount: ₹'+rate*sheets*copies;}
+async function save(){const pages=+document.querySelector('#pages').value||1,copies=+document.querySelector('#copies').value||1;const r=await fetch('/api/job/options',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({color,sides,pages,copies})});if(!r.ok){alert('No document waiting');return;}location='/payment.html';}
+document.querySelectorAll('input').forEach(x=>x.oninput=update);update();
+</script></body></html>

@@ -1,0 +1,8 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AXM — Payment</title><link rel="stylesheet" href="/style.css"></head>
+<body><main><section class="panel"><h1>UPI Payment</h1><div id="summary">Loading…</div><div class="payment-box"><h2>Scan & Pay</h2><p>Real Razorpay/UPI payment is connected here after payment credentials and webhook verification are configured.</p><div class="fake-qr">PAYMENT<br>QR</div></div><button class="button" onclick="testPay()">TEST PAYMENT SUCCESS → PRINT</button><p id="msg" class="muted"></p></section></main>
+<script>
+async function load(){const r=await fetch('/api/job');const x=await r.json();if(!x.job)return location='/machine.html';document.querySelector('#summary').innerHTML=`<p>${x.job.filename}</p><h2>Amount: ₹${x.job.amount}</h2>`;}
+async function testPay(){document.querySelector('#msg').textContent='Verifying payment…';let r=await fetch('/api/payment/test-success',{method:'POST'});if(!r.ok){document.querySelector('#msg').textContent='Payment failed';return;}r=await fetch('/api/print/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jobId:(await (await fetch('/api/job')).json()).job.id})});const x=await r.json();document.querySelector('#msg').textContent=r.ok?'Payment verified. Printing started.':'Print error: '+(x.error||'unknown');}
+load();
+</script></body></html>

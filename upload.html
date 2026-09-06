@@ -1,0 +1,7 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AXM — Send Document</title><link rel="stylesheet" href="/style.css"></head>
+<body><main><section class="upload-card"><h1>AXM — Send Document</h1><p>Select <b>one PDF or one image</b> to send to the AXM machine.</p>
+<form id="form"><input id="file" name="document" type="file" accept=".pdf,image/jpeg,image/png,image/webp" required><button class="button" type="submit">SEND TO AXM</button></form><p id="msg"></p></section></main>
+<script>
+document.querySelector('#form').onsubmit=async e=>{e.preventDefault();const f=document.querySelector('#file').files;if(f.length!==1)return;const fd=new FormData(e.target);document.querySelector('#msg').textContent='Uploading…';const r=await fetch('/api/upload',{method:'POST',body:fd});const x=await r.json();if(!r.ok){document.querySelector('#msg').textContent=x.error||'Upload failed';return;}document.querySelector('#msg').textContent='Uploaded successfully. Return to the AXM machine.';}
+</script></body></html>

@@ -1,0 +1,11 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AXM Machine</title><link rel="stylesheet" href="/style.css"></head>
+<body><header><div class="brand"><span class="logo">AXM</span><div><b>AXM</b><small>AUTOMATIC XEROX MACHINE • NIET • COIMBATORE</small></div></div><span class="ready">● READY</span></header>
+<main><section class="panel"><h1>Send Document From Phone</h1><p>Scan this QR code using the customer's phone.</p><img id="qr" class="qr" alt="Upload QR"><p id="url" class="muted"></p><button class="button" onclick="newQR()">GENERATE NEW QR</button><hr><div id="job"><h2>Waiting for document…</h2></div></section></main>
+<script>
+let last=0;
+async function newQR(){const r=await fetch('/api/machine-qr');const x=await r.json();document.querySelector('#qr').src=x.qr;document.querySelector('#url').textContent=x.uploadUrl;}
+async function poll(){const r=await fetch('/api/events?since='+last);const x=await r.json();for(const e of x){last=Math.max(last,e.id);if(e.job) render(e.job);} }
+function render(j){document.querySelector('#job').innerHTML=`<h2>Document received</h2><p><b>${j.filename}</b></p><p>Status: ${j.status}</p><a class="button" href="/options.html">CONTINUE</a>`;}
+newQR();setInterval(poll,1000);
+</script></body></html>
