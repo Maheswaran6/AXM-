@@ -21,186 +21,36 @@
 
     <style>
 
-        * {
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            min-height: 100%;
-        }
-
-        body {
-            background: #eef6fc;
-            color: #123b70;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-
         /* =====================================================
-           MAIN
+           SCROLL FIX
+           Only added to allow vertical scrolling.
            ===================================================== */
+
+        html {
+            height: auto;
+            min-height: 100%;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+        }
+
+        body {
+            height: auto;
+            min-height: 100vh;
+            margin: 0;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+        }
 
         main {
-
-            width: 100%;
-
-            display: flex;
-
-            justify-content: center;
-
-            align-items: flex-start;
-
-            padding: 20px 15px 30px;
+            min-height: 100vh;
+            height: auto;
+            overflow: visible !important;
         }
-
-
-        /* =====================================================
-           MAIN PANEL
-           ===================================================== */
 
         .panel {
-
-            width: 100%;
-
-            max-width: 760px;
-
-            background: #ffffff;
-
-            border-radius: 20px;
-
-            padding: 24px 28px 30px;
-
-            box-shadow:
-                0 10px 35px
-                rgba(0, 0, 0, 0.10);
-
-            text-align: center;
-        }
-
-
-        /* =====================================================
-           TITLE
-           ===================================================== */
-
-        .page-title {
-
-            margin: 0;
-
-            font-size: 30px;
-
-            font-weight: 800;
-
-            color: #123f7a;
-        }
-
-
-        .document-name {
-
-            margin-top: 8px;
-
-            font-size: 16px;
-
-            font-weight: 700;
-
-            color: #426486;
-
-            word-break: break-word;
-        }
-
-
-        /* =====================================================
-           SUMMARY
-           ===================================================== */
-
-        .summary-card {
-
-            width: 100%;
-
-            max-width: 430px;
-
-            margin: 18px auto 16px;
-
-            padding: 14px 20px;
-
-            background: #f3f7fc;
-
-            border-radius: 15px;
-
-            border: 1px solid #dce8f5;
-        }
-
-
-        .summary-item {
-
-            display: flex;
-
-            flex-direction: column;
-
-            align-items: center;
-
-            justify-content: center;
-
-            gap: 3px;
-
-            margin: 8px 0;
-        }
-
-
-        .summary-label {
-
-            font-size: 14px;
-
-            font-weight: 700;
-
-            color: #55718f;
-        }
-
-
-        .summary-value {
-
-            font-size: 16px;
-
-            font-weight: 700;
-
-            color: #123b70;
-        }
-
-
-        /* =====================================================
-           AMOUNT
-           ===================================================== */
-
-        .amount-section {
-
-            margin: 8px auto 18px;
-
-            text-align: center;
-        }
-
-
-        .amount-label {
-
-            font-size: 16px;
-
-            font-weight: 700;
-
-            color: #55718f;
-        }
-
-
-        .amount {
-
-            margin-top: 3px;
-
-            font-size: 36px;
-
-            font-weight: 800;
-
-            color: #123f7a;
+            height: auto;
+            min-height: 100vh;
+            overflow: visible !important;
         }
 
 
@@ -210,13 +60,9 @@
 
         .payment-box {
 
-            width: 100%;
+            margin-top: 20px;
 
-            max-width: 500px;
-
-            margin: 0 auto;
-
-            padding: 20px 20px 22px;
+            padding: 28px;
 
             border: 2px dashed #d5dfed;
 
@@ -224,41 +70,50 @@
 
             text-align: center;
 
-            background: #fafdff;
-        }
-
-
-        .payment-box h2 {
-
-            margin: 0;
-
-            font-size: 23px;
-
-            color: #123f7a;
-        }
-
-
-        .payment-help {
-
-            margin: 7px 0 14px;
-
-            font-size: 14px;
-
-            color: #55718f;
         }
 
 
         /* =====================================================
-           PAYMENT PLACEHOLDER
+           SUMMARY CARD
            ===================================================== */
 
-        .payment-placeholder {
+        .summary-card {
 
-            width: 150px;
+            background: #f3f7fc;
 
-            height: 150px;
+            border-radius: 15px;
 
-            margin: 12px auto 18px;
+            padding: 18px;
+
+            margin: 20px 0;
+
+        }
+
+
+        .summary-card div {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin: 10px 0;
+
+        }
+
+
+        /* =====================================================
+           FAKE QR
+           ===================================================== */
+
+        .fake-qr {
+
+            width: 180px;
+
+            height: 180px;
+
+            margin: 25px auto;
 
             display: flex;
 
@@ -268,27 +123,21 @@
 
             text-align: center;
 
-            border-radius: 12px;
-
             background:
                 repeating-linear-gradient(
                     45deg,
                     #111 0px,
-                    #111 7px,
-                    #ffffff 7px,
-                    #ffffff 14px
+                    #111 8px,
+                    #fff 8px,
+                    #fff 16px
                 );
 
-            color: #ffffff;
+            color: white;
 
-            font-size: 16px;
+            font-weight: bold;
 
-            font-weight: 800;
+            font-size: 18px;
 
-            line-height: 1.2;
-
-            text-shadow:
-                0 1px 3px #000;
         }
 
 
@@ -298,15 +147,11 @@
 
         .button {
 
-            display: block;
-
             width: 100%;
 
             max-width: 330px;
 
-            margin: 0 auto;
-
-            padding: 14px 18px;
+            padding: 16px;
 
             border: none;
 
@@ -316,17 +161,12 @@
 
             color: #062b55;
 
-            font-size: 17px;
-
             font-weight: 800;
 
+            font-size: 16px;
+
             cursor: pointer;
-        }
 
-
-        .button:hover {
-
-            background: #e9b900;
         }
 
 
@@ -335,220 +175,45 @@
             opacity: 0.5;
 
             cursor: not-allowed;
-        }
 
-
-        .secondary {
-
-            margin-top: 10px;
-
-            background: #ffffff;
-
-            border: 2px solid #2864ff;
-
-            color: #2864ff;
         }
 
 
         /* =====================================================
-           MESSAGE
+           SECONDARY BUTTON
            ===================================================== */
 
-        #msg {
+        .secondary {
 
-            min-height: 22px;
+            margin-top: 14px;
 
-            margin: 12px 0 0;
+            background: white;
 
-            text-align: center;
+            border: 2px solid #2864ff;
 
-            font-size: 14px;
+            color: #2864ff;
 
-            font-weight: 700;
         }
 
+
+        /* =====================================================
+           SUCCESS / ERROR
+           ===================================================== */
 
         .success {
 
             color: #12833b;
+
+            font-weight: 700;
+
         }
 
 
         .error {
 
             color: #dc2626;
-        }
 
-
-        .muted {
-
-            color: #55718f;
-        }
-
-
-        /* =====================================================
-           TABLET
-           ===================================================== */
-
-        @media (max-width: 700px) {
-
-            main {
-
-                padding:
-                    12px 10px 25px;
-            }
-
-
-            .panel {
-
-                padding:
-                    20px 16px 24px;
-
-                border-radius:
-                    17px;
-            }
-
-
-            .page-title {
-
-                font-size:
-                    27px;
-            }
-
-
-            .document-name {
-
-                font-size:
-                    15px;
-            }
-
-
-            .summary-card {
-
-                max-width:
-                    390px;
-
-                padding:
-                    12px 15px;
-            }
-
-
-            .payment-box {
-
-                padding:
-                    18px 14px 20px;
-            }
-
-        }
-
-
-        /* =====================================================
-           MOBILE
-           ===================================================== */
-
-        @media (max-width: 480px) {
-
-            main {
-
-                padding:
-                    8px 7px 20px;
-            }
-
-
-            .panel {
-
-                padding:
-                    18px 12px 22px;
-            }
-
-
-            .page-title {
-
-                font-size:
-                    24px;
-            }
-
-
-            .document-name {
-
-                font-size:
-                    14px;
-            }
-
-
-            .summary-card {
-
-                margin-top:
-                    14px;
-
-                padding:
-                    10px 12px;
-            }
-
-
-            .summary-item {
-
-                margin:
-                    7px 0;
-            }
-
-
-            .summary-label {
-
-                font-size:
-                    13px;
-            }
-
-
-            .summary-value {
-
-                font-size:
-                    15px;
-            }
-
-
-            .amount {
-
-                font-size:
-                    32px;
-            }
-
-
-            .payment-box h2 {
-
-                font-size:
-                    21px;
-            }
-
-
-            .payment-help {
-
-                font-size:
-                    13px;
-            }
-
-
-            .payment-placeholder {
-
-                width:
-                    135px;
-
-                height:
-                    135px;
-            }
-
-
-            .button {
-
-                max-width:
-                    300px;
-
-                padding:
-                    13px;
-
-                font-size:
-                    16px;
-            }
+            font-weight: 700;
 
         }
 
@@ -559,91 +224,70 @@
 
 <body>
 
+
 <main>
 
     <section class="panel">
 
 
         <!-- =================================================
-             TITLE
+             PAGE TITLE
              ================================================= -->
 
-        <h1 class="page-title">
+        <h1>
             UPI Payment
         </h1>
 
 
         <!-- =================================================
-             DOCUMENT NAME
+             JOB SUMMARY
              ================================================= -->
 
-        <div
-            id="documentName"
-            class="document-name"
-        >
+        <div id="summary">
+
             Loading...
-        </div>
-
-
-        <!-- =================================================
-             PRINT SUMMARY
-             ================================================= -->
-
-        <div
-            id="summary"
-            class="summary-card"
-        >
-            Loading...
-        </div>
-
-
-        <!-- =================================================
-             AMOUNT
-             ================================================= -->
-
-        <div class="amount-section">
-
-            <div class="amount-label">
-                Total Amount
-            </div>
-
-            <div
-                id="amount"
-                class="amount"
-            >
-                ₹0
-            </div>
 
         </div>
 
 
         <!-- =================================================
-             PAYMENT
+             PAYMENT AREA
              ================================================= -->
 
         <div class="payment-box">
+
 
             <h2>
                 Scan &amp; Pay
             </h2>
 
 
-            <p
-                id="paymentHelp"
-                class="payment-help"
-            >
+            <p id="paymentHelp">
+
                 Click PAY NOW to open secure Razorpay Checkout.
+
             </p>
 
 
+            <!-- =================================================
+                 QR PLACEHOLDER
+                 ================================================= -->
+
             <div
-                class="payment-placeholder"
+                class="fake-qr"
                 id="qrPlaceholder"
             >
-                CLICK PAY<br>
-                TO CONTINUE
+
+                RAZORPAY
+                <br>
+                PAYMENT
+
             </div>
 
+
+            <!-- =================================================
+                 REAL PAYMENT BUTTON
+                 ================================================= -->
 
             <button
                 id="payBtn"
@@ -651,9 +295,15 @@
                 onclick="startPayment()"
                 disabled
             >
+
                 PAY NOW
+
             </button>
 
+
+            <!-- =================================================
+                 TEST PAYMENT BUTTON
+                 ================================================= -->
 
             <button
                 id="testBtn"
@@ -661,8 +311,11 @@
                 onclick="testPay()"
                 style="display:none"
             >
+
                 TEST PAYMENT → PRINT
+
             </button>
+
 
         </div>
 
@@ -682,14 +335,17 @@
 </main>
 
 
+
 <script>
+
 
 let job = null;
 
 
-/* ============================================================
-   ESCAPE HTML
-   ============================================================ */
+
+// ============================================================
+// ESCAPE HTML
+// ============================================================
 
 function esc(value) {
 
@@ -702,9 +358,13 @@ function esc(value) {
             return {
 
                 "&": "&amp;",
+
                 "<": "&lt;",
+
                 ">": "&gt;",
+
                 "'": "&#39;",
+
                 '"': "&quot;"
 
             }[c];
@@ -715,24 +375,21 @@ function esc(value) {
 }
 
 
-/* ============================================================
-   LOAD JOB
-   ============================================================ */
+
+// ============================================================
+// LOAD JOB
+// ============================================================
 
 async function load() {
 
     const msg =
         document.getElementById("msg");
 
+
     try {
 
         const response =
-            await fetch(
-                "/api/job",
-                {
-                    cache: "no-store"
-                }
-            );
+            await fetch("/api/job");
 
 
         const data =
@@ -758,28 +415,20 @@ async function load() {
             msg.className =
                 "error";
 
+
             msg.textContent =
                 "No document has been received yet.";
+
 
             return;
 
         }
 
 
-        /* ====================================================
-           DOCUMENT NAME
-           ==================================================== */
 
-        document.getElementById(
-            "documentName"
-        ).textContent =
-            job.filename ||
-            "Document";
-
-
-        /* ====================================================
-           VALUES
-           ==================================================== */
+        // ====================================================
+        // DISPLAY JOB
+        // ====================================================
 
         const colorText =
             job.colour ||
@@ -793,101 +442,103 @@ async function load() {
 
 
         const pages =
-            Number(job.pages || 1);
+            Number(job.pages) || 1;
 
 
         const copies =
-            Number(job.copies || 1);
+            Number(job.copies) || 1;
 
 
-        const amount =
-            Number(job.amount || 0);
 
-
-        /* ====================================================
-           SUMMARY
-           ==================================================== */
-
-        document.getElementById(
-            "summary"
+        document.querySelector(
+            "#summary"
         ).innerHTML = `
 
-            <div class="summary-item">
+            <p>
+                <b>
+                    ${esc(job.filename)}
+                </b>
+            </p>
 
-                <div class="summary-label">
-                    Colour
+
+            <div class="summary-card">
+
+
+                <div>
+
+                    <b>
+                        Colour
+                    </b>
+
+                    <span>
+                        ${esc(colorText)}
+                    </span>
+
                 </div>
 
-                <div class="summary-value">
-                    ${esc(colorText)}
+
+                <div>
+
+                    <b>
+                        Sides
+                    </b>
+
+                    <span>
+                        ${esc(sidesText)}
+                    </span>
+
                 </div>
+
+
+                <div>
+
+                    <b>
+                        Pages
+                    </b>
+
+                    <span>
+                        ${pages}
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <b>
+                        Copies
+                    </b>
+
+                    <span>
+                        ${copies}
+                    </span>
+
+                </div>
+
 
             </div>
 
 
-            <div class="summary-item">
+            <h2>
 
-                <div class="summary-label">
-                    Sides
-                </div>
+                Total Amount
 
-                <div class="summary-value">
-                    ${esc(sidesText)}
-                </div>
+                <br>
 
-            </div>
+                ₹${Number(job.amount || 0)}
 
-
-            <div class="summary-item">
-
-                <div class="summary-label">
-                    Pages
-                </div>
-
-                <div class="summary-value">
-                    ${pages}
-                </div>
-
-            </div>
-
-
-            <div class="summary-item">
-
-                <div class="summary-label">
-                    Copies
-                </div>
-
-                <div class="summary-value">
-                    ${copies}
-                </div>
-
-            </div>
+            </h2>
 
         `;
 
 
-        /* ====================================================
-           AMOUNT
-           ==================================================== */
 
-        document.getElementById(
-            "amount"
-        ).textContent =
-            "₹" +
-            amount;
-
-
-        /* ====================================================
-           CHECK RAZORPAY
-           ==================================================== */
+        // ====================================================
+        // CHECK RAZORPAY
+        // ====================================================
 
         const healthResponse =
-            await fetch(
-                "/api/health",
-                {
-                    cache: "no-store"
-                }
-            );
+            await fetch("/api/health");
 
 
         const health =
@@ -895,26 +546,22 @@ async function load() {
 
 
         const payBtn =
-            document.getElementById(
-                "payBtn"
-            );
+            document.getElementById("payBtn");
 
 
         const testBtn =
-            document.getElementById(
-                "testBtn"
-            );
+            document.getElementById("testBtn");
 
 
         const qr =
-            document.getElementById(
-                "qrPlaceholder"
-            );
+            document.getElementById("qrPlaceholder");
+
 
 
         if (
             health.razorpayConfigured
         ) {
+
 
             payBtn.disabled =
                 false;
@@ -935,9 +582,11 @@ async function load() {
             msg.textContent =
                 "Razorpay is ready.";
 
+
         }
 
         else {
+
 
             payBtn.disabled =
                 true;
@@ -960,13 +609,13 @@ async function load() {
 
         }
 
+
     }
 
     catch (error) {
 
-        console.error(
-            error
-        );
+
+        console.error(error);
 
 
         msg.className =
@@ -982,11 +631,13 @@ async function load() {
 }
 
 
-/* ============================================================
-   REAL RAZORPAY PAYMENT
-   ============================================================ */
+
+// ============================================================
+// REAL RAZORPAY PAYMENT
+// ============================================================
 
 async function startPayment() {
+
 
     if (!job) {
 
@@ -1000,15 +651,11 @@ async function startPayment() {
 
 
     const payBtn =
-        document.getElementById(
-            "payBtn"
-        );
+        document.getElementById("payBtn");
 
 
     const msg =
-        document.getElementById(
-            "msg"
-        );
+        document.getElementById("msg");
 
 
     payBtn.disabled =
@@ -1023,25 +670,37 @@ async function startPayment() {
         "Creating secure Razorpay order...";
 
 
+
     try {
+
+
+        // ====================================================
+        // CREATE ORDER
+        // ====================================================
 
         const response =
             await fetch(
                 "/api/create-order",
                 {
+
                     method:
                         "POST",
 
                     headers: {
+
                         "Content-Type":
                             "application/json"
+
                     }
+
                 }
             );
 
 
+
         const data =
             await response.json();
+
 
 
         if (!response.ok) {
@@ -1064,38 +723,59 @@ async function startPayment() {
         }
 
 
-        /* ==================================================
-           RAZORPAY
-           ================================================== */
+
+        console.log(
+            "Razorpay order:",
+            data.orderId
+        );
+
+
+
+        // ====================================================
+        // RAZORPAY CHECKOUT
+        // ====================================================
 
         const options = {
+
 
             key:
                 data.key_id,
 
+
             amount:
                 data.amount,
+
 
             currency:
                 data.currency,
 
+
             name:
                 "AXM Automatic Xerox Machine",
+
 
             description:
                 "Printing - " +
                 job.filename,
 
+
             order_id:
                 data.orderId,
 
+
+
+            // ==================================================
+            // PAYMENT SUCCESS
+            // ==================================================
 
             handler:
                 async function(
                     razorpayResponse
                 ) {
 
+
                     try {
+
 
                         msg.className =
                             "muted";
@@ -1104,6 +784,11 @@ async function startPayment() {
                         msg.textContent =
                             "Verifying payment securely...";
 
+
+
+                        // ======================================
+                        // VERIFY PAYMENT
+                        // ======================================
 
                         const verifyResponse =
                             await fetch(
@@ -1129,8 +814,10 @@ async function startPayment() {
                             );
 
 
+
                         const verified =
                             await verifyResponse.json();
+
 
 
                         if (
@@ -1146,21 +833,29 @@ async function startPayment() {
                         }
 
 
+
                         msg.className =
                             "success";
 
 
                         msg.textContent =
-                            "Payment successful. Starting print...";
+                            "✓ Payment successful. Starting print...";
 
+
+
+                        // ======================================
+                        // START PRINT
+                        // ======================================
 
                         await startPrinting(
                             verified.job.id
                         );
 
+
                     }
 
                     catch (error) {
+
 
                         console.error(
                             error
@@ -1184,10 +879,16 @@ async function startPayment() {
                 },
 
 
+
+            // ==================================================
+            // PAYMENT WINDOW CLOSED
+            // ==================================================
+
             modal: {
 
                 ondismiss:
                     function() {
+
 
                         payBtn.disabled =
                             false;
@@ -1205,6 +906,11 @@ async function startPayment() {
             },
 
 
+
+            // ==================================================
+            // RAZORPAY THEME
+            // ==================================================
+
             theme: {
 
                 color:
@@ -1215,15 +921,22 @@ async function startPayment() {
         };
 
 
+
         const razorpay =
             new Razorpay(
                 options
             );
 
 
+
+        // ====================================================
+        // PAYMENT FAILED
+        // ====================================================
+
         razorpay.on(
             "payment.failed",
             function(response) {
+
 
                 console.error(
                     "Payment failed:",
@@ -1250,15 +963,16 @@ async function startPayment() {
         );
 
 
+
         razorpay.open();
+
 
     }
 
     catch (error) {
 
-        console.error(
-            error
-        );
+
+        console.error(error);
 
 
         msg.className =
@@ -1278,19 +992,22 @@ async function startPayment() {
 }
 
 
-/* ============================================================
-   START PRINTING
-   ============================================================ */
 
-async function startPrinting(jobId) {
+// ============================================================
+// START PRINTING
+// ============================================================
+
+async function startPrinting(
+    jobId
+) {
+
 
     const msg =
-        document.getElementById(
-            "msg"
-        );
+        document.getElementById("msg");
 
 
     try {
+
 
         const response =
             await fetch(
@@ -1309,16 +1026,20 @@ async function startPrinting(jobId) {
 
                     body:
                         JSON.stringify({
+
                             jobId:
                                 jobId
+
                         })
 
                 }
             );
 
 
+
         const data =
             await response.json();
+
 
 
         if (!response.ok) {
@@ -1331,20 +1052,28 @@ async function startPrinting(jobId) {
         }
 
 
+
         msg.className =
             "success";
 
 
         msg.textContent =
-            "Payment successful. Printing started.";
+            "✓ Payment successful. Printing started.";
+
+
+
+        console.log(
+            "PRINT STARTED:",
+            data
+        );
+
 
     }
 
     catch (error) {
 
-        console.error(
-            error
-        );
+
+        console.error(error);
 
 
         msg.className =
@@ -1360,19 +1089,20 @@ async function startPrinting(jobId) {
 }
 
 
-/* ============================================================
-   TEST PAYMENT
-   ============================================================ */
+
+// ============================================================
+// TEST PAYMENT
+// ============================================================
 
 async function testPay() {
 
+
     const msg =
-        document.getElementById(
-            "msg"
-        );
+        document.getElementById("msg");
 
 
     try {
+
 
         msg.className =
             "muted";
@@ -1382,18 +1112,23 @@ async function testPay() {
             "Testing payment...";
 
 
+
         const response =
             await fetch(
                 "/api/test-payment",
                 {
+
                     method:
                         "POST"
+
                 }
             );
 
 
+
         const data =
             await response.json();
+
 
 
         if (!response.ok) {
@@ -1406,6 +1141,7 @@ async function testPay() {
         }
 
 
+
         msg.className =
             "success";
 
@@ -1414,17 +1150,18 @@ async function testPay() {
             "Test payment successful.";
 
 
+
         await startPrinting(
             data.job.id
         );
+
 
     }
 
     catch (error) {
 
-        console.error(
-            error
-        );
+
+        console.error(error);
 
 
         msg.className =
@@ -1440,13 +1177,16 @@ async function testPay() {
 }
 
 
-/* ============================================================
-   START
-   ============================================================ */
+
+// ============================================================
+// START
+// ============================================================
 
 load();
 
+
 </script>
+
 
 </body>
 
