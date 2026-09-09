@@ -23,86 +23,84 @@
             box-sizing: border-box;
         }
 
-        html {
-            overflow-y: auto;
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
         }
 
         body {
-            margin: 0;
             font-family: Arial, Helvetica, sans-serif;
             background: #eef6fc;
             color: #123b70;
-            overflow-y: auto;
         }
 
         /* =====================================================
-           MAIN PAGE
-           ===================================================== */
+           MAIN
+        ===================================================== */
 
         main {
             width: 100%;
+            height: 100vh;
+            height: 100svh;
+
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: center;
 
-            /*
-             * Important:
-             * Do NOT use min-height: 100vh here.
-             * It was making the layout unnecessarily tall.
-             */
-            padding: 12px 20px 35px;
+            padding: 10px;
         }
 
 
         /* =====================================================
-           MAIN PANEL
-           ===================================================== */
+           PANEL
+        ===================================================== */
 
         .panel {
             width: 100%;
             max-width: 900px;
 
-            background: white;
+            background: #ffffff;
 
-            border-radius: 22px;
+            border-radius: 20px;
 
-            /*
-             * Reduced padding so the top sections
-             * fit better on one screen.
-             */
-            padding: 20px 30px 30px;
+            padding: 15px 25px 18px;
 
             box-shadow:
-                0 15px 45px rgba(0, 0, 0, 0.10);
+                0 10px 35px rgba(0, 0, 0, 0.10);
         }
 
 
         /* =====================================================
-           COLLEGE LOGO
-           ===================================================== */
+           LOGO
+        ===================================================== */
 
         .college-logo {
             display: block;
 
-            width: 65px;
-            height: 65px;
+            width: 55px;
+            height: 55px;
 
             object-fit: contain;
 
-            margin: 0 auto 5px;
+            margin: 0 auto 2px;
         }
 
 
         /* =====================================================
            TITLE
-           ===================================================== */
+        ===================================================== */
 
         h1 {
             text-align: center;
 
-            margin: 3px 0;
+            margin: 0;
 
-            font-size: 32px;
+            font-size: 30px;
+
+            line-height: 1.1;
 
             color: #123f7a;
         }
@@ -111,51 +109,48 @@
         .subtitle {
             text-align: center;
 
+            margin: 3px 0 10px;
+
+            font-size: 14px;
+
             color: #66809d;
-
-            margin:
-                3px 0 15px;
-
-            font-size: 15px;
         }
 
 
         /* =====================================================
-           DOCUMENT BOX
-           ===================================================== */
+           DOCUMENT
+        ===================================================== */
 
         .document-box {
-
             background: #edf7ff;
 
-            border:
-                2px solid #cfe7fa;
+            border: 2px solid #cfe7fa;
 
-            border-radius: 14px;
+            border-radius: 12px;
 
-            padding: 12px 15px;
+            padding: 9px 14px;
 
             text-align: center;
 
-            margin-bottom: 16px;
+            margin-bottom: 10px;
         }
 
 
         .document-name {
-
-            font-size: 17px;
+            font-size: 16px;
 
             font-weight: bold;
+
+            line-height: 1.2;
 
             word-break: break-word;
         }
 
 
         .page-count {
+            margin-top: 3px;
 
-            margin-top: 5px;
-
-            font-size: 21px;
+            font-size: 19px;
 
             font-weight: bold;
 
@@ -164,98 +159,90 @@
 
 
         /* =====================================================
-           SECTIONS
-           ===================================================== */
+           SECTION
+        ===================================================== */
 
         .section {
-
-            margin-top: 14px;
+            margin-top: 9px;
         }
 
 
         .section-title {
-
-            font-size: 18px;
+            font-size: 17px;
 
             font-weight: bold;
 
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
 
 
         /* =====================================================
-           OPTION BUTTONS
-           ===================================================== */
+           OPTIONS
+        ===================================================== */
 
         .options {
-
             display: grid;
 
-            grid-template-columns:
-                1fr 1fr;
+            grid-template-columns: 1fr 1fr;
 
-            gap: 12px;
+            gap: 9px;
         }
 
 
         .option-button {
+            width: 100%;
 
-            min-height: 68px;
+            height: 55px;
 
-            border:
-                2px solid #ccdbea;
+            border: 2px solid #ccdbea;
 
-            border-radius: 13px;
+            border-radius: 11px;
 
-            background: white;
+            background: #ffffff;
 
             color: #123b70;
 
-            font-size: 17px;
+            font-size: 16px;
 
             font-weight: bold;
 
             cursor: pointer;
 
             transition:
-                0.2s;
+                background 0.15s,
+                border-color 0.15s,
+                color 0.15s;
         }
 
 
         .option-button:hover {
-
-            border-color:
-                #1769e0;
+            border-color: #1769e0;
         }
 
 
         .option-button.selected {
+            background: #1769e0;
 
-            background:
-                #1769e0;
+            border-color: #1769e0;
 
-            border-color:
-                #1769e0;
-
-            color: white;
+            color: #ffffff;
 
             box-shadow:
-                0 6px 18px
-                rgba(23, 105, 224, 0.25);
+                0 5px 14px
+                rgba(23, 105, 224, 0.22);
         }
 
 
         /* =====================================================
-           AMOUNT BOX
-           ===================================================== */
+           AMOUNT
+        ===================================================== */
 
         .amount-box {
+            margin-top: 12px;
 
-            margin-top: 22px;
+            padding: 10px 15px;
 
-            padding: 20px;
-
-            border-radius: 16px;
+            border-radius: 13px;
 
             background: #f5f9fd;
 
@@ -264,18 +251,18 @@
 
 
         .amount-label {
-
-            font-size: 17px;
+            font-size: 15px;
 
             font-weight: bold;
         }
 
 
         .amount {
+            margin-top: 1px;
 
-            margin-top: 5px;
+            font-size: 34px;
 
-            font-size: 40px;
+            line-height: 1.1;
 
             font-weight: bold;
 
@@ -284,36 +271,36 @@
 
 
         .summary {
-
-            margin-top: 5px;
+            margin-top: 2px;
 
             color: #607d9b;
 
-            font-size: 15px;
+            font-size: 13px;
+
+            line-height: 1.2;
         }
 
 
         /* =====================================================
-           CONTINUE BUTTON
-           ===================================================== */
+           CONTINUE
+        ===================================================== */
 
         .continue-button {
-
             width: 100%;
 
-            margin-top: 18px;
+            margin-top: 10px;
 
-            padding: 16px;
+            height: 50px;
 
             border: none;
 
-            border-radius: 13px;
+            border-radius: 11px;
 
             background: #f4c51b;
 
             color: #123b70;
 
-            font-size: 18px;
+            font-size: 17px;
 
             font-weight: bold;
 
@@ -322,32 +309,29 @@
 
 
         .continue-button:hover {
-
-            background:
-                #e9b900;
+            background: #e9b900;
         }
 
 
         .continue-button:disabled {
-
             opacity: 0.6;
 
-            cursor:
-                not-allowed;
+            cursor: not-allowed;
         }
 
 
         /* =====================================================
            MESSAGE
-           ===================================================== */
+        ===================================================== */
 
         #message {
+            height: 18px;
 
-            min-height: 22px;
-
-            margin-top: 12px;
+            margin-top: 5px;
 
             text-align: center;
+
+            font-size: 13px;
 
             font-weight: bold;
         }
@@ -370,212 +354,140 @@
 
         /* =====================================================
            TABLET
-           ===================================================== */
+        ===================================================== */
 
-        @media (max-width: 800px) {
+        @media (max-width: 700px) {
 
             main {
-                padding:
-                    10px 12px 30px;
+                padding: 7px;
             }
 
             .panel {
-                padding:
-                    18px 22px 28px;
+                padding: 13px 16px 15px;
+
+                border-radius: 17px;
             }
 
             .college-logo {
-                width: 60px;
-                height: 60px;
+                width: 48px;
+                height: 48px;
             }
 
             h1 {
-                font-size: 29px;
-            }
-
-            .section-title {
-                font-size: 17px;
-            }
-
-            .option-button {
-                min-height: 64px;
-                font-size: 16px;
-            }
-
-        }
-
-
-        /* =====================================================
-           MOBILE
-           ===================================================== */
-
-        @media (max-width: 600px) {
-
-            main {
-                padding:
-                    8px 8px 25px;
-            }
-
-
-            .panel {
-
-                border-radius: 18px;
-
-                padding:
-                    15px 14px 25px;
-            }
-
-
-            .college-logo {
-
-                width: 55px;
-                height: 55px;
-
-                margin-bottom: 2px;
-            }
-
-
-            h1 {
-
-                font-size: 26px;
-            }
-
-
-            .subtitle {
-
-                font-size: 13px;
-
-                margin-bottom: 12px;
-            }
-
-
-            .document-box {
-
-                padding: 11px;
-
-                margin-bottom: 13px;
-            }
-
-
-            .document-name {
-
-                font-size: 15px;
-            }
-
-
-            .page-count {
-
-                font-size: 19px;
-            }
-
-
-            .section {
-
-                margin-top: 12px;
-            }
-
-
-            .section-title {
-
-                font-size: 16px;
-
-                margin-bottom: 7px;
-            }
-
-
-            .options {
-
-                gap: 8px;
-            }
-
-
-            .option-button {
-
-                min-height: 60px;
-
-                font-size: 15px;
-
-                border-radius: 11px;
-            }
-
-
-            .amount-box {
-
-                margin-top: 18px;
-
-                padding: 17px;
-            }
-
-
-            .amount {
-
-                font-size: 36px;
-            }
-
-
-            .continue-button {
-
-                padding: 15px;
-
-                font-size: 17px;
-            }
-
-        }
-
-
-        /* =====================================================
-           VERY SMALL SCREEN
-           ===================================================== */
-
-        @media (max-height: 700px) and (min-width: 601px) {
-
-            main {
-                padding-top: 6px;
-            }
-
-
-            .panel {
-                padding:
-                    12px 25px 25px;
-            }
-
-
-            .college-logo {
-
-                width: 50px;
-                height: 50px;
-            }
-
-
-            h1 {
-
                 font-size: 27px;
             }
 
-
             .subtitle {
+                font-size: 13px;
 
-                margin-bottom: 9px;
+                margin-bottom: 8px;
             }
-
 
             .document-box {
+                padding: 8px 10px;
 
-                padding: 9px;
-
-                margin-bottom: 10px;
+                margin-bottom: 8px;
             }
 
+            .document-name {
+                font-size: 14px;
+            }
+
+            .page-count {
+                font-size: 17px;
+            }
 
             .section {
-
-                margin-top: 9px;
+                margin-top: 7px;
             }
 
+            .section-title {
+                font-size: 15px;
+
+                margin-bottom: 4px;
+            }
+
+            .options {
+                gap: 7px;
+            }
 
             .option-button {
+                height: 50px;
 
-                min-height: 55px;
+                font-size: 14px;
+            }
+
+            .amount-box {
+                margin-top: 9px;
+
+                padding: 8px;
+            }
+
+            .amount {
+                font-size: 30px;
+            }
+
+            .summary {
+                font-size: 12px;
+            }
+
+            .continue-button {
+                height: 47px;
+
+                margin-top: 8px;
+
+                font-size: 16px;
+            }
+        }
+
+
+        /* =====================================================
+           VERY SMALL SCREENS
+        ===================================================== */
+
+        @media (max-height: 650px) {
+
+            .panel {
+                padding-top: 8px;
+                padding-bottom: 10px;
+            }
+
+            .college-logo {
+                width: 40px;
+                height: 40px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .subtitle {
+                margin-bottom: 5px;
+            }
+
+            .document-box {
+                padding: 6px 10px;
+            }
+
+            .section {
+                margin-top: 5px;
+            }
+
+            .option-button {
+                height: 45px;
+            }
+
+            .amount-box {
+                margin-top: 7px;
+                padding: 6px;
+            }
+
+            .amount {
+                font-size: 27px;
+            }
+
+            .continue-button {
+                height: 43px;
             }
 
         }
@@ -589,197 +501,168 @@
 
 <main>
 
-<section class="panel">
+    <section class="panel">
 
-    <!-- =====================================================
-         LOGO
-         ===================================================== -->
+        <!-- LOGO -->
 
-    <img
-        src="/niet-logo.png"
-        class="college-logo"
-        alt="NIET Logo"
-    >
-
-
-    <!-- =====================================================
-         TITLE
-         ===================================================== -->
-
-    <h1>
-        Print Options
-    </h1>
-
-
-    <p class="subtitle">
-        NIET AXM — Automated Xerox Machine
-    </p>
-
-
-    <!-- =====================================================
-         DOCUMENT
-         ===================================================== -->
-
-    <div class="document-box">
-
-        <div
-            id="documentName"
-            class="document-name"
+        <img
+            src="/niet-logo.png"
+            class="college-logo"
+            alt="NIET Logo"
         >
-            Detecting document...
+
+
+        <!-- TITLE -->
+
+        <h1>
+            Print Options
+        </h1>
+
+
+        <p class="subtitle">
+            NIET AXM — Automated Xerox Machine
+        </p>
+
+
+        <!-- DOCUMENT -->
+
+        <div class="document-box">
+
+            <div
+                id="documentName"
+                class="document-name"
+            >
+                Detecting document...
+            </div>
+
+            <div
+                id="pageCount"
+                class="page-count"
+            >
+                Detecting pages...
+            </div>
+
         </div>
 
 
-        <div
-            id="pageCount"
-            class="page-count"
+        <!-- COLOUR -->
+
+        <div class="section">
+
+            <div class="section-title">
+                1. Select Print Colour
+            </div>
+
+            <div class="options">
+
+                <button
+                    id="bwButton"
+                    class="option-button selected"
+                    type="button"
+                    onclick="selectColour('Black & White')"
+                >
+                    Black &amp; White
+                </button>
+
+
+                <button
+                    id="colourButton"
+                    class="option-button"
+                    type="button"
+                    onclick="selectColour('Colour')"
+                >
+                    Colour
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- SIDES -->
+
+        <div class="section">
+
+            <div class="section-title">
+                2. Select Printing Side
+            </div>
+
+            <div class="options">
+
+                <button
+                    id="singleButton"
+                    class="option-button selected"
+                    type="button"
+                    onclick="selectSides('Single Side')"
+                >
+                    Single Side
+                </button>
+
+
+                <button
+                    id="doubleButton"
+                    class="option-button"
+                    type="button"
+                    onclick="selectSides('Double Side')"
+                >
+                    Double Side
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- AMOUNT -->
+
+        <div class="amount-box">
+
+            <div class="amount-label">
+                Total Printing Amount
+            </div>
+
+            <div
+                id="amount"
+                class="amount"
+            >
+                ₹0
+            </div>
+
+            <div
+                id="summary"
+                class="summary"
+            >
+                Calculating...
+            </div>
+
+        </div>
+
+
+        <!-- CONTINUE -->
+
+        <button
+            id="continueButton"
+            class="continue-button"
+            type="button"
+            onclick="continueToPayment()"
+            disabled
         >
-            Detecting pages...
-        </div>
-
-    </div>
+            CONTINUE TO PAYMENT
+        </button>
 
 
-    <!-- =====================================================
-         1. COLOUR
-         ===================================================== -->
+        <div id="message"></div>
 
-    <div class="section">
-
-        <div class="section-title">
-            1. Select Print Colour
-        </div>
-
-
-        <div class="options">
-
-            <button
-                id="bwButton"
-                class="option-button selected"
-                type="button"
-                onclick="selectColour('Black & White')"
-            >
-                ⚫<br>
-                Black &amp; White
-            </button>
-
-
-            <button
-                id="colourButton"
-                class="option-button"
-                type="button"
-                onclick="selectColour('Colour')"
-            >
-                🌈<br>
-                Colour
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <!-- =====================================================
-         2. SIDES
-         ===================================================== -->
-
-    <div class="section">
-
-        <div class="section-title">
-            2. Select Printing Side
-        </div>
-
-
-        <div class="options">
-
-            <button
-                id="singleButton"
-                class="option-button selected"
-                type="button"
-                onclick="selectSides('Single Side')"
-            >
-                📄<br>
-                Single Side
-            </button>
-
-
-            <button
-                id="doubleButton"
-                class="option-button"
-                type="button"
-                onclick="selectSides('Double Side')"
-            >
-                📑<br>
-                Double Side
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <!-- =====================================================
-         AMOUNT
-         ===================================================== -->
-
-    <div class="amount-box">
-
-        <div class="amount-label">
-            Total Printing Amount
-        </div>
-
-
-        <div
-            id="amount"
-            class="amount"
-        >
-            ₹0
-        </div>
-
-
-        <div
-            id="summary"
-            class="summary"
-        >
-            Calculating...
-        </div>
-
-    </div>
-
-
-    <!-- =====================================================
-         CONTINUE
-         ===================================================== -->
-
-    <button
-        id="continueButton"
-        class="continue-button"
-        type="button"
-        onclick="continueToPayment()"
-        disabled
-    >
-        CONTINUE TO PAYMENT
-    </button>
-
-
-    <div id="message"></div>
-
-</section>
+    </section>
 
 </main>
 
 
 <script>
 
-/* ============================================================
-   CURRENT SELECTION
-   ============================================================ */
+let selectedColour = "Black & White";
 
-let selectedColour =
-    "Black & White";
-
-let selectedSides =
-    "Single Side";
+let selectedSides = "Single Side";
 
 let detectedPages = 0;
 
@@ -787,8 +670,8 @@ let currentAmount = 0;
 
 
 /* ============================================================
-   LOAD CURRENT JOB
-   ============================================================ */
+   LOAD JOB
+============================================================ */
 
 async function loadJob() {
 
@@ -818,19 +701,16 @@ async function loadJob() {
         ) {
 
             throw new Error(
-                "No document found."
+                "No document found. Please upload a document first."
             );
 
         }
 
 
-        const job =
-            data.job;
+        const job = data.job;
 
 
-        /* -----------------------------------------------
-           DOCUMENT NAME
-           ----------------------------------------------- */
+        /* DOCUMENT NAME */
 
         document.getElementById(
             "documentName"
@@ -839,32 +719,26 @@ async function loadJob() {
             "Document";
 
 
-        /* -----------------------------------------------
-           PAGE COUNT
-           ----------------------------------------------- */
+        /* PAGE COUNT */
 
         detectedPages =
             Number(job.pages);
 
 
         if (
-            !Number.isFinite(
-                detectedPages
-            ) ||
+            !Number.isFinite(detectedPages) ||
             detectedPages < 1
         ) {
 
             throw new Error(
-                "Unable to detect PDF pages."
+                "Unable to detect document pages."
             );
 
         }
 
 
         detectedPages =
-            Math.floor(
-                detectedPages
-            );
+            Math.floor(detectedPages);
 
 
         document.getElementById(
@@ -878,9 +752,7 @@ async function loadJob() {
             );
 
 
-        /* -----------------------------------------------
-           ENABLE CONTINUE
-           ----------------------------------------------- */
+        /* ENABLE BUTTON */
 
         document.getElementById(
             "continueButton"
@@ -889,8 +761,8 @@ async function loadJob() {
 
         calculateAmount();
 
-
     }
+
 
     catch (error) {
 
@@ -914,8 +786,8 @@ async function loadJob() {
 
 
 /* ============================================================
-   SELECT COLOUR
-   ============================================================ */
+   COLOUR
+============================================================ */
 
 function selectColour(value) {
 
@@ -924,24 +796,18 @@ function selectColour(value) {
 
 
     document
-        .getElementById(
-            "bwButton"
-        )
+        .getElementById("bwButton")
         .classList.toggle(
             "selected",
-            value ===
-                "Black & White"
+            value === "Black & White"
         );
 
 
     document
-        .getElementById(
-            "colourButton"
-        )
+        .getElementById("colourButton")
         .classList.toggle(
             "selected",
-            value ===
-                "Colour"
+            value === "Colour"
         );
 
 
@@ -951,8 +817,8 @@ function selectColour(value) {
 
 
 /* ============================================================
-   SELECT SIDES
-   ============================================================ */
+   SIDES
+============================================================ */
 
 function selectSides(value) {
 
@@ -961,24 +827,18 @@ function selectSides(value) {
 
 
     document
-        .getElementById(
-            "singleButton"
-        )
+        .getElementById("singleButton")
         .classList.toggle(
             "selected",
-            value ===
-                "Single Side"
+            value === "Single Side"
         );
 
 
     document
-        .getElementById(
-            "doubleButton"
-        )
+        .getElementById("doubleButton")
         .classList.toggle(
             "selected",
-            value ===
-                "Double Side"
+            value === "Double Side"
         );
 
 
@@ -988,105 +848,91 @@ function selectSides(value) {
 
 
 /* ============================================================
-   CALCULATE PRICE
-   ============================================================ */
+   PRICE CALCULATION
+============================================================ */
+
+function getRate() {
+
+    if (
+        selectedColour === "Black & White" &&
+        selectedSides === "Single Side"
+    ) {
+
+        return 3;
+
+    }
+
+
+    if (
+        selectedColour === "Black & White" &&
+        selectedSides === "Double Side"
+    ) {
+
+        return 1.80;
+
+    }
+
+
+    if (
+        selectedColour === "Colour" &&
+        selectedSides === "Single Side"
+    ) {
+
+        return 5;
+
+    }
+
+
+    if (
+        selectedColour === "Colour" &&
+        selectedSides === "Double Side"
+    ) {
+
+        return 10;
+
+    }
+
+
+    return 3;
+
+}
+
+
+/* ============================================================
+   CALCULATE AMOUNT
+============================================================ */
 
 function calculateAmount() {
 
-    if (
-        detectedPages < 1
-    ) {
-
+    if (detectedPages < 1) {
         return;
-
     }
 
 
-    let rate = 2;
-
-
-    /*
-     * AXM PRICING
-     *
-     * B&W Single  = ₹2
-     * B&W Double  = ₹3
-     * Colour Single = ₹5
-     * Colour Double = ₹10
-     */
-
-
-    if (
-        selectedColour ===
-            "Black & White" &&
-        selectedSides ===
-            "Single Side"
-    ) {
-
-        rate = 2;
-
-    }
-
-
-    else if (
-        selectedColour ===
-            "Black & White" &&
-        selectedSides ===
-            "Double Side"
-    ) {
-
-        rate = 3;
-
-    }
-
-
-    else if (
-        selectedColour ===
-            "Colour" &&
-        selectedSides ===
-            "Single Side"
-    ) {
-
-        rate = 5;
-
-    }
-
-
-    else if (
-        selectedColour ===
-            "Colour" &&
-        selectedSides ===
-            "Double Side"
-    ) {
-
-        rate = 10;
-
-    }
+    const rate =
+        getRate();
 
 
     currentAmount =
-        detectedPages *
-        rate;
+        detectedPages * rate;
 
 
-    /* -----------------------------------------------
-       SHOW AMOUNT
-       ----------------------------------------------- */
+    currentAmount =
+        Math.round(
+            currentAmount * 100
+        ) / 100;
+
 
     document.getElementById(
         "amount"
     ).textContent =
         "₹" +
-        currentAmount;
+        currentAmount.toFixed(2);
 
-
-    /* -----------------------------------------------
-       SHOW SUMMARY
-       ----------------------------------------------- */
 
     document.getElementById(
         "summary"
     ).textContent =
-
         selectedColour +
         " • " +
         selectedSides +
@@ -1098,7 +944,7 @@ function calculateAmount() {
                 : " pages"
         ) +
         " • ₹" +
-        rate +
+        rate.toFixed(2) +
         " per page";
 
 }
@@ -1106,7 +952,7 @@ function calculateAmount() {
 
 /* ============================================================
    CONTINUE TO PAYMENT
-   ============================================================ */
+============================================================ */
 
 async function continueToPayment() {
 
@@ -1122,9 +968,7 @@ async function continueToPayment() {
         );
 
 
-    if (
-        detectedPages < 1
-    ) {
+    if (detectedPages < 1) {
 
         message.className =
             "error";
@@ -1139,8 +983,7 @@ async function continueToPayment() {
     }
 
 
-    button.disabled =
-        true;
+    button.disabled = true;
 
 
     message.className =
@@ -1158,35 +1001,28 @@ async function continueToPayment() {
                 "/api/options",
                 {
 
-                    method:
-                        "POST",
+                    method: "POST",
 
                     headers: {
-
                         "Content-Type":
                             "application/json"
-
                     },
 
-                    body:
-                        JSON.stringify({
+                    body: JSON.stringify({
 
-                            colour:
-                                selectedColour,
+                        colour:
+                            selectedColour,
 
-                            sides:
-                                selectedSides,
+                        sides:
+                            selectedSides,
 
-                            pages:
-                                detectedPages,
+                        pages:
+                            detectedPages,
 
-                            copies:
-                                1,
+                        copies:
+                            1
 
-                            amount:
-                                currentAmount
-
-                        })
+                    })
 
                 }
             );
@@ -1228,13 +1064,9 @@ async function continueToPayment() {
         }
 
 
-        /* -----------------------------------------------
-           SAVE JOB
-           ----------------------------------------------- */
+        /* SAVE JOB */
 
-        if (
-            result.job
-        ) {
+        if (result.job) {
 
             sessionStorage.setItem(
                 "axmJob",
@@ -1246,16 +1078,12 @@ async function continueToPayment() {
         }
 
 
-        /* -----------------------------------------------
-           SUCCESS
-           ----------------------------------------------- */
-
         message.className =
             "success";
 
 
         message.textContent =
-            "✓ Options saved. Opening payment...";
+            "Options saved. Opening payment...";
 
 
         setTimeout(
@@ -1265,16 +1093,16 @@ async function continueToPayment() {
                     "/payment.html";
 
             },
-            400
+            350
         );
 
-
     }
+
 
     catch (error) {
 
         console.error(
-            "PAYMENT ERROR:",
+            "OPTIONS ERROR:",
             error
         );
 
@@ -1288,8 +1116,7 @@ async function continueToPayment() {
             "Unable to continue.";
 
 
-        button.disabled =
-            false;
+        button.disabled = false;
 
     }
 
@@ -1298,7 +1125,7 @@ async function continueToPayment() {
 
 /* ============================================================
    START
-   ============================================================ */
+============================================================ */
 
 loadJob();
 
