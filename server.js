@@ -61,6 +61,7 @@ const storage = multer.diskStorage({
 
         cb(null, uniqueName);
     }
+
 });
 
 const upload = multer({
@@ -81,16 +82,41 @@ const upload = multer({
         ];
 
         if (allowedTypes.includes(file.mimetype)) {
+
             cb(null, true);
+
         } else {
+
             cb(
                 new Error(
                     "Only PDF, JPG, PNG and WEBP files are allowed."
                 )
             );
+
         }
+
     }
+
 });
+
+// ============================================================
+// PRICING
+// ============================================================
+
+const PRICES = {
+
+    "Black & White": {
+        "Single Side": 3,
+        "Double Side": 1.80
+    },
+
+    "Colour": {
+        "Single Side": 5,
+        "Double Side": 10
+    }
+
+};
+
 
 // ============================================================
 // RAZORPAY
@@ -122,6 +148,7 @@ if (
 } else {
 
     console.log("Razorpay: NOT CONFIGURED");
+
 }
 
 // ============================================================
@@ -179,6 +206,7 @@ function addEvent(data) {
     );
 
     return event;
+
 }
 
 // ============================================================
@@ -203,6 +231,7 @@ function getBaseUrl(req) {
         req.get("host");
 
     return `${protocol}://${host}`;
+
 }
 
 // ============================================================
@@ -235,25 +264,18 @@ app.get("/api/health", function (req, res) {
 
         status: "online",
 
-        machine: "NIET AXM",
+        razorpay: !!razorpay,
 
-        razorpay:
-            !!razorpay,
+        razorpayConfigured: !!razorpay,
 
-        razorpayConfigured:
-            !!razorpay,
-
-        activeSession:
-            !!sessionValid,
+        activeSession: !!sessionValid,
 
         activeSessions:
             sessionValid ? 1 : 0,
 
-        job:
-            !!currentJob,
+        job: !!currentJob,
 
-        timestamp:
-            Date.now()
+        timestamp: Date.now()
 
     });
 
@@ -271,11 +293,29 @@ app.get(
 
             success: true,
 
-            configured:
-                !!razorpay,
+            configured: !!razorpay,
 
             key_id:
                 RAZORPAY_KEY_ID || null
+
+        });
+
+    }
+);
+
+// ============================================================
+// PRICING API
+// ============================================================
+
+app.get(
+    "/api/pricing",
+    function (req, res) {
+
+        res.json({
+
+            success: true,
+
+            prices: PRICES
 
         });
 
@@ -299,74 +339,34 @@ app.get(
 
             activeSession = {
 
-                token:
-                    token,
+                token: token,
 
-                createdAt:
-                    Date.now()
+                createdAt: Date.now()
 
             };
-
-            /*
-             * A new QR also starts a new machine session.
-             */
-
-            currentJob = null;
 
             const uploadUrl =
                 getBaseUrl(req) +
                 "/upload.html?token=" +
                 encodeURIComponent(token);
 
-            console.log(
-                "================================"
-            );
-
-            console.log(
-                "NEW NIET AXM SESSION CREATED"
-            );
-
-            console.log(
-                "TOKEN:",
-                token
-            );
-
-            console.log(
-                "UPLOAD URL:",
-                uploadUrl
-            );
-
-            console.log(
-                "================================"
-            );
-
             const qr =
                 await QRCode.toDataURL(
                     uploadUrl,
                     {
-
-                        width:
-                            350,
-
-                        margin:
-                            2,
-
-                        errorCorrectionLevel:
-                            "M"
-
+                        width: 350,
+                        margin: 2,
+                        errorCorrectionLevel: "M"
                     }
                 );
 
             res.json({
 
-                success:
-                    true,
+                success: true,
 
-                qr:
-                    qr,
+                qr: qr,
 
-                uploadUrl:
-                    uploadUrl
+                uploadUrl: uploadUrl
 
             });
 
@@ -379,8 +379,7 @@ app.get(
 
             res.status(500).json({
 
-                success:
-                    false,
+                success: false,
 
                 error:
                     "Unable to generate QR code."
@@ -393,7 +392,7 @@ app.get(
 );
 
 // ============================================================
-// CHECK SESSION
+// SESSION CHECK
 // ============================================================
 
 app.get(
@@ -407,11 +406,9 @@ app.get(
 
             return res.json({
 
-                success:
-                    true,
+                success: true,
 
-                active:
-                    false
+                active: false
 
             });
 
@@ -425,11 +422,9 @@ app.get(
 
         res.json({
 
-            success:
-                true,
+            success: true,
 
-            active:
-                valid
+            active: valid
 
         });
 
@@ -437,56 +432,32 @@ app.get(
 );
 
 // ============================================================
-// AUTOMATIC PDF PAGE DETECTION
+// COUNT DOCUMENT PAGES
 // ============================================================
 
-async function getDocumentPageCount(
-    filePath,
-    mimetype
-) {
+async function detectPageCount(filePath, mimetype) {
 
-    /*
-     * PDF:
-     * Read the PDF and count its actual pages.
-     */
+    // PDF
+    if (mimetype === "application/pdf") {
 
-    if (
-        mimetype ===
-        "application/pdf"
-    ) {
-
-        const pdfBytes =
-            fs.readFileSync(
-                filePath
-            );
+        const bytes =
+            fs.readFileSync(filePath);
 
         const pdfDoc =
             await PDFDocument.load(
-                pdfBytes,
+                bytes,
                 {
-                    ignoreEncryption:
-                        true
+                    ignoreEncryption: true
                 }
             );
 
         return pdfDoc.getPageCount();
-    }
-
-    /*
-     * Images are treated as one printable page.
-     */
-
-    if (
-        mimetype === "image/jpeg" ||
-        mimetype === "image/png" ||
-        mimetype === "image/webp"
-    ) {
-
-        return 1;
 
     }
 
+    // Images are one page
     return 1;
+
 }
 
 // ============================================================
@@ -509,23 +480,11 @@ app.post(
                 req.body.token ||
                 req.headers["x-axm-token"];
 
-            console.log(
-                "UPLOAD TOKEN:",
-                token
-                    ? "PRESENT"
-                    : "MISSING"
-            );
-
-            // ------------------------------------------------
-            // Validate session
-            // ------------------------------------------------
-
             if (!token) {
 
                 return res.status(403).json({
 
-                    success:
-                        false,
+                    success: false,
 
                     error:
                         "No AXM session token. Please scan a new QR code."
@@ -541,8 +500,7 @@ app.post(
 
                 return res.status(403).json({
 
-                    success:
-                        false,
+                    success: false,
 
                     error:
                         "No active AXM session. Please scan a new QR code."
@@ -559,18 +517,15 @@ app.post(
 
                 activeSession = {
 
-                    token:
-                        null,
+                    token: null,
 
-                    createdAt:
-                        0
+                    createdAt: 0
 
                 };
 
                 return res.status(403).json({
 
-                    success:
-                        false,
+                    success: false,
 
                     error:
                         "AXM session expired. Please scan a new QR code."
@@ -579,16 +534,11 @@ app.post(
 
             }
 
-            // ------------------------------------------------
-            // Validate file
-            // ------------------------------------------------
-
             if (!req.file) {
 
                 return res.status(400).json({
 
-                    success:
-                        false,
+                    success: false,
 
                     error:
                         "No document was uploaded."
@@ -598,59 +548,29 @@ app.post(
             }
 
             // ------------------------------------------------
-            // AUTOMATIC PAGE COUNT
+            // DETECT PAGE COUNT
             // ------------------------------------------------
 
-            let pages;
+            let pages = 1;
 
             try {
 
                 pages =
-                    await getDocumentPageCount(
+                    await detectPageCount(
                         req.file.path,
                         req.file.mimetype
                     );
 
-            } catch (pdfError) {
+            } catch (pageError) {
 
                 console.error(
                     "PAGE COUNT ERROR:",
-                    pdfError
+                    pageError
                 );
-
-                /*
-                 * Delete broken upload.
-                 */
-
-                try {
-                    fs.unlinkSync(
-                        req.file.path
-                    );
-                } catch (_) {}
-
-                return res.status(400).json({
-
-                    success:
-                        false,
-
-                    error:
-                        "Unable to read the document. Please upload a valid PDF."
-
-                });
-
-            }
-
-            if (
-                !Number.isFinite(pages) ||
-                pages < 1
-            ) {
 
                 pages = 1;
 
             }
-
-            pages =
-                Math.floor(pages);
 
             // ------------------------------------------------
             // CREATE JOB
@@ -694,7 +614,7 @@ app.post(
                     1,
 
                 amount:
-                    pages * 2,
+                    pages * 3,
 
                 paymentStatus:
                     "PENDING",
@@ -707,16 +627,6 @@ app.post(
 
             };
 
-            console.log(
-                "DOCUMENT RECEIVED:",
-                currentJob.filename
-            );
-
-            console.log(
-                "AUTOMATIC PAGE COUNT:",
-                currentJob.pages
-            );
-
             addEvent({
 
                 type:
@@ -727,13 +637,22 @@ app.post(
 
             });
 
+            console.log(
+                "DOCUMENT RECEIVED:",
+                currentJob.filename
+            );
+
+            console.log(
+                "PAGES:",
+                pages
+            );
+
             return res.status(200).json({
 
-                success:
-                    true,
+                success: true,
 
                 message:
-                    "Document uploaded successfully to NIET AXM.",
+                    "Document uploaded successfully to AXM.",
 
                 job:
                     currentJob
@@ -749,8 +668,7 @@ app.post(
 
             return res.status(500).json({
 
-                success:
-                    false,
+                success: false,
 
                 error:
                     error.message ||
@@ -773,8 +691,7 @@ app.get(
 
         res.json({
 
-            success:
-                true,
+            success: true,
 
             job:
                 currentJob
@@ -794,8 +711,7 @@ app.get(
 
         res.json({
 
-            success:
-                true,
+            success: true,
 
             job:
                 currentJob
@@ -824,8 +740,7 @@ app.get(
                 events.filter(
                     function (event) {
 
-                        return event.id >
-                            since;
+                        return event.id > since;
 
                     }
                 );
@@ -834,15 +749,9 @@ app.get(
 
         } catch (error) {
 
-            console.error(
-                "EVENT ERROR:",
-                error
-            );
-
             res.status(500).json({
 
-                success:
-                    false,
+                success: false,
 
                 error:
                     "Unable to read events."
@@ -868,8 +777,7 @@ app.post(
 
                 return res.status(400).json({
 
-                    success:
-                        false,
+                    success: false,
 
                     error:
                         "No document has been received yet."
@@ -880,82 +788,51 @@ app.post(
 
             const colour =
                 req.body.colour ||
-                req.body.color ||
                 "Black & White";
 
             const sides =
                 req.body.sides ||
                 "Single Side";
 
-            /*
-             * PAGE COUNT IS NEVER TAKEN FROM USER INPUT.
-             *
-             * It was detected automatically during upload.
-             */
-
             const pages =
-                Number(
-                    currentJob.pages
+                Math.max(
+                    1,
+                    Math.floor(
+                        Number(
+                            currentJob.pages
+                        )
+                    )
                 );
 
-            let copies =
-                Number(
-                    req.body.copies || 1
+            const copies =
+                Math.max(
+                    1,
+                    Math.floor(
+                        Number(
+                            req.body.copies || 1
+                        )
+                    )
                 );
 
-            if (
-                !Number.isFinite(copies) ||
-                copies < 1
-            ) {
-
-                copies = 1;
-
-            }
-
-            copies =
-                Math.floor(copies);
-
             // ------------------------------------------------
-            // PRICING
+            // GET PRICE
             // ------------------------------------------------
 
-            let rate = 2;
+            const rate =
+                PRICES[colour]?.[sides];
 
             if (
-                colour ===
-                "Black & White" &&
-                sides ===
-                "Single Side"
+                !Number.isFinite(rate)
             ) {
 
-                rate = 2;
+                return res.status(400).json({
 
-            } else if (
-                colour ===
-                "Black & White" &&
-                sides ===
-                "Double Side"
-            ) {
+                    success: false,
 
-                rate = 3;
+                    error:
+                        "Invalid print option."
 
-            } else if (
-                colour ===
-                "Colour" &&
-                sides ===
-                "Single Side"
-            ) {
-
-                rate = 5;
-
-            } else if (
-                colour ===
-                "Colour" &&
-                sides ===
-                "Double Side"
-            ) {
-
-                rate = 10;
+                });
 
             }
 
@@ -963,6 +840,10 @@ app.post(
                 pages *
                 copies *
                 rate;
+
+            // ------------------------------------------------
+            // UPDATE JOB
+            // ------------------------------------------------
 
             currentJob.colour =
                 colour;
@@ -976,11 +857,13 @@ app.post(
             currentJob.copies =
                 copies;
 
+            currentJob.amount =
+                Number(
+                    amount.toFixed(2)
+                );
+
             currentJob.rate =
                 rate;
-
-            currentJob.amount =
-                amount;
 
             currentJob.status =
                 "OPTIONS_SELECTED";
@@ -998,36 +881,9 @@ app.post(
 
             });
 
-            console.log(
-                "PRINT OPTIONS:",
-                colour,
-                sides
-            );
-
-            console.log(
-                "PAGES:",
-                pages
-            );
-
-            console.log(
-                "COPIES:",
-                copies
-            );
-
-            console.log(
-                "RATE:",
-                rate
-            );
-
-            console.log(
-                "TOTAL:",
-                amount
-            );
-
             res.json({
 
-                success:
-                    true,
+                success: true,
 
                 message:
                     "Print options saved.",
@@ -1036,10 +892,7 @@ app.post(
                     currentJob,
 
                 amount:
-                    amount,
-
-                rate:
-                    rate
+                    currentJob.amount
 
             });
 
@@ -1052,8 +905,7 @@ app.post(
 
             res.status(500).json({
 
-                success:
-                    false,
+                success: false,
 
                 error:
                     "Unable to save print options."
@@ -1079,8 +931,7 @@ app.post(
 
                 return res.status(500).json({
 
-                    success:
-                        false,
+                    success: false,
 
                     error:
                         "Razorpay is not configured on the server."
@@ -1093,8 +944,7 @@ app.post(
 
                 return res.status(400).json({
 
-                    success:
-                        false,
+                    success: false,
 
                     error:
                         "No print job available."
@@ -1115,8 +965,7 @@ app.post(
 
                 return res.status(400).json({
 
-                    success:
-                        false,
+                    success: false,
 
                     error:
                         "Invalid payment amount."
@@ -1137,32 +986,16 @@ app.post(
                         "INR",
 
                     receipt:
-                        "NIETAXM_" +
+                        "AXM_" +
                         Date.now(),
 
                     notes: {
 
                         project:
-                            "NIET AXM",
+                            "AXM Print Service",
 
                         job_id:
-                            currentJob.id,
-
-                        pages:
-                            String(
-                                currentJob.pages
-                            ),
-
-                        copies:
-                            String(
-                                currentJob.copies
-                            ),
-
-                        colour:
-                            currentJob.colour,
-
-                        sides:
-                            currentJob.sides
+                            currentJob.id
 
                     }
 
@@ -1174,15 +1007,9 @@ app.post(
             currentJob.status =
                 "PAYMENT_STARTED";
 
-            console.log(
-                "RAZORPAY ORDER CREATED:",
-                order.id
-            );
-
             res.json({
 
-                success:
-                    true,
+                success: true,
 
                 keyId:
                     RAZORPAY_KEY_ID,
@@ -1216,8 +1043,7 @@ app.post(
 
             res.status(500).json({
 
-                success:
-                    false,
+                success: false,
 
                 error:
                     error.error?.description ||
@@ -1259,8 +1085,7 @@ app.post(
 
                 return res.status(400).json({
 
-                    success:
-                        false,
+                    success: false,
 
                     error:
                         "Missing Razorpay payment details."
@@ -1273,8 +1098,7 @@ app.post(
 
                 return res.status(500).json({
 
-                    success:
-                        false,
+                    success: false,
 
                     error:
                         "Razorpay secret is not configured."
@@ -1298,48 +1122,17 @@ app.post(
                     .digest("hex");
 
             const valid =
-                crypto.timingSafeEqual(
-                    Buffer.from(
-                        expectedSignature
-                    ),
-                    Buffer.from(
-                        razorpay_signature
-                    )
-                );
+                expectedSignature ===
+                razorpay_signature;
 
             if (!valid) {
 
                 return res.status(400).json({
 
-                    success:
-                        false,
+                    success: false,
 
                     error:
                         "Payment verification failed."
-
-                });
-
-            }
-
-            /*
-             * Make sure the payment belongs
-             * to the current Razorpay order.
-             */
-
-            if (
-                currentJob &&
-                currentJob.razorpayOrderId &&
-                currentJob.razorpayOrderId !==
-                razorpay_order_id
-            ) {
-
-                return res.status(400).json({
-
-                    success:
-                        false,
-
-                    error:
-                        "Payment order does not match the current print job."
 
                 });
 
@@ -1371,15 +1164,9 @@ app.post(
 
             }
 
-            console.log(
-                "PAYMENT VERIFIED:",
-                razorpay_payment_id
-            );
-
             res.json({
 
-                success:
-                    true,
+                success: true,
 
                 message:
                     "Payment verified successfully.",
@@ -1404,8 +1191,7 @@ app.post(
 
             res.status(500).json({
 
-                success:
-                    false,
+                success: false,
 
                 error:
                     "Payment verification failed."
@@ -1431,8 +1217,7 @@ app.post(
 
                 return res.status(400).json({
 
-                    success:
-                        false,
+                    success: false,
 
                     error:
                         "No print job available."
@@ -1462,8 +1247,7 @@ app.post(
 
             res.json({
 
-                success:
-                    true,
+                success: true,
 
                 message:
                     "Test payment successful.",
@@ -1480,8 +1264,7 @@ app.post(
 
             res.status(500).json({
 
-                success:
-                    false,
+                success: false,
 
                 error:
                     "Test payment failed."
@@ -1507,8 +1290,7 @@ app.post(
 
                 return res.status(400).json({
 
-                    success:
-                        false,
+                    success: false,
 
                     error:
                         "No print job available."
@@ -1524,8 +1306,7 @@ app.post(
 
                 return res.status(403).json({
 
-                    success:
-                        false,
+                    success: false,
 
                     error:
                         "Payment is required before printing."
@@ -1554,8 +1335,7 @@ app.post(
 
             res.json({
 
-                success:
-                    true,
+                success: true,
 
                 message:
                     "Print job is ready.",
@@ -1577,8 +1357,7 @@ app.post(
 
             res.status(500).json({
 
-                success:
-                    false,
+                success: false,
 
                 error:
                     "Unable to start printing."
@@ -1598,50 +1377,13 @@ app.post(
     "/api/reset",
     function (req, res) {
 
-        /*
-         * Delete uploaded file after job completion.
-         */
-
-        if (
-            currentJob &&
-            currentJob.filepath
-        ) {
-
-            try {
-
-                if (
-                    fs.existsSync(
-                        currentJob.filepath
-                    )
-                ) {
-
-                    fs.unlinkSync(
-                        currentJob.filepath
-                    );
-
-                }
-
-            } catch (error) {
-
-                console.error(
-                    "FILE DELETE ERROR:",
-                    error
-                );
-
-            }
-
-        }
-
-        currentJob =
-            null;
+        currentJob = null;
 
         activeSession = {
 
-            token:
-                null,
+            token: null,
 
-            createdAt:
-                0
+            createdAt: 0
 
         };
 
@@ -1654,11 +1396,10 @@ app.post(
 
         res.json({
 
-            success:
-                true,
+            success: true,
 
             message:
-                "NIET AXM machine reset."
+                "AXM machine reset."
 
         });
 
@@ -1666,7 +1407,7 @@ app.post(
 );
 
 // ============================================================
-// MULTER / SERVER ERROR HANDLER
+// ERROR HANDLER
 // ============================================================
 
 app.use(
@@ -1684,8 +1425,7 @@ app.use(
 
             return res.status(400).json({
 
-                success:
-                    false,
+                success: false,
 
                 error:
                     error.message ||
@@ -1697,8 +1437,7 @@ app.use(
 
         res.status(500).json({
 
-            success:
-                false,
+            success: false,
 
             error:
                 error.message ||
@@ -1719,8 +1458,7 @@ app.use(
 
         res.status(404).json({
 
-            success:
-                false,
+            success: false,
 
             error:
                 "API endpoint not found: " +
@@ -1747,7 +1485,7 @@ app.listen(
         );
 
         console.log(
-            "NIET AXM SERVER IS RUNNING"
+            "AXM SERVER IS RUNNING"
         );
 
         console.log(
@@ -1763,11 +1501,8 @@ app.listen(
         );
 
         console.log(
-            "AUTOMATIC PDF PAGE DETECTION: ENABLED"
-        );
-
-        console.log(
             "=========================================="
+
         );
 
     }
