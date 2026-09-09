@@ -5,36 +5,23 @@ const fs = require("fs");
 const multer = require("multer");
 const QRCode = require("qrcode");
 const Razorpay = require("razorpay");
+const { execFileSync } = require("child_process");
 
 const app = express();
 
-const PORT =
-    process.env.PORT || 10000;
+const PORT = process.env.PORT || 10000;
 
 
 /* ============================================================
    DIRECTORIES
    ============================================================ */
 
-const DATA_DIR =
-    path.join(
-        __dirname,
-        "data"
-    );
+const DATA_DIR = path.join(__dirname, "data");
+const UPLOAD_DIR = path.join(DATA_DIR, "uploads");
 
-const UPLOAD_DIR =
-    path.join(
-        DATA_DIR,
-        "uploads"
-    );
-
-
-fs.mkdirSync(
-    UPLOAD_DIR,
-    {
-        recursive: true
-    }
-);
+fs.mkdirSync(UPLOAD_DIR, {
+    recursive: true
+});
 
 
 /* ============================================================
@@ -47,13 +34,11 @@ app.use(
     })
 );
 
-
 app.use(
     express.urlencoded({
         extended: true
     })
 );
-
 
 app.use(
     express.static(__dirname)
@@ -64,109 +49,299 @@ app.use(
    FILE UPLOAD
    ============================================================ */
 
-const storage =
-    multer.diskStorage({
+const storage = multer.diskStorage({
 
-        destination:
-            function(req, file, cb) {
+    destination: function(req, file, cb) {
 
-                cb(
-                    null,
-                    UPLOAD_DIR
+        cb(
+            null,
+            UPLOAD_DIR
+        );
+
+    },
+
+    filename: function(req, file, cb) {
+
+        const safeName =
+            path
+                .basename(file.originalname)
+                .replace(
+                    /[^a-zA-Z0-9._-]/g,
+                    "_"
                 );
 
-            },
+        const uniqueName =
+            Date.now() +
+            "_" +
+            crypto
+                .randomBytes(6)
+                .toString("hex") +
+            "_" +
+            safeName;
+
+        cb(
+            null,
+            uniqueName
+        );
+
+    }
+
+});
 
 
-        filename:
-            function(req, file, cb) {
+const upload = multer({
 
-                const safeName =
-                    path
-                        .basename(
-                            file.originalname
-                        )
-                        .replace(
-                            /[^a-zA-Z0-9._-]/g,
-                            "_"
-                        );
+    storage: storage,
+
+    limits: {
+
+        fileSize:
+            25 * 1024 * 1024
+
+    },
+
+    fileFilter: function(req, file, cb) {
+
+        const allowedTypes = [
+
+            "application/pdf",
+
+            "image/jpeg",
+
+            "image/png",
+
+            "image/webp"
+
+        ];
+
+        if (
+            allowedTypes.includes(
+                file.mimetype
+            )
+        ) {
+
+            cb(
+                null,
+                true
+            );
+
+        }
+
+        else {
+
+            cb(
+                new Error(
+                    "Only PDF, JPG, PNG and WEBP files are allowed."
+                )
+            );
+
+        }
+
+    }
+
+});
 
 
-                const uniqueName =
-                    Date.now() +
-                    "_" +
-                    crypto
-                        .randomBytes(6)
-                        .toString("hex") +
-                    "_" +
-                    safeName;
+/* ============================================================
+   PDF PAGE COUNT
+   ============================================================ */
+
+/*
+ * This function detects the REAL number of pages
+ * inside a PDF.
+ *
+ * Example:
+ *
+ * 1 page PDF  -> 1
+ * 10 page PDF -> 10
+ * 30 page PDF -> 30
+ *
+ * First it tries pdfinfo if available.
+ * If pdfinfo is not available, it uses a PDF
+ * object parser fallback.
+ */
+
+function getPdfPageCount(filePath) {
+
+    if (!fs.existsSync(filePath)) {
+
+        throw new Error(
+            "Uploaded PDF file was not found."
+        );
+
+    }
 
 
-                cb(
-                    null,
-                    uniqueName
+    /* ========================================================
+       METHOD 1
+       pdfinfo
+       ======================================================== */
+
+    try {
+
+        const output =
+            execFileSync(
+                "pdfinfo",
+                [filePath],
+                {
+                    encoding: "utf8",
+                    stdio: [
+                        "ignore",
+                        "pipe",
+                        "ignore"
+                    ]
+                }
+            );
+
+
+        const match =
+            output.match(
+                /^Pages:\s+(\d+)/im
+            );
+
+
+        if (match) {
+
+            const pages =
+                Number(match[1]);
+
+
+            if (
+                Number.isInteger(pages) &&
+                pages > 0
+            ) {
+
+                console.log(
+                    "PDF PAGE COUNT:",
+                    pages,
+                    "(pdfinfo)"
                 );
+
+                return pages;
 
             }
 
-    });
+        }
+
+    }
+
+    catch (error) {
+
+        console.log(
+            "pdfinfo not available. Using PDF parser fallback."
+        );
+
+    }
 
 
-const upload =
-    multer({
+    /* ========================================================
+       METHOD 2
+       PDF OBJECT PARSER
+       ======================================================== */
 
-        storage: storage,
-
-        limits: {
-
-            fileSize:
-                25 * 1024 * 1024
-
-        },
+    const buffer =
+        fs.readFileSync(
+            filePath
+        );
 
 
-        fileFilter:
-            function(req, file, cb) {
-
-                const allowedTypes = [
-
-                    "application/pdf",
-
-                    "image/jpeg",
-
-                    "image/png",
-
-                    "image/webp"
-
-                ];
+    const pdfText =
+        buffer.toString(
+            "latin1"
+        );
 
 
-                if (
-                    allowedTypes.includes(
-                        file.mimetype
-                    )
-                ) {
+    /*
+     * Count real PDF page objects.
+     *
+     * /Type /Page
+     *
+     * is different from:
+     *
+     * /Type /Pages
+     *
+     * because of the word boundary.
+     */
 
-                    cb(
-                        null,
-                        true
-                    );
+    const matches =
+        pdfText.match(
+            /\/Type\s*\/Page\b/g
+        );
 
-                }
 
-                else {
+    const pages =
+        matches
+            ? matches.length
+            : 0;
 
-                    cb(
-                        new Error(
-                            "Only PDF, JPG, PNG and WEBP files are allowed."
-                        )
-                    );
 
-                }
+    if (
+        !Number.isInteger(pages) ||
+        pages < 1
+    ) {
 
-            }
+        throw new Error(
+            "Unable to detect the number of pages in this PDF."
+        );
 
-    });
+    }
+
+
+    console.log(
+        "PDF PAGE COUNT:",
+        pages,
+        "(PDF parser)"
+    );
+
+
+    return pages;
+
+}
+
+
+/* ============================================================
+   DETECT DOCUMENT PAGES
+   ============================================================ */
+
+function detectDocumentPages(
+    filePath,
+    mimetype
+) {
+
+    /*
+     * PDF
+     */
+
+    if (
+        mimetype ===
+        "application/pdf"
+    ) {
+
+        return getPdfPageCount(
+            filePath
+        );
+
+    }
+
+
+    /*
+     * Images are one printable page.
+     */
+
+    if (
+        mimetype === "image/jpeg" ||
+        mimetype === "image/png" ||
+        mimetype === "image/webp"
+    ) {
+
+        return 1;
+
+    }
+
+
+    return 1;
+
+}
 
 
 /* ============================================================
@@ -176,13 +351,11 @@ const upload =
 const RAZORPAY_KEY_ID =
     process.env.RAZORPAY_KEY_ID;
 
-
 const RAZORPAY_KEY_SECRET =
     process.env.RAZORPAY_KEY_SECRET;
 
 
-let razorpay =
-    null;
+let razorpay = null;
 
 
 if (
@@ -251,7 +424,6 @@ let currentJob =
 let eventId =
     0;
 
-
 const events =
     [];
 
@@ -310,23 +482,19 @@ function getBaseUrl(req) {
             "x-forwarded-proto"
         ];
 
-
     const protocol =
         forwardedProto ||
         req.protocol ||
         "https";
-
 
     const forwardedHost =
         req.headers[
             "x-forwarded-host"
         ];
 
-
     const host =
         forwardedHost ||
         req.get("host");
-
 
     return (
         protocol +
@@ -338,7 +506,7 @@ function getBaseUrl(req) {
 
 
 /* ============================================================
-   PRICE FUNCTION
+   PRINT RATE
    ============================================================ */
 
 function getPrintRate(
@@ -360,7 +528,10 @@ function getPrintRate(
         ).toLowerCase();
 
 
-    /* B&W SINGLE = ₹3 */
+    /* ========================================================
+       B&W SINGLE SIDE
+       ₹3
+       ======================================================== */
 
     if (
         colourText.includes("black") &&
@@ -372,7 +543,10 @@ function getPrintRate(
     }
 
 
-    /* B&W DOUBLE = ₹1.80 */
+    /* ========================================================
+       B&W DOUBLE SIDE
+       ₹1.80
+       ======================================================== */
 
     if (
         colourText.includes("black") &&
@@ -384,7 +558,10 @@ function getPrintRate(
     }
 
 
-    /* COLOUR SINGLE = ₹5 */
+    /* ========================================================
+       COLOUR SINGLE SIDE
+       ₹5
+       ======================================================== */
 
     if (
         (
@@ -399,7 +576,10 @@ function getPrintRate(
     }
 
 
-    /* COLOUR DOUBLE = ₹10 */
+    /* ========================================================
+       COLOUR DOUBLE SIDE
+       ₹10
+       ======================================================== */
 
     if (
         (
@@ -420,7 +600,7 @@ function getPrintRate(
 
 
 /* ============================================================
-   CALCULATE TOTAL
+   CALCULATE PRINT AMOUNT
    ============================================================ */
 
 function calculatePrintAmount(
@@ -461,11 +641,61 @@ function calculatePrintAmount(
         rate;
 
 
-    return (
-        Math.round(
-            amount * 100
-        ) / 100
-    );
+    return Math.round(
+        amount * 100
+    ) / 100;
+
+}
+
+
+/* ============================================================
+   PHYSICAL SHEETS
+   ============================================================ */
+
+/*
+ * Single side:
+ *
+ * 30 pages = 30 sheets
+ *
+ * Double side:
+ *
+ * 30 pages = 15 sheets
+ *
+ * 31 pages = 16 sheets
+ */
+
+function calculateSheets(
+    pages,
+    sides
+) {
+
+    const safePages =
+        Math.max(
+            1,
+            Math.floor(
+                Number(pages) || 1
+            )
+        );
+
+
+    const sidesText =
+        String(
+            sides || ""
+        ).toLowerCase();
+
+
+    if (
+        sidesText.includes("double")
+    ) {
+
+        return Math.ceil(
+            safePages / 2
+        );
+
+    }
+
+
+    return safePages;
 
 }
 
@@ -735,7 +965,9 @@ app.post(
                 ];
 
 
-            /* SESSION */
+            /* ==================================================
+               SESSION CHECK
+               ================================================== */
 
             if (!token) {
 
@@ -801,7 +1033,9 @@ app.post(
             }
 
 
-            /* FILE */
+            /* ==================================================
+               FILE CHECK
+               ================================================== */
 
             if (!req.file) {
 
@@ -818,9 +1052,109 @@ app.post(
             }
 
 
-            /* =================================================
+            /* ==================================================
+               REAL PAGE DETECTION
+               ================================================== */
+
+            let detectedPages;
+
+
+            try {
+
+                detectedPages =
+                    detectDocumentPages(
+                        req.file.path,
+                        req.file.mimetype
+                    );
+
+            }
+
+            catch (pageError) {
+
+                console.error(
+                    "PAGE DETECTION ERROR:",
+                    pageError
+                );
+
+
+                /*
+                 * Delete bad upload.
+                 */
+
+                try {
+
+                    fs.unlinkSync(
+                        req.file.path
+                    );
+
+                }
+
+                catch (deleteError) {
+
+                    console.error(
+                        "FILE DELETE ERROR:",
+                        deleteError
+                    );
+
+                }
+
+
+                return res.status(400).json({
+
+                    success:
+                        false,
+
+                    error:
+                        pageError.message ||
+                        "Unable to detect document pages."
+
+                });
+
+            }
+
+
+            /* ==================================================
+               DEFAULT PRINT SETTINGS
+               ================================================== */
+
+            const defaultColour =
+                "Black & White";
+
+
+            const defaultSides =
+                "Single Side";
+
+
+            const defaultCopies =
+                1;
+
+
+            const defaultRate =
+                getPrintRate(
+                    defaultColour,
+                    defaultSides
+                );
+
+
+            const defaultAmount =
+                calculatePrintAmount(
+                    detectedPages,
+                    defaultCopies,
+                    defaultColour,
+                    defaultSides
+                );
+
+
+            const defaultSheets =
+                calculateSheets(
+                    detectedPages,
+                    defaultSides
+                );
+
+
+            /* ==================================================
                CREATE JOB
-               ================================================= */
+               ================================================== */
 
             currentJob = {
 
@@ -848,22 +1182,32 @@ app.post(
                     "RECEIVED",
 
                 colour:
-                    "Black & White",
+                    defaultColour,
 
                 sides:
-                    "Single Side",
+                    defaultSides,
+
+                /*
+                 * IMPORTANT:
+                 *
+                 * This is the REAL detected
+                 * PDF page count.
+                 */
 
                 pages:
-                    1,
+                    detectedPages,
 
                 copies:
-                    1,
+                    defaultCopies,
+
+                sheets:
+                    defaultSheets,
 
                 rate:
-                    3,
+                    defaultRate,
 
                 amount:
-                    3,
+                    defaultAmount,
 
                 paymentStatus:
                     "PENDING",
@@ -877,6 +1221,10 @@ app.post(
             };
 
 
+            /* ==================================================
+               EVENT
+               ================================================== */
+
             addEvent({
 
                 type:
@@ -889,10 +1237,41 @@ app.post(
 
 
             console.log(
-                "DOCUMENT RECEIVED:",
+                "========================================"
+            );
+
+            console.log(
+                "DOCUMENT RECEIVED"
+            );
+
+            console.log(
+                "FILE:",
                 currentJob.filename
             );
 
+            console.log(
+                "MIME:",
+                currentJob.mimetype
+            );
+
+            console.log(
+                "PAGES DETECTED:",
+                currentJob.pages
+            );
+
+            console.log(
+                "DEFAULT COPIES:",
+                currentJob.copies
+            );
+
+            console.log(
+                "========================================"
+            );
+
+
+            /* ==================================================
+               RESPONSE
+               ================================================== */
 
             res.status(200).json({
 
@@ -900,7 +1279,7 @@ app.post(
                     true,
 
                 message:
-                    "Document uploaded successfully to AXM.",
+                    "Document uploaded and page count detected successfully.",
 
                 job:
                     currentJob
@@ -1063,32 +1442,48 @@ app.post(
             }
 
 
-            /* COLOUR */
+            /* ==================================================
+               COLOUR
+               ================================================== */
 
             const colour =
                 req.body.colour ||
                 req.body.color ||
+                currentJob.colour ||
                 "Black & White";
 
 
-            /* SIDES */
+            /* ==================================================
+               SIDES
+               ================================================== */
 
             const sides =
                 req.body.sides ||
+                currentJob.sides ||
                 "Single Side";
 
 
-            /* PAGES */
+            /* ==================================================
+               PAGES
+               ==================================================
 
-            let pages =
-                Number(
-                    req.body.pages ||
-                    currentJob.pages ||
-                    1
-                );
+               IMPORTANT:
+
+               The server already detected the REAL
+               number of PDF pages during upload.
+
+               Therefore we DO NOT trust a fake
+               page number from the browser.
+
+            */
+
+            const pages =
+                currentJob.pages;
 
 
-            /* COPIES */
+            /* ==================================================
+               COPIES
+               ================================================== */
 
             let copies =
                 Number(
@@ -1096,20 +1491,6 @@ app.post(
                     1
                 );
 
-
-            /* VALIDATE PAGES */
-
-            if (
-                !Number.isFinite(pages) ||
-                pages < 1
-            ) {
-
-                pages = 1;
-
-            }
-
-
-            /* VALIDATE COPIES */
 
             if (
                 !Number.isFinite(copies) ||
@@ -1121,28 +1502,24 @@ app.post(
             }
 
 
-            pages =
-                Math.floor(
-                    pages
-                );
-
-
             copies =
                 Math.floor(
                     copies
                 );
 
 
-            /* MAX COPIES */
-
-            if (copies > 50) {
+            if (
+                copies > 50
+            ) {
 
                 copies = 50;
 
             }
 
 
-            /* RATE */
+            /* ==================================================
+               RATE
+               ================================================== */
 
             const rate =
                 getPrintRate(
@@ -1151,7 +1528,9 @@ app.post(
                 );
 
 
-            /* TOTAL */
+            /* ==================================================
+               AMOUNT
+               ================================================== */
 
             const amount =
                 calculatePrintAmount(
@@ -1162,7 +1541,20 @@ app.post(
                 );
 
 
-            /* SAVE */
+            /* ==================================================
+               SHEETS
+               ================================================== */
+
+            const sheets =
+                calculateSheets(
+                    pages,
+                    sides
+                );
+
+
+            /* ==================================================
+               SAVE JOB
+               ================================================== */
 
             currentJob.colour =
                 colour;
@@ -1178,6 +1570,10 @@ app.post(
 
             currentJob.copies =
                 copies;
+
+
+            currentJob.sheets =
+                sheets;
 
 
             currentJob.rate =
@@ -1208,26 +1604,50 @@ app.post(
 
 
             console.log(
-                "PRINT OPTIONS:",
-                {
-                    colour:
-                        colour,
+                "========================================"
+            );
 
-                    sides:
-                        sides,
+            console.log(
+                "PRINT OPTIONS"
+            );
 
-                    pages:
-                        pages,
+            console.log(
+                "COLOUR:",
+                colour
+            );
 
-                    copies:
-                        copies,
+            console.log(
+                "SIDES:",
+                sides
+            );
 
-                    rate:
-                        rate,
+            console.log(
+                "PAGES:",
+                pages
+            );
 
-                    amount:
-                        amount
-                }
+            console.log(
+                "SHEETS:",
+                sheets
+            );
+
+            console.log(
+                "COPIES:",
+                copies
+            );
+
+            console.log(
+                "RATE:",
+                rate
+            );
+
+            console.log(
+                "TOTAL:",
+                amount
+            );
+
+            console.log(
+                "========================================"
             );
 
 
@@ -1246,7 +1666,16 @@ app.post(
                     amount,
 
                 rate:
-                    rate
+                    rate,
+
+                pages:
+                    pages,
+
+                copies:
+                    copies,
+
+                sheets:
+                    sheets
 
             });
 
@@ -1363,10 +1792,29 @@ app.post(
                         job_id:
                             currentJob.id,
 
+                        filename:
+                            currentJob.filename,
+
+                        pages:
+                            String(
+                                currentJob.pages
+                            ),
+
                         copies:
                             String(
                                 currentJob.copies
-                            )
+                            ),
+
+                        sheets:
+                            String(
+                                currentJob.sheets
+                            ),
+
+                        colour:
+                            currentJob.colour,
+
+                        sides:
+                            currentJob.sides
 
                     }
 
@@ -1514,14 +1962,47 @@ app.post(
                     .digest("hex");
 
 
+            /*
+             * Avoid timingSafeEqual error
+             * if lengths are different.
+             */
+
+            const expectedBuffer =
+                Buffer.from(
+                    expectedSignature,
+                    "utf8"
+                );
+
+
+            const receivedBuffer =
+                Buffer.from(
+                    razorpay_signature,
+                    "utf8"
+                );
+
+
+            if (
+                expectedBuffer.length !==
+                receivedBuffer.length
+            ) {
+
+                return res.status(400).json({
+
+                    success:
+                        false,
+
+                    error:
+                        "Payment verification failed."
+
+                });
+
+            }
+
+
             const valid =
                 crypto.timingSafeEqual(
-                    Buffer.from(
-                        expectedSignature
-                    ),
-                    Buffer.from(
-                        razorpay_signature
-                    )
+                    expectedBuffer,
+                    receivedBuffer
                 );
 
 
@@ -1684,6 +2165,12 @@ app.post(
                 copies:
                     currentJob.copies,
 
+                pages:
+                    currentJob.pages,
+
+                sheets:
+                    currentJob.sheets,
+
                 job:
                     currentJob
 
@@ -1692,6 +2179,12 @@ app.post(
         }
 
         catch (error) {
+
+            console.error(
+                "TEST PAYMENT ERROR:",
+                error
+            );
+
 
             res.status(500).json({
 
@@ -1752,9 +2245,9 @@ app.post(
             }
 
 
-            /* ================================================
-               PRINT INFORMATION
-               ================================================ */
+            /* ==================================================
+               PRINT JOB
+               ================================================== */
 
             const printJob = {
 
@@ -1776,6 +2269,16 @@ app.post(
                 pages:
                     currentJob.pages,
 
+                sheets:
+                    currentJob.sheets,
+
+                /*
+                 * VERY IMPORTANT:
+                 *
+                 * This is the number of copies
+                 * selected by the user.
+                 */
+
                 copies:
                     currentJob.copies,
 
@@ -1786,21 +2289,6 @@ app.post(
                     currentJob.paymentStatus
 
             };
-
-
-            /*
-             * IMPORTANT:
-             *
-             * currentJob.copies contains the exact number
-             * selected by the user.
-             *
-             * Example:
-             *
-             * copies = 2
-             *
-             * The physical printer integration should
-             * send copies = 2 to the printer.
-             */
 
 
             currentJob.status =
@@ -1823,54 +2311,73 @@ app.post(
 
 
             console.log(
-                "================================"
+                "========================================"
             );
-
 
             console.log(
                 "PRINT JOB STARTED"
             );
-
 
             console.log(
                 "FILE:",
                 currentJob.filename
             );
 
-
             console.log(
                 "COLOUR:",
                 currentJob.colour
             );
-
 
             console.log(
                 "SIDES:",
                 currentJob.sides
             );
 
-
             console.log(
                 "PAGES:",
                 currentJob.pages
             );
 
+            console.log(
+                "SHEETS:",
+                currentJob.sheets
+            );
 
             console.log(
                 "COPIES:",
                 currentJob.copies
             );
 
-
             console.log(
                 "AMOUNT:",
                 currentJob.amount
             );
 
+            console.log(
+                "FILE PATH:",
+                currentJob.filepath
+            );
 
             console.log(
-                "================================"
+                "========================================"
             );
+
+
+            /*
+             * NOTE:
+             *
+             * This endpoint prepares the print job.
+             *
+             * Your physical printer must receive:
+             *
+             * filepath
+             * pages
+             * copies
+             * colour
+             * sides
+             *
+             * The copies value is NOT ignored.
+             */
 
 
             res.json({
@@ -1925,6 +2432,43 @@ app.post(
 app.post(
     "/api/reset",
     function(req, res) {
+
+        /*
+         * Delete previous uploaded file.
+         */
+
+        if (
+            currentJob &&
+            currentJob.filepath
+        ) {
+
+            try {
+
+                if (
+                    fs.existsSync(
+                        currentJob.filepath
+                    )
+                ) {
+
+                    fs.unlinkSync(
+                        currentJob.filepath
+                    );
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "OLD FILE DELETE ERROR:",
+                    error
+                );
+
+            }
+
+        }
+
 
         currentJob =
             null;
@@ -2065,7 +2609,12 @@ app.listen(
         );
 
         console.log(
+            "PDF PAGE DETECTION: ENABLED"
+        );
+
+        console.log(
             "=========================================="
+
         );
 
     }
