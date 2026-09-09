@@ -10,7 +10,7 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>AXM — Print Options</title>
+    <title>NIET AXM — Print Options</title>
 
     <link
         rel="stylesheet"
@@ -26,67 +26,96 @@
         body {
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
-            background: #eef5fb;
-            color: #12365d;
+            background: #eef6fc;
+            color: #123b70;
         }
 
         main {
             min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
-            padding: 30px 15px;
+            justify-content: center;
+            padding: 25px;
         }
 
         .panel {
             width: 100%;
-            max-width: 850px;
-            background: #ffffff;
+            max-width: 900px;
+            background: white;
             border-radius: 25px;
-            padding: 40px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+            padding: 35px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.10);
+        }
+
+        .college-logo {
+            display: block;
+            width: 85px;
+            height: 85px;
+            object-fit: contain;
+            margin: 0 auto 10px;
         }
 
         h1 {
             text-align: center;
-            margin: 0 0 10px;
-            font-size: 38px;
-            color: #103b68;
+            margin: 5px 0;
+            font-size: 34px;
+            color: #123f7a;
         }
 
         .subtitle {
             text-align: center;
-            color: #607d9b;
-            margin-bottom: 35px;
-        }
-
-        .section {
+            color: #66809d;
             margin-bottom: 30px;
         }
 
-        .section-title {
-            font-size: 21px;
+        .document-box {
+            background: #edf7ff;
+            border: 2px solid #cfe7fa;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .document-name {
+            font-size: 18px;
             font-weight: bold;
-            margin-bottom: 15px;
-            color: #12365d;
+            word-break: break-word;
+        }
+
+        .page-count {
+            margin-top: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #1769e0;
+        }
+
+        .section {
+            margin-top: 25px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 14px;
         }
 
         .options {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr 1fr;
             gap: 15px;
         }
 
         .option-button {
-            min-height: 75px;
-            border: 2px solid #cbd9e7;
-            background: #ffffff;
-            border-radius: 14px;
+            min-height: 80px;
+            border: 2px solid #ccdbea;
+            border-radius: 15px;
+            background: white;
+            color: #123b70;
             font-size: 18px;
             font-weight: bold;
-            color: #12365d;
             cursor: pointer;
-            transition: 0.15s;
+            transition: 0.2s;
         }
 
         .option-button:hover {
@@ -96,56 +125,15 @@
         .option-button.selected {
             background: #1769e0;
             border-color: #1769e0;
-            color: #ffffff;
-            box-shadow: 0 5px 15px rgba(23, 105, 224, 0.25);
-        }
-
-        .selected-display {
-            margin-top: 12px;
-            padding: 12px 15px;
-            background: #f1f6fb;
-            border-radius: 10px;
-            text-align: center;
-            font-weight: bold;
-            color: #1769e0;
-        }
-
-        .input-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .input-box {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .input-box label {
-            font-weight: bold;
-            font-size: 17px;
-        }
-
-        .input-box input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #cbd9e7;
-            border-radius: 10px;
-            font-size: 18px;
-            color: #12365d;
-            outline: none;
-        }
-
-        .input-box input:focus {
-            border-color: #1769e0;
+            color: white;
+            box-shadow: 0 6px 18px rgba(23,105,224,0.25);
         }
 
         .amount-box {
             margin-top: 30px;
             padding: 25px;
-            border-radius: 15px;
-            background: #f3f7fb;
+            border-radius: 18px;
+            background: #f5f9fd;
             text-align: center;
         }
 
@@ -156,15 +144,15 @@
 
         .amount {
             margin-top: 8px;
-            font-size: 38px;
+            font-size: 44px;
             font-weight: bold;
-            color: #103b68;
+            color: #123f7a;
         }
 
         .summary {
-            margin-top: 15px;
-            font-size: 15px;
+            margin-top: 8px;
             color: #607d9b;
+            font-size: 16px;
         }
 
         .continue-button {
@@ -172,16 +160,16 @@
             margin-top: 25px;
             padding: 18px;
             border: none;
-            border-radius: 12px;
+            border-radius: 13px;
             background: #f4c51b;
-            color: #103b68;
-            font-size: 18px;
+            color: #123b70;
+            font-size: 19px;
             font-weight: bold;
             cursor: pointer;
         }
 
         .continue-button:hover {
-            background: #eab900;
+            background: #e9b900;
         }
 
         .continue-button:disabled {
@@ -190,39 +178,39 @@
         }
 
         #message {
-            margin-top: 18px;
+            min-height: 25px;
+            margin-top: 15px;
             text-align: center;
             font-weight: bold;
-            min-height: 22px;
-        }
-
-        .error {
-            color: #d92727;
         }
 
         .success {
             color: #079447;
         }
 
+        .error {
+            color: #d92727;
+        }
+
         .loading {
             color: #1769e0;
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 650px) {
+
+            main {
+                padding: 12px;
+            }
 
             .panel {
                 padding: 25px 18px;
             }
 
             h1 {
-                font-size: 30px;
+                font-size: 28px;
             }
 
             .options {
-                grid-template-columns: 1fr;
-            }
-
-            .input-row {
                 grid-template-columns: 1fr;
             }
 
@@ -232,347 +220,393 @@
 
 </head>
 
+
 <body>
 
 <main>
 
-    <section class="panel">
+<section class="panel">
 
-        <h1>Print Options</h1>
-
-        <p class="subtitle">
-            Select your printing requirements
-        </p>
-
-
-        <!-- ========================================= -->
-        <!-- COLOUR -->
-        <!-- ========================================= -->
-
-        <div class="section">
-
-            <div class="section-title">
-                1. Select Colour
-            </div>
-
-            <div class="options">
-
-                <button
-                    type="button"
-                    id="bwButton"
-                    class="option-button selected"
-                    onclick="selectColour('Black & White')"
-                >
-                    ⚫ Black & White
-                </button>
-
-                <button
-                    type="button"
-                    id="colourButton"
-                    class="option-button"
-                    onclick="selectColour('Colour')"
-                >
-                    🌈 Colour
-                </button>
-
-            </div>
-
-            <div
-                id="colourDisplay"
-                class="selected-display"
-            >
-                Selected: Black & White
-            </div>
-
-        </div>
+    <img
+        src="/niet-logo.png"
+        class="college-logo"
+        alt="NIET Logo"
+    >
 
 
-        <!-- ========================================= -->
-        <!-- SIDES -->
-        <!-- ========================================= -->
+    <h1>
+        Print Options
+    </h1>
 
-        <div class="section">
-
-            <div class="section-title">
-                2. Select Sides
-            </div>
-
-            <div class="options">
-
-                <button
-                    type="button"
-                    id="singleButton"
-                    class="option-button selected"
-                    onclick="selectSides('Single Side')"
-                >
-                    📄 Single Side
-                </button>
-
-                <button
-                    type="button"
-                    id="doubleButton"
-                    class="option-button"
-                    onclick="selectSides('Double Side')"
-                >
-                    📑 Double Side
-                </button>
-
-            </div>
-
-            <div
-                id="sidesDisplay"
-                class="selected-display"
-            >
-                Selected: Single Side
-            </div>
-
-        </div>
+    <p class="subtitle">
+        NIET AXM — Automated Xerox Machine
+    </p>
 
 
-        <!-- ========================================= -->
-        <!-- PAGES + COPIES -->
-        <!-- ========================================= -->
+    <!-- DOCUMENT -->
 
-        <div class="section">
+    <div class="document-box">
 
-            <div class="section-title">
-                3. Pages and Copies
-            </div>
-
-            <div class="input-row">
-
-                <div class="input-box">
-
-                    <label for="pages">
-                        Number of Pages
-                    </label>
-
-                    <input
-                        id="pages"
-                        type="number"
-                        min="1"
-                        value="1"
-                        oninput="calculateAmount()"
-                    >
-
-                </div>
-
-
-                <div class="input-box">
-
-                    <label for="copies">
-                        Number of Copies
-                    </label>
-
-                    <input
-                        id="copies"
-                        type="number"
-                        min="1"
-                        value="1"
-                        oninput="calculateAmount()"
-                    >
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- ========================================= -->
-        <!-- AMOUNT -->
-        <!-- ========================================= -->
-
-        <div class="amount-box">
-
-            <div class="amount-label">
-                Total Amount
-            </div>
-
-            <div
-                id="amount"
-                class="amount"
-            >
-                ₹2
-            </div>
-
-            <div
-                id="summary"
-                class="summary"
-            >
-                Black & White • Single Side •
-                1 page • 1 copy
-            </div>
-
-        </div>
-
-
-        <!-- ========================================= -->
-        <!-- CONTINUE -->
-        <!-- ========================================= -->
-
-        <button
-            id="continueButton"
-            class="continue-button"
-            type="button"
-            onclick="continueToPayment()"
+        <div
+            id="documentName"
+            class="document-name"
         >
-            CONTINUE TO PAYMENT
-        </button>
+            Detecting document...
+        </div>
+
+        <div
+            id="pageCount"
+            class="page-count"
+        >
+            Detecting pages...
+        </div>
+
+    </div>
 
 
-        <div id="message"></div>
+    <!-- COLOUR -->
 
-    </section>
+    <div class="section">
+
+        <div class="section-title">
+            1. Select Print Colour
+        </div>
+
+        <div class="options">
+
+            <button
+                id="bwButton"
+                class="option-button selected"
+                onclick="selectColour('Black & White')"
+            >
+                ⚫<br>
+                Black & White
+            </button>
+
+            <button
+                id="colourButton"
+                class="option-button"
+                onclick="selectColour('Colour')"
+            >
+                🌈<br>
+                Colour
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- SIDES -->
+
+    <div class="section">
+
+        <div class="section-title">
+            2. Select Printing Side
+        </div>
+
+        <div class="options">
+
+            <button
+                id="singleButton"
+                class="option-button selected"
+                onclick="selectSides('Single Side')"
+            >
+                📄<br>
+                Single Side
+            </button>
+
+            <button
+                id="doubleButton"
+                class="option-button"
+                onclick="selectSides('Double Side')"
+            >
+                📑<br>
+                Double Side
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- AMOUNT -->
+
+    <div class="amount-box">
+
+        <div class="amount-label">
+            Total Printing Amount
+        </div>
+
+        <div
+            id="amount"
+            class="amount"
+        >
+            ₹0
+        </div>
+
+        <div
+            id="summary"
+            class="summary"
+        >
+            Calculating...
+        </div>
+
+    </div>
+
+
+    <!-- CONTINUE -->
+
+    <button
+        id="continueButton"
+        class="continue-button"
+        onclick="continueToPayment()"
+        disabled
+    >
+        CONTINUE TO PAYMENT
+    </button>
+
+
+    <div id="message"></div>
+
+</section>
 
 </main>
 
 
 <script>
 
-/* ============================================================
-   CURRENT SELECTION
-   ============================================================ */
-
 let selectedColour = "Black & White";
 
 let selectedSides = "Single Side";
 
-let currentAmount = 2;
+let detectedPages = 0;
+
+let currentAmount = 0;
 
 
 /* ============================================================
-   SELECT COLOUR
+   LOAD CURRENT JOB
+   ============================================================ */
+
+async function loadJob() {
+
+    const message =
+        document.getElementById("message");
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/current-job",
+                {
+                    cache: "no-store"
+                }
+            );
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !data.success ||
+            !data.job
+        ) {
+
+            throw new Error(
+                "No document found."
+            );
+
+        }
+
+
+        const job = data.job;
+
+
+        document.getElementById(
+            "documentName"
+        ).textContent =
+            job.filename || "Document";
+
+
+        /*
+         * The server will automatically
+         * detect the PDF page count.
+         */
+
+        detectedPages =
+            Number(job.pages);
+
+
+        if (
+            !Number.isFinite(detectedPages) ||
+            detectedPages < 1
+        ) {
+
+            throw new Error(
+                "Unable to detect PDF pages."
+            );
+
+        }
+
+
+        detectedPages =
+            Math.floor(detectedPages);
+
+
+        document.getElementById(
+            "pageCount"
+        ).textContent =
+            detectedPages +
+            (
+                detectedPages === 1
+                    ? " PAGE DETECTED"
+                    : " PAGES DETECTED"
+            );
+
+
+        document.getElementById(
+            "continueButton"
+        ).disabled = false;
+
+
+        calculateAmount();
+
+
+    } catch (error) {
+
+        console.error(
+            "JOB ERROR:",
+            error
+        );
+
+
+        message.className =
+            "error";
+
+        message.textContent =
+            error.message ||
+            "Unable to load document.";
+
+    }
+
+}
+
+
+/* ============================================================
+   COLOUR
    ============================================================ */
 
 function selectColour(value) {
 
     selectedColour = value;
 
-    const bwButton =
-        document.getElementById("bwButton");
 
-    const colourButton =
-        document.getElementById("colourButton");
+    document
+        .getElementById("bwButton")
+        .classList.toggle(
+            "selected",
+            value === "Black & White"
+        );
 
-    if (value === "Black & White") {
 
-        bwButton.classList.add("selected");
+    document
+        .getElementById("colourButton")
+        .classList.toggle(
+            "selected",
+            value === "Colour"
+        );
 
-        colourButton.classList.remove("selected");
-
-    } else {
-
-        colourButton.classList.add("selected");
-
-        bwButton.classList.remove("selected");
-
-    }
-
-    document.getElementById(
-        "colourDisplay"
-    ).textContent =
-        "Selected: " + value;
 
     calculateAmount();
+
 }
 
 
 /* ============================================================
-   SELECT SIDES
+   SIDES
    ============================================================ */
 
 function selectSides(value) {
 
     selectedSides = value;
 
-    const singleButton =
-        document.getElementById("singleButton");
 
-    const doubleButton =
-        document.getElementById("doubleButton");
+    document
+        .getElementById("singleButton")
+        .classList.toggle(
+            "selected",
+            value === "Single Side"
+        );
 
-    if (value === "Single Side") {
 
-        singleButton.classList.add("selected");
+    document
+        .getElementById("doubleButton")
+        .classList.toggle(
+            "selected",
+            value === "Double Side"
+        );
 
-        doubleButton.classList.remove("selected");
-
-    } else {
-
-        doubleButton.classList.add("selected");
-
-        singleButton.classList.remove("selected");
-
-    }
-
-    document.getElementById(
-        "sidesDisplay"
-    ).textContent =
-        "Selected: " + value;
 
     calculateAmount();
+
 }
 
 
 /* ============================================================
-   CALCULATE AMOUNT
+   CALCULATE PRICE
    ============================================================ */
 
 function calculateAmount() {
 
-    let pages =
-        Number(
-            document.getElementById("pages").value
-        );
-
-    let copies =
-        Number(
-            document.getElementById("copies").value
-        );
-
-
-    if (!Number.isFinite(pages) || pages < 1) {
-        pages = 1;
-    }
-
-    if (!Number.isFinite(copies) || copies < 1) {
-        copies = 1;
+    if (detectedPages < 1) {
+        return;
     }
 
 
-    pages = Math.floor(pages);
-
-    copies = Math.floor(copies);
+    let rate = 2;
 
 
-    /*
-        AXM PRICE
-
-        Black & White = ₹2 per page
-        Colour        = ₹5 per page
-
-        Single/Double side is recorded as
-        a print option.
-    */
-
-    let rate;
-
-    if (selectedColour === "Colour") {
-
-        rate = 5;
-
-    } else {
+    if (
+        selectedColour === "Black & White" &&
+        selectedSides === "Single Side"
+    ) {
 
         rate = 2;
 
     }
 
+    else if (
+        selectedColour === "Black & White" &&
+        selectedSides === "Double Side"
+    ) {
+
+        rate = 3;
+
+    }
+
+    else if (
+        selectedColour === "Colour" &&
+        selectedSides === "Single Side"
+    ) {
+
+        rate = 5;
+
+    }
+
+    else if (
+        selectedColour === "Colour" &&
+        selectedSides === "Double Side"
+    ) {
+
+        rate = 10;
+
+    }
+
 
     currentAmount =
-        pages *
-        copies *
-        rate;
+        detectedPages * rate;
 
 
     document.getElementById(
@@ -588,13 +622,16 @@ function calculateAmount() {
         " • " +
         selectedSides +
         " • " +
-        pages +
-        " page" +
-        (pages === 1 ? "" : "s") +
-        " • " +
-        copies +
-        " cop" +
-        (copies === 1 ? "y" : "ies");
+        detectedPages +
+        (
+            detectedPages === 1
+                ? " page"
+                : " pages"
+        ) +
+        " • ₹" +
+        rate +
+        " per page";
+
 }
 
 
@@ -615,59 +652,26 @@ async function continueToPayment() {
         );
 
 
-    let pages =
-        Number(
-            document.getElementById("pages").value
-        );
+    if (detectedPages < 1) {
 
-    let copies =
-        Number(
-            document.getElementById("copies").value
-        );
-
-
-    if (
-        !Number.isFinite(pages) ||
-        pages < 1
-    ) {
-
-        message.className = "error";
+        message.className =
+            "error";
 
         message.textContent =
-            "Please enter a valid number of pages.";
+            "Page count has not been detected.";
 
         return;
+
     }
-
-
-    if (
-        !Number.isFinite(copies) ||
-        copies < 1
-    ) {
-
-        message.className = "error";
-
-        message.textContent =
-            "Please enter a valid number of copies.";
-
-        return;
-    }
-
-
-    pages = Math.floor(pages);
-
-    copies = Math.floor(copies);
-
-
-    calculateAmount();
 
 
     button.disabled = true;
 
-    message.className = "loading";
+    message.className =
+        "loading";
 
     message.textContent =
-        "Saving your print options...";
+        "Preparing payment...";
 
 
     try {
@@ -689,30 +693,12 @@ async function continueToPayment() {
                             selectedColour,
 
                         sides:
-                            selectedSides,
-
-                        pages:
-                            pages,
-
-                        copies:
-                            copies,
-
-                        amount:
-                            currentAmount
+                            selectedSides
 
                     })
                 }
             );
 
-
-        /*
-            Read text first.
-
-            This prevents:
-            Unexpected token '<'
-            when the server accidentally
-            sends HTML instead of JSON.
-        */
 
         const text =
             await response.text();
@@ -726,16 +712,14 @@ async function continueToPayment() {
             result =
                 JSON.parse(text);
 
-        } catch (jsonError) {
+        }
 
-            console.error(
-                "Server returned:",
-                text
-            );
+        catch {
 
             throw new Error(
-                "Server returned an invalid response. Please redeploy the latest server.js."
+                "Server returned an invalid response."
             );
+
         }
 
 
@@ -746,16 +730,11 @@ async function continueToPayment() {
 
             throw new Error(
                 result.error ||
-                result.message ||
                 "Unable to save print options."
             );
+
         }
 
-
-        /*
-            Save job locally so payment.html
-            can also read it.
-        */
 
         if (result.job) {
 
@@ -764,33 +743,6 @@ async function continueToPayment() {
                 JSON.stringify(
                     result.job
                 )
-            );
-
-        } else {
-
-            sessionStorage.setItem(
-                "axmJob",
-                JSON.stringify({
-
-                    colour:
-                        selectedColour,
-
-                    sides:
-                        selectedSides,
-
-                    pages:
-                        pages,
-
-                    copies:
-                        copies,
-
-                    amount:
-                        currentAmount,
-
-                    paymentStatus:
-                        "PENDING"
-
-                })
             );
 
         }
@@ -803,11 +755,6 @@ async function continueToPayment() {
             "✓ Options saved. Opening payment...";
 
 
-        /*
-            Small delay so the user can see
-            the successful message.
-        */
-
         setTimeout(
             function () {
 
@@ -819,10 +766,12 @@ async function continueToPayment() {
         );
 
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
         console.error(
-            "OPTIONS ERROR:",
+            "PAYMENT ERROR:",
             error
         );
 
@@ -830,22 +779,23 @@ async function continueToPayment() {
         message.className =
             "error";
 
-
         message.textContent =
             error.message ||
-            "Server connection failed.";
+            "Unable to continue.";
 
 
         button.disabled = false;
+
     }
+
 }
 
 
 /* ============================================================
-   INITIAL CALCULATION
+   START
    ============================================================ */
 
-calculateAmount();
+loadJob();
 
 </script>
 
