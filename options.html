@@ -7,118 +7,608 @@
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1"
+        content="width=device-width, initial-scale=1.0"
     >
 
-    <title>AXM Print Options</title>
+    <title>AXM — Print Options</title>
 
-    <link
-        rel="stylesheet"
-        href="/style.css"
-    >
+    <link rel="stylesheet" href="/style.css">
 
     <style>
 
-        .option-group {
-            margin: 20px 0;
+        /* =====================================================
+           PAGE
+        ===================================================== */
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            height: auto;
+
+            overflow-x: hidden;
+            overflow-y: auto;
+
+            font-family: Arial, sans-serif;
         }
 
-        .option-group h3 {
-            margin-bottom: 10px;
+
+        body {
+            background: #eef7ff;
+            color: #073d78;
         }
 
-        .options {
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        main {
+            width: 100%;
+            min-height: 100vh;
+
             display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+
+            box-sizing: border-box;
+
+            padding: 25px 15px 50px;
         }
 
-        .option {
-            padding: 14px 22px;
-            border: 2px solid #d5dfed;
-            border-radius: 12px;
+
+        /* =====================================================
+           MAIN PANEL
+        ===================================================== */
+
+        .panel {
+            width: 100%;
+            max-width: 700px;
+
             background: white;
-            color: #0b3d78;
-            font-weight: 700;
-            cursor: pointer;
-        }
 
-        .option.selected {
-            background: #0b57d0;
-            color: white;
-            border-color: #0b57d0;
-        }
+            border-radius: 24px;
 
-        .option.disabled {
-            opacity: 0.35;
-            cursor: not-allowed;
-            background: #eeeeee;
-            color: #777;
-        }
+            padding: 30px;
 
-        .copies-box {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+            box-sizing: border-box;
 
-        .copies-box button {
-            width: 45px;
-            height: 45px;
-            border: none;
-            border-radius: 10px;
-            background: #0b57d0;
-            color: white;
-            font-size: 22px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        #copies {
-            width: 70px;
-            height: 45px;
             text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-            border: 2px solid #d5dfed;
-            border-radius: 10px;
+
+            box-shadow:
+                0 8px 30px rgba(0, 70, 140, 0.12);
         }
 
-        .summary {
+
+        /* =====================================================
+           TITLE
+        ===================================================== */
+
+        .panel > h1 {
+            margin: 0 0 8px;
+
+            color: #124b89;
+
+            font-size: 32px;
+
+            font-weight: 800;
+        }
+
+
+        /* =====================================================
+           SUMMARY
+        ===================================================== */
+
+        #summary {
+            width: 100%;
+
+            text-align: center;
+
+            margin-top: 15px;
+        }
+
+
+        #summary > p {
+            margin: 0 0 15px;
+
+            font-size: 18px;
+
+            font-weight: 700;
+
+            color: #174e89;
+
+            word-break: break-word;
+        }
+
+
+        /* =====================================================
+           SUMMARY CARD
+        ===================================================== */
+
+        .summary-card {
+
+            width: 100%;
+
+            max-width: 420px;
+
+            margin: 0 auto 20px;
+
+            padding: 18px 25px;
+
+            box-sizing: border-box;
+
             background: #f3f7fc;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
+
+            border: 1px solid #d9e6f5;
+
+            border-radius: 18px;
+
+            text-align: center;
         }
 
-        .summary-row {
+
+        .summary-card div {
+
             display: flex;
-            justify-content: space-between;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 3px;
+
+            margin: 9px 0;
+        }
+
+
+        .summary-card div b {
+
+            font-size: 15px;
+
+            color: #52708f;
+        }
+
+
+        .summary-card div span {
+
+            font-size: 17px;
+
+            font-weight: 700;
+
+            color: #073d78;
+
+            word-break: break-word;
+        }
+
+
+        /* =====================================================
+           TOTAL AMOUNT
+        ===================================================== */
+
+        #summary > h2 {
+
+            margin: 12px 0 25px;
+
+            color: #0b57d0;
+
+            font-size: 26px;
+        }
+
+
+        /* =====================================================
+           OPTIONS CONTAINER
+        ===================================================== */
+
+        .options-container,
+        .options,
+        .option-section {
+
+            width: 100%;
+
+            max-width: 500px;
+
+            margin-left: auto;
+            margin-right: auto;
+
+            text-align: center;
+        }
+
+
+        /* =====================================================
+           ALL HEADINGS
+        ===================================================== */
+
+        .options-container h2,
+        .options h2,
+        .option-section h2,
+        .options-container h3,
+        .options h3,
+        .option-section h3 {
+
+            text-align: center;
+
+            margin-top: 22px;
+            margin-bottom: 12px;
+
+            color: #124b89;
+        }
+
+
+        /* =====================================================
+           OPTION BUTTON GROUPS
+        ===================================================== */
+
+        .option-buttons,
+        .buttons,
+        .choices {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            gap: 10px;
+
+            width: 100%;
+
+            margin: 0 auto;
+        }
+
+
+        /* =====================================================
+           BUTTONS
+        ===================================================== */
+
+        button {
+
+            font-family: Arial, sans-serif;
+
+            cursor: pointer;
+        }
+
+
+        .option-button,
+        .choice-button {
+
+            min-width: 125px;
+
+            padding: 13px 20px;
+
+            border-radius: 12px;
+
+            border: 2px solid #d3e0ef;
+
+            background: white;
+
+            color: #124b89;
+
+            font-size: 15px;
+
+            font-weight: 700;
+        }
+
+
+        .option-button.active,
+        .choice-button.active,
+        .option-button.selected,
+        .choice-button.selected {
+
+            background: #0b57d0;
+
+            border-color: #0b57d0;
+
+            color: white;
+        }
+
+
+        /* =====================================================
+           COPIES
+           ===================================================== */
+
+        .copies-section {
+
+            width: 100%;
+
+            max-width: 500px;
+
+            margin: 20px auto;
+
+            text-align: center;
+        }
+
+
+        .copies-controls {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-top: 10px;
+        }
+
+
+        .copies-controls button {
+
+            width: 48px;
+
+            height: 44px;
+
+            border: none;
+
+            border-radius: 11px;
+
+            background: #0b57d0;
+
+            color: white;
+
+            font-size: 24px;
+
+            font-weight: 800;
+        }
+
+
+        .copies-controls input {
+
+            width: 70px;
+
+            height: 44px;
+
+            box-sizing: border-box;
+
+            border: 2px solid #d3e0ef;
+
+            border-radius: 11px;
+
+            background: white;
+
+            color: #073d78;
+
+            text-align: center;
+
+            font-size: 18px;
+
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           DISABLED DOUBLE SIDE
+           ===================================================== */
+
+        button:disabled {
+
+            opacity: 0.35;
+
+            cursor: not-allowed;
+
+            background: #edf2f7 !important;
+
+            border-color: #dce5ee !important;
+
+            color: #8b9aaa !important;
+        }
+
+
+        /* =====================================================
+           DISABLED MESSAGE
+           ===================================================== */
+
+        .disabled-message {
+
+            margin: 8px auto 15px;
+
+            max-width: 450px;
+
+            text-align: center;
+
+            color: #66788a;
+
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           PRICE SUMMARY
+           ===================================================== */
+
+        .price-summary {
+
+            width: 100%;
+
+            max-width: 420px;
+
+            margin: 25px auto 0;
+
+            padding: 20px 25px;
+
+            box-sizing: border-box;
+
+            background: #f3f7fc;
+
+            border-radius: 18px;
+
+            text-align: center;
+        }
+
+
+        .price-summary div {
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            gap: 3px;
+
             margin: 10px 0;
         }
 
-        .amount {
-            font-size: 28px;
-            font-weight: 800;
-            color: #0b57d0;
+
+        .price-summary b {
+
+            color: #52708f;
+
+            font-size: 15px;
         }
 
-        .continue-btn {
-            width: 100%;
-            padding: 17px;
-            border: none;
-            border-radius: 12px;
-            background: #f5c400;
-            color: #062b55;
-            font-weight: 800;
+
+        .price-summary span {
+
+            color: #124b89;
+
             font-size: 18px;
-            cursor: pointer;
-            margin-top: 20px;
+
+            font-weight: 700;
         }
 
-        .info {
-            color: #666;
-            font-size: 14px;
+
+        .price-summary .total {
+
+            margin-top: 18px;
+
+            padding-top: 15px;
+
+            border-top: 1px solid #d6e2ef;
+        }
+
+
+        .price-summary .total b {
+
+            font-size: 17px;
+
+            color: #124b89;
+        }
+
+
+        .price-summary .total span {
+
+            font-size: 30px;
+
+            color: #0b57d0;
+
+            font-weight: 800;
+        }
+
+
+        /* =====================================================
+           PAY BUTTON
+        ===================================================== */
+
+        .pay-button {
+
+            display: block;
+
+            width: 100%;
+
+            max-width: 350px;
+
+            margin: 25px auto 0;
+
+            padding: 16px;
+
+            border: none;
+
+            border-radius: 13px;
+
+            background: #0b57d0;
+
+            color: white;
+
+            font-size: 18px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+        }
+
+
+        .pay-button:hover {
+
+            opacity: 0.92;
+        }
+
+
+        /* =====================================================
+           MESSAGE
+        ===================================================== */
+
+        .message {
+
+            text-align: center;
+
+            margin-top: 15px;
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 600px) {
+
+            main {
+
+                padding:
+                    15px
+                    10px
+                    40px;
+            }
+
+
+            .panel {
+
+                padding:
+                    22px
+                    15px
+                    30px;
+
+                border-radius: 18px;
+            }
+
+
+            .panel > h1 {
+
+                font-size: 27px;
+            }
+
+
+            .summary-card {
+
+                max-width: 360px;
+
+                padding:
+                    15px
+                    18px;
+            }
+
+
+            .option-button,
+            .choice-button {
+
+                min-width: 110px;
+
+                padding:
+                    12px
+                    14px;
+            }
+
+
+            .price-summary {
+
+                max-width: 360px;
+            }
+
         }
 
     </style>
@@ -128,235 +618,207 @@
 
 <body>
 
+
 <main>
 
-<section class="panel">
+    <section class="panel">
 
-    <h1>Print Options</h1>
-
-    <div id="loading">
-        Loading document...
-    </div>
+        <h1>
+            Print Options
+        </h1>
 
 
-    <div
-        id="content"
-        style="display:none;"
-    >
-
-        <!-- ========================================= -->
-        <!-- DOCUMENT INFORMATION -->
-        <!-- ========================================= -->
-
-        <div class="summary">
-
-            <div class="summary-row">
-
-                <b>Document</b>
-
-                <span id="filename">
-                </span>
-
-            </div>
-
-
-            <div class="summary-row">
-
-                <b>Pages Detected</b>
-
-                <strong id="pages">
-                </strong>
-
-            </div>
-
-
-            <div class="summary-row">
-
-                <b>Copies</b>
-
-                <strong id="copiesSummary">
-                    1
-                </strong>
-
-            </div>
-
+        <div id="summary">
+            Loading...
         </div>
 
 
-        <!-- ========================================= -->
-        <!-- COLOUR -->
-        <!-- ========================================= -->
+        <!-- =================================================
+             OPTIONS
+             ================================================= -->
 
-        <div class="option-group">
+        <div
+            class="options-container"
+            id="optionsContainer"
+        >
 
-            <h3>Colour</h3>
+            <!-- COLOUR -->
 
-            <div class="options">
+            <div class="option-section">
 
-                <button
-                    class="option selected"
-                    id="bwBtn"
-                    onclick="selectColour('Black & White')"
-                >
-                    Black & White
-                </button>
-
-
-                <button
-                    class="option"
-                    id="colourBtn"
-                    onclick="selectColour('Colour')"
-                >
+                <h2>
                     Colour
-                </button>
+                </h2>
+
+                <div class="option-buttons">
+
+                    <button
+                        id="bwBtn"
+                        class="option-button active"
+                        onclick="selectColour('Black & White')"
+                    >
+                        Black & White
+                    </button>
+
+
+                    <button
+                        id="colourBtn"
+                        class="option-button"
+                        onclick="selectColour('Colour')"
+                    >
+                        Colour
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- SIDES -->
+
+            <div class="option-section">
+
+                <h2>
+                    Sides
+                </h2>
+
+                <div class="option-buttons">
+
+                    <button
+                        id="singleBtn"
+                        class="option-button active"
+                        onclick="selectSides('Single Side')"
+                    >
+                        Single Side
+                    </button>
+
+
+                    <button
+                        id="doubleBtn"
+                        class="option-button"
+                        onclick="selectSides('Double Side')"
+                    >
+                        Double Side
+                    </button>
+
+                </div>
+
+
+                <p
+                    id="doubleMessage"
+                    class="disabled-message"
+                    style="display:none;"
+                >
+                    Double Side is unavailable because only 1 page was detected.
+                </p>
+
+            </div>
+
+
+            <!-- COPIES -->
+
+            <div class="copies-section">
+
+                <h2>
+                    How many copies?
+                </h2>
+
+
+                <div class="copies-controls">
+
+                    <button
+                        type="button"
+                        onclick="changeCopies(-1)"
+                    >
+                        −
+                    </button>
+
+
+                    <input
+                        type="number"
+                        id="copiesInput"
+                        value="1"
+                        min="1"
+                        max="50"
+                        onchange="setCopies()"
+                    >
+
+
+                    <button
+                        type="button"
+                        onclick="changeCopies(1)"
+                    >
+                        +
+                    </button>
+
+                </div>
 
             </div>
 
         </div>
 
 
-        <!-- ========================================= -->
-        <!-- SIDES -->
-        <!-- ========================================= -->
+        <!-- =================================================
+             PRICE
+             ================================================= -->
 
-        <div class="option-group">
+        <div
+            id="priceSummary"
+            class="price-summary"
+        >
 
-            <h3>Sides</h3>
-
-            <div class="options">
-
-                <button
-                    class="option selected"
-                    id="singleBtn"
-                    onclick="selectSides('Single Side')"
-                >
-                    Single Side
-                </button>
-
-
-                <button
-                    class="option"
-                    id="doubleBtn"
-                    onclick="selectSides('Double Side')"
-                >
-                    Double Side
-                </button>
-
-            </div>
-
-
-            <p
-                id="doubleMessage"
-                class="info"
-            >
-            </p>
-
-        </div>
-
-
-        <!-- ========================================= -->
-        <!-- COPIES -->
-        <!-- ========================================= -->
-
-        <div class="option-group">
-
-            <h3>How many copies?</h3>
-
-            <div class="copies-box">
-
-                <button
-                    onclick="changeCopies(-1)"
-                >
-                    −
-                </button>
-
-
-                <input
-                    type="number"
-                    id="copies"
-                    value="1"
-                    min="1"
-                    max="50"
-                    readonly
-                >
-
-
-                <button
-                    onclick="changeCopies(1)"
-                >
-                    +
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <!-- ========================================= -->
-        <!-- TOTAL -->
-        <!-- ========================================= -->
-
-        <div class="summary">
-
-            <div class="summary-row">
-
+            <div>
                 <b>Pages</b>
-
-                <span id="totalPages">
-                    1
-                </span>
-
+                <span id="pricePages">1</span>
             </div>
 
 
-            <div class="summary-row">
-
+            <div>
                 <b>Copies</b>
-
-                <span id="totalCopies">
-                    1
-                </span>
-
+                <span id="priceCopies">1</span>
             </div>
 
 
-            <div class="summary-row">
-
+            <div>
                 <b>Rate</b>
-
-                <span id="rate">
-                    ₹3
-                </span>
-
+                <span id="priceRate">₹3</span>
             </div>
 
 
-            <div class="summary-row">
+            <div class="total">
 
-                <b>Total Amount</b>
+                <b>
+                    Total Amount
+                </b>
 
-                <span
-                    class="amount"
-                    id="amount"
-                >
-                    ₹3
+                <span id="totalAmount">
+                    ₹3.00
                 </span>
 
             </div>
 
         </div>
 
+
+        <!-- =================================================
+             CONTINUE
+             ================================================= -->
 
         <button
-            class="continue-btn"
+            id="continueBtn"
+            class="pay-button"
             onclick="continueToPayment()"
         >
             CONTINUE TO PAYMENT
         </button>
 
-    </div>
 
-</section>
+        <p
+            id="msg"
+            class="message"
+        ></p>
+
+    </section>
 
 </main>
 
@@ -374,12 +836,14 @@ let selectedSides =
 let copies = 1;
 
 
-
-// =====================================================
-// LOAD JOB
-// =====================================================
+/* ============================================================
+   LOAD JOB
+   ============================================================ */
 
 async function loadJob() {
+
+    const msg =
+        document.getElementById("msg");
 
     try {
 
@@ -390,10 +854,11 @@ async function loadJob() {
             await response.json();
 
 
-        if (!response.ok || !data.job) {
+        if (!response.ok) {
 
             throw new Error(
-                "No document received."
+                data.error ||
+                "Unable to load job."
             );
 
         }
@@ -403,192 +868,219 @@ async function loadJob() {
             data.job;
 
 
-        // =============================================
-        // DISPLAY INFORMATION
-        // =============================================
+        if (!job) {
+
+            msg.textContent =
+                "No document has been received.";
+
+            return;
+
+        }
+
+
+        /*
+         * IMPORTANT
+         *
+         * Pages comes from the server.
+         *
+         * Example:
+         *
+         * 30-page PDF
+         *
+         * job.pages = 30
+         */
+
+        const pages =
+            Number(job.pages) || 1;
+
+
+        copies =
+            Number(job.copies) || 1;
+
+
+        if (copies < 1) {
+            copies = 1;
+        }
+
+
+        if (copies > 50) {
+            copies = 50;
+        }
+
 
         document.getElementById(
-            "filename"
-        ).textContent =
-            job.filename;
+            "copiesInput"
+        ).value = copies;
 
 
-        document.getElementById(
-            "pages"
-        ).textContent =
-            job.pages;
-
+        /* ====================================================
+           DOCUMENT SUMMARY
+           ==================================================== */
 
         document.getElementById(
-            "totalPages"
-        ).textContent =
-            job.pages;
+            "summary"
+        ).innerHTML = `
+
+            <p>
+                ${escapeHtml(job.filename)}
+            </p>
+
+            <div class="summary-card">
+
+                <div>
+                    <b>Pages Detected</b>
+                    <span>${pages}</span>
+                </div>
+
+                <div>
+                    <b>Copies</b>
+                    <span id="summaryCopies">${copies}</span>
+                </div>
+
+            </div>
+
+        `;
 
 
-        // =============================================
-        // IMPORTANT
-        // DOUBLE SIDE RULE
-        // =============================================
+        /*
+         * ====================================================
+         * DOUBLE SIDE RULE
+         * ====================================================
+         *
+         * If PDF has only 1 page:
+         *
+         * Double Side = DISABLED
+         *
+         * If PDF has 2 or more pages:
+         *
+         * Double Side = ENABLED
+         */
 
-        updateDoubleSide();
+        const doubleBtn =
+            document.getElementById(
+                "doubleBtn"
+            );
+
+        const doubleMessage =
+            document.getElementById(
+                "doubleMessage"
+            );
 
 
-        // =============================================
-        // UPDATE PRICE
-        // =============================================
+        if (pages <= 1) {
+
+            doubleBtn.disabled =
+                true;
+
+            selectedSides =
+                "Single Side";
+
+            doubleMessage.style.display =
+                "block";
+
+        }
+
+        else {
+
+            doubleBtn.disabled =
+                false;
+
+            doubleMessage.style.display =
+                "none";
+
+        }
+
+
+        updateButtons();
 
         updatePrice();
-
-
-        document.getElementById(
-            "loading"
-        ).style.display =
-            "none";
-
-
-        document.getElementById(
-            "content"
-        ).style.display =
-            "block";
 
     }
 
     catch (error) {
 
-        document.getElementById(
-            "loading"
-        ).textContent =
-            error.message;
+        console.error(error);
+
+        msg.textContent =
+            error.message ||
+            "Unable to load document.";
 
     }
 
 }
 
 
+/* ============================================================
+   ESCAPE HTML
+   ============================================================ */
 
-// =====================================================
-// DOUBLE SIDE ENABLE / DISABLE
-// =====================================================
+function escapeHtml(value) {
 
-function updateDoubleSide() {
+    return String(
+        value ?? ""
+    ).replace(
+        /[&<>'"]/g,
+        function(c) {
 
-    const doubleBtn =
-        document.getElementById(
-            "doubleBtn"
-        );
+            return {
 
-    const message =
-        document.getElementById(
-            "doubleMessage"
-        );
+                "&":
+                    "&amp;",
 
+                "<":
+                    "&lt;",
 
-    // =============================================
-    // ONLY ONE PAGE
-    // =============================================
+                ">":
+                    "&gt;",
 
-    if (
-        Number(job.pages) <= 1
-    ) {
+                "'":
+                    "&#39;",
 
-        doubleBtn.classList.add(
-            "disabled"
-        );
+                '"':
+                    "&quot;"
 
-        doubleBtn.disabled =
-            true;
+            }[c];
 
-        selectedSides =
-            "Single Side";
-
-
-        document.getElementById(
-            "singleBtn"
-        ).classList.add(
-            "selected"
-        );
-
-
-        document.getElementById(
-            "doubleBtn"
-        ).classList.remove(
-            "selected"
-        );
-
-
-        message.textContent =
-            "Double Side is unavailable because only 1 page was detected.";
-
-    }
-
-
-    // =============================================
-    // TWO OR MORE PAGES
-    // =============================================
-
-    else {
-
-        doubleBtn.classList.remove(
-            "disabled"
-        );
-
-        doubleBtn.disabled =
-            false;
-
-        message.textContent =
-            "";
-
-    }
+        }
+    );
 
 }
 
 
+/* ============================================================
+   SELECT COLOUR
+   ============================================================ */
 
-// =====================================================
-// COLOUR
-// =====================================================
-
-function selectColour(value) {
+function selectColour(colour) {
 
     selectedColour =
-        value;
+        colour;
 
-
-    document.getElementById(
-        "bwBtn"
-    ).classList.toggle(
-        "selected",
-        value === "Black & White"
-    );
-
-
-    document.getElementById(
-        "colourBtn"
-    ).classList.toggle(
-        "selected",
-        value === "Colour"
-    );
-
+    updateButtons();
 
     updatePrice();
 
 }
 
 
+/* ============================================================
+   SELECT SIDES
+   ============================================================ */
 
-// =====================================================
-// SIDES
-// =====================================================
+function selectSides(sides) {
 
-function selectSides(value) {
+    const pages =
+        Number(job?.pages) || 1;
 
-    // =============================================
-    // DO NOT ALLOW DOUBLE SIDE FOR ONE PAGE
-    // =============================================
+
+    /*
+     * Do not allow Double Side
+     * for a 1-page document.
+     */
 
     if (
-        value === "Double Side" &&
-        Number(job.pages) <= 1
+        sides === "Double Side" &&
+        pages <= 1
     ) {
 
         return;
@@ -597,39 +1089,79 @@ function selectSides(value) {
 
 
     selectedSides =
-        value;
+        sides;
 
-
-    document.getElementById(
-        "singleBtn"
-    ).classList.toggle(
-        "selected",
-        value === "Single Side"
-    );
-
-
-    document.getElementById(
-        "doubleBtn"
-    ).classList.toggle(
-        "selected",
-        value === "Double Side"
-    );
-
+    updateButtons();
 
     updatePrice();
 
 }
 
 
+/* ============================================================
+   UPDATE BUTTONS
+   ============================================================ */
 
-// =====================================================
-// COPIES
-// =====================================================
+function updateButtons() {
 
-function changeCopies(change) {
+    const bwBtn =
+        document.getElementById(
+            "bwBtn"
+        );
 
-    copies +=
-        change;
+    const colourBtn =
+        document.getElementById(
+            "colourBtn"
+        );
+
+    const singleBtn =
+        document.getElementById(
+            "singleBtn"
+        );
+
+    const doubleBtn =
+        document.getElementById(
+            "doubleBtn"
+        );
+
+
+    bwBtn.classList.toggle(
+        "active",
+        selectedColour ===
+            "Black & White"
+    );
+
+
+    colourBtn.classList.toggle(
+        "active",
+        selectedColour ===
+            "Colour"
+    );
+
+
+    singleBtn.classList.toggle(
+        "active",
+        selectedSides ===
+            "Single Side"
+    );
+
+
+    doubleBtn.classList.toggle(
+        "active",
+        selectedSides ===
+            "Double Side"
+    );
+
+}
+
+
+/* ============================================================
+   COPIES + / -
+   ============================================================ */
+
+function changeCopies(amount) {
+
+    copies += amount;
 
 
     if (copies < 1) {
@@ -647,20 +1179,53 @@ function changeCopies(change) {
 
 
     document.getElementById(
-        "copies"
+        "copiesInput"
+    ).value = copies;
+
+
+    updatePrice();
+
+}
+
+
+/* ============================================================
+   MANUAL COPY INPUT
+   ============================================================ */
+
+function setCopies() {
+
+    let value =
+        Number(
+            document.getElementById(
+                "copiesInput"
+            ).value
+        );
+
+
+    if (
+        !Number.isFinite(value) ||
+        value < 1
+    ) {
+
+        value = 1;
+
+    }
+
+
+    if (value > 50) {
+
+        value = 50;
+
+    }
+
+
+    copies =
+        Math.floor(value);
+
+
+    document.getElementById(
+        "copiesInput"
     ).value =
-        copies;
-
-
-    document.getElementById(
-        "copiesSummary"
-    ).textContent =
-        copies;
-
-
-    document.getElementById(
-        "totalCopies"
-    ).textContent =
         copies;
 
 
@@ -669,54 +1234,68 @@ function changeCopies(change) {
 }
 
 
-
-// =====================================================
-// PRICE
-// =====================================================
+/* ============================================================
+   GET RATE
+   ============================================================ */
 
 function getRate() {
 
     if (
         selectedColour ===
-        "Black & White"
+            "Black & White"
     ) {
 
         if (
             selectedSides ===
-            "Single Side"
+                "Double Side"
         ) {
 
-            return 3;
+            return 1.80;
 
         }
 
-        return 1.80;
+        return 3;
 
     }
 
 
     if (
-        selectedSides ===
-        "Single Side"
+        selectedColour ===
+            "Colour"
     ) {
+
+        if (
+            selectedSides ===
+                "Double Side"
+        ) {
+
+            return 10;
+
+        }
 
         return 5;
 
     }
 
-    return 10;
+
+    return 3;
 
 }
 
 
+/* ============================================================
+   UPDATE PRICE
+   ============================================================ */
 
 function updatePrice() {
 
     if (!job) {
-
         return;
-
     }
+
+
+    const pages =
+        Number(job.pages) || 1;
 
 
     const rate =
@@ -724,32 +1303,88 @@ function updatePrice() {
 
 
     const total =
-        Number(job.pages) *
+        pages *
         copies *
         rate;
 
 
     document.getElementById(
-        "rate"
+        "pricePages"
     ).textContent =
-        "₹" + rate;
+        pages;
 
 
     document.getElementById(
-        "amount"
+        "priceCopies"
+    ).textContent =
+        copies;
+
+
+    document.getElementById(
+        "priceRate"
+    ).textContent =
+        "₹" +
+        rate;
+
+
+    document.getElementById(
+        "totalAmount"
     ).textContent =
         "₹" +
         total.toFixed(2);
 
+
+    const summaryCopies =
+        document.getElementById(
+            "summaryCopies"
+        );
+
+
+    if (summaryCopies) {
+
+        summaryCopies.textContent =
+            copies;
+
+    }
+
 }
 
 
-
-// =====================================================
-// SAVE OPTIONS
-// =====================================================
+/* ============================================================
+   CONTINUE TO PAYMENT
+   ============================================================ */
 
 async function continueToPayment() {
+
+    const msg =
+        document.getElementById(
+            "msg"
+        );
+
+
+    const button =
+        document.getElementById(
+            "continueBtn"
+        );
+
+
+    if (!job) {
+
+        msg.textContent =
+            "No document available.";
+
+        return;
+
+    }
+
+
+    button.disabled =
+        true;
+
+
+    msg.textContent =
+        "Saving print options...";
+
 
     try {
 
@@ -757,7 +1392,8 @@ async function continueToPayment() {
             await fetch(
                 "/api/options",
                 {
-                    method: "POST",
+                    method:
+                        "POST",
 
                     headers: {
                         "Content-Type":
@@ -776,7 +1412,7 @@ async function continueToPayment() {
                             pages:
                                 Number(
                                     job.pages
-                                ),
+                                ) || 1,
 
                             copies:
                                 copies
@@ -791,10 +1427,7 @@ async function continueToPayment() {
             await response.json();
 
 
-        if (
-            !response.ok ||
-            !data.success
-        ) {
+        if (!response.ok) {
 
             throw new Error(
                 data.error ||
@@ -804,6 +1437,22 @@ async function continueToPayment() {
         }
 
 
+        if (!data.success) {
+
+            throw new Error(
+                data.error ||
+                "Unable to save options."
+            );
+
+        }
+
+
+        /*
+         * Options successfully saved.
+         *
+         * Go to payment page.
+         */
+
         window.location.href =
             "/payment.html";
 
@@ -811,23 +1460,28 @@ async function continueToPayment() {
 
     catch (error) {
 
-        alert(
-            error.message
-        );
+        console.error(error);
+
+        msg.textContent =
+            error.message ||
+            "Unable to continue.";
+
+        button.disabled =
+            false;
 
     }
 
 }
 
 
-
-// =====================================================
-// START
-// =====================================================
+/* ============================================================
+   START
+   ============================================================ */
 
 loadJob();
 
 </script>
+
 
 </body>
 
