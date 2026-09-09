@@ -11,116 +11,162 @@ const app = express();
 
 const PORT = process.env.PORT || 10000;
 
-// ============================================================
-// DIRECTORIES
-// ============================================================
 
-const DATA_DIR = path.join(__dirname, "data");
-const UPLOAD_DIR = path.join(DATA_DIR, "uploads");
+/* ============================================================
+   DIRECTORIES
+============================================================ */
 
-fs.mkdirSync(UPLOAD_DIR, {
-    recursive: true
-});
+const DATA_DIR =
+    path.join(__dirname, "data");
 
-// ============================================================
-// MIDDLEWARE
-// ============================================================
+const UPLOAD_DIR =
+    path.join(DATA_DIR, "uploads");
 
-app.use(express.json({
-    limit: "10mb"
-}));
 
-app.use(express.urlencoded({
-    extended: true
-}));
-
-app.use(express.static(__dirname));
-
-// ============================================================
-// FILE UPLOAD
-// ============================================================
-
-const storage = multer.diskStorage({
-
-    destination: function (req, file, cb) {
-        cb(null, UPLOAD_DIR);
-    },
-
-    filename: function (req, file, cb) {
-
-        const safeName =
-            path.basename(file.originalname)
-                .replace(/[^a-zA-Z0-9._-]/g, "_");
-
-        const uniqueName =
-            Date.now() +
-            "_" +
-            crypto.randomBytes(6).toString("hex") +
-            "_" +
-            safeName;
-
-        cb(null, uniqueName);
+fs.mkdirSync(
+    UPLOAD_DIR,
+    {
+        recursive: true
     }
-
-});
-
-const upload = multer({
-
-    storage: storage,
-
-    limits: {
-        fileSize: 25 * 1024 * 1024
-    },
-
-    fileFilter: function (req, file, cb) {
-
-        const allowedTypes = [
-            "application/pdf",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-        ];
-
-        if (allowedTypes.includes(file.mimetype)) {
-
-            cb(null, true);
-
-        } else {
-
-            cb(
-                new Error(
-                    "Only PDF, JPG, PNG and WEBP files are allowed."
-                )
-            );
-
-        }
-
-    }
-
-});
-
-// ============================================================
-// PRICING
-// ============================================================
-
-const PRICES = {
-
-    "Black & White": {
-        "Single Side": 3,
-        "Double Side": 1.80
-    },
-
-    "Colour": {
-        "Single Side": 5,
-        "Double Side": 10
-    }
-
-};
+);
 
 
-// ============================================================
-// RAZORPAY
-// ============================================================
+/* ============================================================
+   MIDDLEWARE
+============================================================ */
+
+app.use(
+    express.json({
+        limit: "10mb"
+    })
+);
+
+
+app.use(
+    express.urlencoded({
+        extended: true
+    })
+);
+
+
+app.use(
+    express.static(__dirname)
+);
+
+
+/* ============================================================
+   FILE UPLOAD
+============================================================ */
+
+const storage =
+    multer.diskStorage({
+
+        destination:
+            function (req, file, cb) {
+
+                cb(
+                    null,
+                    UPLOAD_DIR
+                );
+
+            },
+
+
+        filename:
+            function (req, file, cb) {
+
+                const safeName =
+                    path
+                        .basename(
+                            file.originalname
+                        )
+                        .replace(
+                            /[^a-zA-Z0-9._-]/g,
+                            "_"
+                        );
+
+
+                const uniqueName =
+                    Date.now() +
+                    "_" +
+                    crypto
+                        .randomBytes(6)
+                        .toString("hex") +
+                    "_" +
+                    safeName;
+
+
+                cb(
+                    null,
+                    uniqueName
+                );
+
+            }
+
+    });
+
+
+const upload =
+    multer({
+
+        storage: storage,
+
+        limits: {
+
+            fileSize:
+                25 * 1024 * 1024
+
+        },
+
+
+        fileFilter:
+            function (req, file, cb) {
+
+                const allowedTypes = [
+
+                    "application/pdf",
+
+                    "image/jpeg",
+
+                    "image/png",
+
+                    "image/webp"
+
+                ];
+
+
+                if (
+                    allowedTypes
+                        .includes(
+                            file.mimetype
+                        )
+                ) {
+
+                    cb(
+                        null,
+                        true
+                    );
+
+                }
+
+                else {
+
+                    cb(
+                        new Error(
+                            "Only PDF, JPG, PNG and WEBP files are allowed."
+                        )
+                    );
+
+                }
+
+            }
+
+    });
+
+
+/* ============================================================
+   RAZORPAY
+============================================================ */
 
 const RAZORPAY_KEY_ID =
     process.env.RAZORPAY_KEY_ID;
@@ -128,32 +174,45 @@ const RAZORPAY_KEY_ID =
 const RAZORPAY_KEY_SECRET =
     process.env.RAZORPAY_KEY_SECRET;
 
+
 let razorpay = null;
+
 
 if (
     RAZORPAY_KEY_ID &&
     RAZORPAY_KEY_SECRET
 ) {
 
-    razorpay = new Razorpay({
+    razorpay =
+        new Razorpay({
 
-        key_id: RAZORPAY_KEY_ID,
+            key_id:
+                RAZORPAY_KEY_ID,
 
-        key_secret: RAZORPAY_KEY_SECRET
+            key_secret:
+                RAZORPAY_KEY_SECRET
 
-    });
+        });
 
-    console.log("Razorpay: CONFIGURED");
 
-} else {
-
-    console.log("Razorpay: NOT CONFIGURED");
+    console.log(
+        "Razorpay: CONFIGURED"
+    );
 
 }
 
-// ============================================================
-// AXM SESSION
-// ============================================================
+else {
+
+    console.log(
+        "Razorpay: NOT CONFIGURED"
+    );
+
+}
+
+
+/* ============================================================
+   AXM SESSION
+============================================================ */
 
 let activeSession = {
 
@@ -163,127 +222,306 @@ let activeSession = {
 
 };
 
+
 const SESSION_TIME =
     30 * 60 * 1000;
 
-// ============================================================
-// CURRENT JOB
-// ============================================================
+
+/* ============================================================
+   CURRENT JOB
+============================================================ */
 
 let currentJob = null;
 
-// ============================================================
-// EVENTS
-// ============================================================
+
+/* ============================================================
+   EVENTS
+============================================================ */
 
 let eventId = 0;
 
 const events = [];
 
+
 function addEvent(data) {
 
     eventId++;
 
+
     const event = {
 
-        id: eventId,
+        id:
+            eventId,
 
-        time: Date.now(),
+        time:
+            Date.now(),
 
         ...data
 
     };
 
+
     events.push(event);
 
-    if (events.length > 100) {
+
+    if (
+        events.length > 100
+    ) {
+
         events.shift();
+
     }
+
 
     console.log(
         "EVENT:",
         event.type
     );
 
+
     return event;
 
 }
 
-// ============================================================
-// BASE URL
-// ============================================================
+
+/* ============================================================
+   BASE URL
+============================================================ */
 
 function getBaseUrl(req) {
 
     const forwardedProto =
-        req.headers["x-forwarded-proto"];
+        req.headers[
+            "x-forwarded-proto"
+        ];
+
 
     const protocol =
         forwardedProto ||
         req.protocol ||
         "https";
 
+
     const forwardedHost =
-        req.headers["x-forwarded-host"];
+        req.headers[
+            "x-forwarded-host"
+        ];
+
 
     const host =
         forwardedHost ||
         req.get("host");
 
-    return `${protocol}://${host}`;
+
+    return (
+        `${protocol}://${host}`
+    );
 
 }
 
-// ============================================================
-// HOME
-// ============================================================
 
-app.get("/", function (req, res) {
+/* ============================================================
+   PDF PAGE COUNT
+============================================================ */
 
-    res.sendFile(
-        path.join(__dirname, "index.html")
-    );
+async function getDocumentPageCount(
+    filePath,
+    mimetype
+) {
 
-});
+    /* PDF */
 
-// ============================================================
-// HEALTH
-// ============================================================
+    if (
+        mimetype ===
+        "application/pdf"
+    ) {
 
-app.get("/api/health", function (req, res) {
+        const pdfBytes =
+            await fs.promises.readFile(
+                filePath
+            );
 
-    const sessionValid =
-        activeSession.token &&
-        Date.now() -
-        activeSession.createdAt <
-        SESSION_TIME;
 
-    res.json({
+        const pdfDoc =
+            await PDFDocument.load(
+                pdfBytes
+            );
 
-        success: true,
 
-        status: "online",
+        return pdfDoc.getPageCount();
 
-        razorpay: !!razorpay,
+    }
 
-        razorpayConfigured: !!razorpay,
 
-        activeSession: !!sessionValid,
+    /* IMAGE */
 
-        activeSessions:
-            sessionValid ? 1 : 0,
+    if (
+        mimetype === "image/jpeg" ||
+        mimetype === "image/png" ||
+        mimetype === "image/webp"
+    ) {
 
-        job: !!currentJob,
+        return 1;
 
-        timestamp: Date.now()
+    }
 
-    });
 
-});
+    return 1;
 
-// ============================================================
-// PAYMENT CONFIG
-// ============================================================
+}
+
+
+/* ============================================================
+   PRICE CALCULATION
+============================================================ */
+
+function calculateRate(
+    colour,
+    sides
+) {
+
+    const colourValue =
+        String(
+            colour || ""
+        ).toLowerCase();
+
+
+    const sidesValue =
+        String(
+            sides || ""
+        ).toLowerCase();
+
+
+    /* B&W + SINGLE */
+
+    if (
+        colourValue.includes("black") &&
+        sidesValue.includes("single")
+    ) {
+
+        return 3;
+
+    }
+
+
+    /* B&W + DOUBLE */
+
+    if (
+        colourValue.includes("black") &&
+        sidesValue.includes("double")
+    ) {
+
+        return 1.80;
+
+    }
+
+
+    /* COLOUR + SINGLE */
+
+    if (
+        (
+            colourValue.includes("colour") ||
+            colourValue.includes("color")
+        ) &&
+        sidesValue.includes("single")
+    ) {
+
+        return 5;
+
+    }
+
+
+    /* COLOUR + DOUBLE */
+
+    if (
+        (
+            colourValue.includes("colour") ||
+            colourValue.includes("color")
+        ) &&
+        sidesValue.includes("double")
+    ) {
+
+        return 10;
+
+    }
+
+
+    return 3;
+
+}
+
+
+/* ============================================================
+   HOME
+============================================================ */
+
+app.get(
+    "/",
+    function (req, res) {
+
+        res.sendFile(
+            path.join(
+                __dirname,
+                "index.html"
+            )
+        );
+
+    }
+);
+
+
+/* ============================================================
+   HEALTH
+============================================================ */
+
+app.get(
+    "/api/health",
+    function (req, res) {
+
+        const sessionValid =
+            activeSession.token &&
+            Date.now() -
+                activeSession.createdAt <
+            SESSION_TIME;
+
+
+        res.json({
+
+            success:
+                true,
+
+            status:
+                "online",
+
+            razorpay:
+                !!razorpay,
+
+            razorpayConfigured:
+                !!razorpay,
+
+            activeSession:
+                !!sessionValid,
+
+            activeSessions:
+                sessionValid
+                    ? 1
+                    : 0,
+
+            job:
+                !!currentJob,
+
+            timestamp:
+                Date.now()
+
+        });
+
+    }
+);
+
+
+/* ============================================================
+   PAYMENT CONFIG
+============================================================ */
 
 app.get(
     "/api/payment-config",
@@ -291,40 +529,25 @@ app.get(
 
         res.json({
 
-            success: true,
+            success:
+                true,
 
-            configured: !!razorpay,
+            configured:
+                !!razorpay,
 
             key_id:
-                RAZORPAY_KEY_ID || null
+                RAZORPAY_KEY_ID ||
+                null
 
         });
 
     }
 );
 
-// ============================================================
-// PRICING API
-// ============================================================
 
-app.get(
-    "/api/pricing",
-    function (req, res) {
-
-        res.json({
-
-            success: true,
-
-            prices: PRICES
-
-        });
-
-    }
-);
-
-// ============================================================
-// GENERATE MACHINE QR
-// ============================================================
+/* ============================================================
+   MACHINE QR
+============================================================ */
 
 app.get(
     "/api/machine-qr",
@@ -337,63 +560,109 @@ app.get(
                     .randomBytes(32)
                     .toString("hex");
 
+
             activeSession = {
 
-                token: token,
+                token:
+                    token,
 
-                createdAt: Date.now()
+                createdAt:
+                    Date.now()
 
             };
+
 
             const uploadUrl =
                 getBaseUrl(req) +
                 "/upload.html?token=" +
-                encodeURIComponent(token);
+                encodeURIComponent(
+                    token
+                );
+
+
+            console.log(
+                "================================"
+            );
+
+
+            console.log(
+                "NEW AXM SESSION CREATED"
+            );
+
+
+            console.log(
+                "UPLOAD URL:",
+                uploadUrl
+            );
+
+
+            console.log(
+                "================================"
+            );
+
 
             const qr =
                 await QRCode.toDataURL(
                     uploadUrl,
                     {
-                        width: 350,
-                        margin: 2,
-                        errorCorrectionLevel: "M"
+
+                        width:
+                            350,
+
+                        margin:
+                            2,
+
+                        errorCorrectionLevel:
+                            "M"
+
                     }
                 );
 
+
             res.json({
 
-                success: true,
+                success:
+                    true,
 
-                qr: qr,
+                qr:
+                    qr,
 
-                uploadUrl: uploadUrl
+                uploadUrl:
+                    uploadUrl
 
             });
 
-        } catch (error) {
+        }
+
+
+        catch (error) {
 
             console.error(
                 "QR ERROR:",
                 error
             );
 
-            res.status(500).json({
 
-                success: false,
+            res.status(500)
+                .json({
 
-                error:
-                    "Unable to generate QR code."
+                    success:
+                        false,
 
-            });
+                    error:
+                        "Unable to generate QR code."
+
+                });
 
         }
 
     }
 );
 
-// ============================================================
-// SESSION CHECK
-// ============================================================
+
+/* ============================================================
+   SESSION CHECK
+============================================================ */
 
 app.get(
     "/api/session-check",
@@ -402,67 +671,46 @@ app.get(
         const token =
             req.query.token;
 
+
         if (!token) {
 
             return res.json({
 
-                success: true,
+                success:
+                    true,
 
-                active: false
+                active:
+                    false
 
             });
 
         }
 
+
         const valid =
             activeSession.token === token &&
             Date.now() -
-            activeSession.createdAt <
+                activeSession.createdAt <
             SESSION_TIME;
+
 
         res.json({
 
-            success: true,
+            success:
+                true,
 
-            active: valid
+            active:
+                valid
 
         });
 
     }
 );
 
-// ============================================================
-// COUNT DOCUMENT PAGES
-// ============================================================
 
-async function detectPageCount(filePath, mimetype) {
-
-    // PDF
-    if (mimetype === "application/pdf") {
-
-        const bytes =
-            fs.readFileSync(filePath);
-
-        const pdfDoc =
-            await PDFDocument.load(
-                bytes,
-                {
-                    ignoreEncryption: true
-                }
-            );
-
-        return pdfDoc.getPageCount();
-
-    }
-
-    // Images are one page
-    return 1;
-
-}
-
-// ============================================================
-// UPLOAD DOCUMENT
-// ============================================================
+/* ============================================================
+   UPLOAD DOCUMENT
+============================================================ */
 
 app.post(
     "/api/upload",
@@ -475,106 +723,159 @@ app.post(
                 "UPLOAD REQUEST RECEIVED"
             );
 
+
             const token =
                 req.query.token ||
                 req.body.token ||
-                req.headers["x-axm-token"];
+                req.headers[
+                    "x-axm-token"
+                ];
+
+
+            console.log(
+                "UPLOAD TOKEN:",
+                token
+                    ? "PRESENT"
+                    : "MISSING"
+            );
+
+
+            /* SESSION */
 
             if (!token) {
 
-                return res.status(403).json({
+                return res.status(403)
+                    .json({
 
-                    success: false,
+                        success:
+                            false,
 
-                    error:
-                        "No AXM session token. Please scan a new QR code."
+                        error:
+                            "No AXM session token. Please scan a new QR code."
 
-                });
+                    });
 
             }
+
 
             if (
                 !activeSession.token ||
-                token !== activeSession.token
+                token !==
+                    activeSession.token
             ) {
 
-                return res.status(403).json({
+                return res.status(403)
+                    .json({
 
-                    success: false,
+                        success:
+                            false,
 
-                    error:
-                        "No active AXM session. Please scan a new QR code."
+                        error:
+                            "No active AXM session. Please scan a new QR code."
 
-                });
+                    });
 
             }
 
+
             if (
                 Date.now() -
-                activeSession.createdAt >
+                    activeSession.createdAt >
                 SESSION_TIME
             ) {
 
                 activeSession = {
 
-                    token: null,
+                    token:
+                        null,
 
-                    createdAt: 0
+                    createdAt:
+                        0
 
                 };
 
-                return res.status(403).json({
 
-                    success: false,
+                return res.status(403)
+                    .json({
 
-                    error:
-                        "AXM session expired. Please scan a new QR code."
+                        success:
+                            false,
 
-                });
+                        error:
+                            "AXM session expired. Please scan a new QR code."
+
+                    });
 
             }
+
+
+            /* FILE */
 
             if (!req.file) {
 
-                return res.status(400).json({
+                return res.status(400)
+                    .json({
 
-                    success: false,
+                        success:
+                            false,
 
-                    error:
-                        "No document was uploaded."
+                        error:
+                            "No document was uploaded."
 
-                });
+                    });
 
             }
 
-            // ------------------------------------------------
-            // DETECT PAGE COUNT
-            // ------------------------------------------------
 
-            let pages = 1;
+            /* PAGE COUNT */
+
+            let pageCount;
+
 
             try {
 
-                pages =
-                    await detectPageCount(
+                pageCount =
+                    await getDocumentPageCount(
                         req.file.path,
                         req.file.mimetype
                     );
 
-            } catch (pageError) {
+            }
+
+
+            catch (pageError) {
 
                 console.error(
                     "PAGE COUNT ERROR:",
                     pageError
                 );
 
-                pages = 1;
+
+                try {
+
+                    await fs.promises.unlink(
+                        req.file.path
+                    );
+
+                }
+
+                catch {}
+
+                return res.status(400)
+                    .json({
+
+                        success:
+                            false,
+
+                        error:
+                            "Unable to read the document page count."
+
+                    });
 
             }
 
-            // ------------------------------------------------
-            // CREATE JOB
-            // ------------------------------------------------
+
+            /* JOB */
 
             currentJob = {
 
@@ -608,13 +909,13 @@ app.post(
                     "Single Side",
 
                 pages:
-                    pages,
+                    pageCount,
 
                 copies:
                     1,
 
                 amount:
-                    pages * 3,
+                    pageCount * 3,
 
                 paymentStatus:
                     "PENDING",
@@ -627,6 +928,7 @@ app.post(
 
             };
 
+
             addEvent({
 
                 type:
@@ -637,53 +939,65 @@ app.post(
 
             });
 
+
             console.log(
                 "DOCUMENT RECEIVED:",
                 currentJob.filename
             );
 
+
             console.log(
-                "PAGES:",
-                pages
+                "PAGE COUNT:",
+                pageCount
             );
 
-            return res.status(200).json({
 
-                success: true,
+            return res.status(200)
+                .json({
 
-                message:
-                    "Document uploaded successfully to AXM.",
+                    success:
+                        true,
 
-                job:
-                    currentJob
+                    message:
+                        "Document uploaded successfully to AXM.",
 
-            });
+                    job:
+                        currentJob
 
-        } catch (error) {
+                });
+
+        }
+
+
+        catch (error) {
 
             console.error(
                 "UPLOAD ERROR:",
                 error
             );
 
-            return res.status(500).json({
 
-                success: false,
+            return res.status(500)
+                .json({
 
-                error:
-                    error.message ||
-                    "Document upload failed."
+                    success:
+                        false,
 
-            });
+                    error:
+                        error.message ||
+                        "Document upload failed."
+
+                });
 
         }
 
     }
 );
 
-// ============================================================
-// CURRENT JOB
-// ============================================================
+
+/* ============================================================
+   CURRENT JOB
+============================================================ */
 
 app.get(
     "/api/current-job",
@@ -691,7 +1005,8 @@ app.get(
 
         res.json({
 
-            success: true,
+            success:
+                true,
 
             job:
                 currentJob
@@ -701,9 +1016,10 @@ app.get(
     }
 );
 
-// ============================================================
-// JOB
-// ============================================================
+
+/* ============================================================
+   JOB
+============================================================ */
 
 app.get(
     "/api/job",
@@ -711,7 +1027,8 @@ app.get(
 
         res.json({
 
-            success: true,
+            success:
+                true,
 
             job:
                 currentJob
@@ -721,9 +1038,10 @@ app.get(
     }
 );
 
-// ============================================================
-// EVENTS
-// ============================================================
+
+/* ============================================================
+   EVENTS
+============================================================ */
 
 app.get(
     "/api/events",
@@ -733,39 +1051,57 @@ app.get(
 
             const since =
                 Number(
-                    req.query.since || 0
+                    req.query.since ||
+                    0
                 );
+
 
             const result =
                 events.filter(
                     function (event) {
 
-                        return event.id > since;
+                        return (
+                            event.id >
+                            since
+                        );
 
                     }
                 );
 
+
             res.json(result);
 
-        } catch (error) {
+        }
 
-            res.status(500).json({
 
-                success: false,
+        catch (error) {
 
-                error:
-                    "Unable to read events."
+            console.error(
+                "EVENT ERROR:",
+                error
+            );
 
-            });
+
+            res.status(500)
+                .json({
+
+                    success:
+                        false,
+
+                    error:
+                        "Unable to read events."
+
+                });
 
         }
 
     }
 );
 
-// ============================================================
-// SAVE PRINT OPTIONS
-// ============================================================
+
+/* ============================================================
+   SAVE PRINT OPTIONS
+============================================================ */
 
 app.post(
     "/api/options",
@@ -775,101 +1111,120 @@ app.post(
 
             if (!currentJob) {
 
-                return res.status(400).json({
+                return res.status(400)
+                    .json({
 
-                    success: false,
+                        success:
+                            false,
 
-                    error:
-                        "No document has been received yet."
+                        error:
+                            "No document has been received yet."
 
-                });
+                    });
 
             }
+
 
             const colour =
                 req.body.colour ||
                 "Black & White";
 
+
             const sides =
                 req.body.sides ||
                 "Single Side";
 
-            const pages =
-                Math.max(
-                    1,
-                    Math.floor(
-                        Number(
-                            currentJob.pages
-                        )
-                    )
+
+            let pages =
+                Number(
+                    currentJob.pages
                 );
 
-            const copies =
-                Math.max(
-                    1,
-                    Math.floor(
-                        Number(
-                            req.body.copies || 1
-                        )
-                    )
+
+            let copies =
+                Number(
+                    req.body.copies ||
+                    1
                 );
 
-            // ------------------------------------------------
-            // GET PRICE
-            // ------------------------------------------------
-
-            const rate =
-                PRICES[colour]?.[sides];
 
             if (
-                !Number.isFinite(rate)
+                !Number.isFinite(pages) ||
+                pages < 1
             ) {
 
-                return res.status(400).json({
-
-                    success: false,
-
-                    error:
-                        "Invalid print option."
-
-                });
+                pages = 1;
 
             }
 
-            const amount =
-                pages *
-                copies *
-                rate;
 
-            // ------------------------------------------------
-            // UPDATE JOB
-            // ------------------------------------------------
+            pages =
+                Math.floor(pages);
+
+
+            if (
+                !Number.isFinite(copies) ||
+                copies < 1
+            ) {
+
+                copies = 1;
+
+            }
+
+
+            copies =
+                Math.floor(copies);
+
+
+            /* SERVER-SIDE PRICE */
+
+            const rate =
+                calculateRate(
+                    colour,
+                    sides
+                );
+
+
+            const amount =
+                Math.round(
+                    pages *
+                    copies *
+                    rate *
+                    100
+                ) / 100;
+
 
             currentJob.colour =
                 colour;
 
+
             currentJob.sides =
                 sides;
+
 
             currentJob.pages =
                 pages;
 
+
             currentJob.copies =
                 copies;
 
-            currentJob.amount =
-                Number(
-                    amount.toFixed(2)
-                );
 
             currentJob.rate =
                 rate;
 
+
+            currentJob.amount =
+                amount;
+
+
             currentJob.status =
                 "OPTIONS_SELECTED";
 
+
             currentJob.paymentStatus =
                 "PENDING";
+
 
             addEvent({
 
@@ -881,9 +1236,24 @@ app.post(
 
             });
 
+
+            console.log(
+                "PRINT OPTIONS:",
+                colour,
+                sides,
+                pages,
+                copies,
+                "RATE:",
+                rate,
+                "AMOUNT:",
+                amount
+            );
+
+
             res.json({
 
-                success: true,
+                success:
+                    true,
 
                 message:
                     "Print options saved.",
@@ -892,34 +1262,44 @@ app.post(
                     currentJob,
 
                 amount:
-                    currentJob.amount
+                    amount,
+
+                rate:
+                    rate
 
             });
 
-        } catch (error) {
+        }
+
+
+        catch (error) {
 
             console.error(
                 "OPTIONS ERROR:",
                 error
             );
 
-            res.status(500).json({
 
-                success: false,
+            res.status(500)
+                .json({
 
-                error:
-                    "Unable to save print options."
+                    success:
+                        false,
 
-            });
+                    error:
+                        "Unable to save print options."
+
+                });
 
         }
 
     }
 );
 
-// ============================================================
-// CREATE RAZORPAY ORDER
-// ============================================================
+
+/* ============================================================
+   CREATE RAZORPAY ORDER
+============================================================ */
 
 app.post(
     "/api/create-order",
@@ -929,50 +1309,79 @@ app.post(
 
             if (!razorpay) {
 
-                return res.status(500).json({
+                return res.status(500)
+                    .json({
 
-                    success: false,
+                        success:
+                            false,
 
-                    error:
-                        "Razorpay is not configured on the server."
+                        error:
+                            "Razorpay is not configured on the server."
 
-                });
+                    });
 
             }
+
 
             if (!currentJob) {
 
-                return res.status(400).json({
+                return res.status(400)
+                    .json({
 
-                    success: false,
+                        success:
+                            false,
 
-                    error:
-                        "No print job available."
+                        error:
+                            "No print job available."
 
-                });
+                    });
 
             }
+
+
+            if (
+                currentJob.paymentStatus ===
+                "PAID"
+            ) {
+
+                return res.status(400)
+                    .json({
+
+                        success:
+                            false,
+
+                        error:
+                            "This job has already been paid."
+
+                    });
+
+            }
+
 
             const amount =
                 Number(
                     currentJob.amount
                 );
 
+
             if (
                 !Number.isFinite(amount) ||
                 amount <= 0
             ) {
 
-                return res.status(400).json({
+                return res.status(400)
+                    .json({
 
-                    success: false,
+                        success:
+                            false,
 
-                    error:
-                        "Invalid payment amount."
+                        error:
+                            "Invalid payment amount."
 
-                });
+                    });
 
             }
+
 
             const order =
                 await razorpay.orders.create({
@@ -1001,15 +1410,25 @@ app.post(
 
                 });
 
+
             currentJob.razorpayOrderId =
                 order.id;
+
 
             currentJob.status =
                 "PAYMENT_STARTED";
 
+
+            console.log(
+                "RAZORPAY ORDER CREATED:",
+                order.id
+            );
+
+
             res.json({
 
-                success: true,
+                success:
+                    true,
 
                 keyId:
                     RAZORPAY_KEY_ID,
@@ -1034,32 +1453,39 @@ app.post(
 
             });
 
-        } catch (error) {
+        }
+
+
+        catch (error) {
 
             console.error(
                 "RAZORPAY ORDER ERROR:",
                 error
             );
 
-            res.status(500).json({
 
-                success: false,
+            res.status(500)
+                .json({
 
-                error:
-                    error.error?.description ||
-                    error.message ||
-                    "Unable to create Razorpay order."
+                    success:
+                        false,
 
-            });
+                    error:
+                        error.error?.description ||
+                        error.message ||
+                        "Unable to create Razorpay order."
+
+                });
 
         }
 
     }
 );
 
-// ============================================================
-// VERIFY RAZORPAY PAYMENT
-// ============================================================
+
+/* ============================================================
+   VERIFY RAZORPAY PAYMENT
+============================================================ */
 
 app.post(
     "/api/verify-payment",
@@ -1077,40 +1503,71 @@ app.post(
 
             } = req.body;
 
+
             if (
                 !razorpay_order_id ||
                 !razorpay_payment_id ||
                 !razorpay_signature
             ) {
 
-                return res.status(400).json({
+                return res.status(400)
+                    .json({
 
-                    success: false,
+                        success:
+                            false,
 
-                    error:
-                        "Missing Razorpay payment details."
+                        error:
+                            "Missing Razorpay payment details."
 
-                });
+                    });
 
             }
+
 
             if (!RAZORPAY_KEY_SECRET) {
 
-                return res.status(500).json({
+                return res.status(500)
+                    .json({
 
-                    success: false,
+                        success:
+                            false,
 
-                    error:
-                        "Razorpay secret is not configured."
+                        error:
+                            "Razorpay secret is not configured."
 
-                });
+                    });
 
             }
+
+
+            /* Make sure the order belongs to current job */
+
+            if (
+                currentJob &&
+                currentJob.razorpayOrderId &&
+                currentJob.razorpayOrderId !==
+                    razorpay_order_id
+            ) {
+
+                return res.status(400)
+                    .json({
+
+                        success:
+                            false,
+
+                        error:
+                            "Payment order does not match the current print job."
+
+                    });
+
+            }
+
 
             const body =
                 razorpay_order_id +
                 "|" +
                 razorpay_payment_id;
+
 
             const expectedSignature =
                 crypto
@@ -1121,36 +1578,53 @@ app.post(
                     .update(body)
                     .digest("hex");
 
+
             const valid =
-                expectedSignature ===
-                razorpay_signature;
+                crypto.timingSafeEqual(
+                    Buffer.from(
+                        expectedSignature,
+                        "utf8"
+                    ),
+                    Buffer.from(
+                        razorpay_signature,
+                        "utf8"
+                    )
+                );
+
 
             if (!valid) {
 
-                return res.status(400).json({
+                return res.status(400)
+                    .json({
 
-                    success: false,
+                        success:
+                            false,
 
-                    error:
-                        "Payment verification failed."
+                        error:
+                            "Payment verification failed."
 
-                });
+                    });
 
             }
+
 
             if (currentJob) {
 
                 currentJob.paymentStatus =
                     "PAID";
 
+
                 currentJob.status =
                     "PAYMENT_SUCCESS";
+
 
                 currentJob.razorpayPaymentId =
                     razorpay_payment_id;
 
+
                 currentJob.razorpayOrderId =
                     razorpay_order_id;
+
 
                 addEvent({
 
@@ -1164,9 +1638,17 @@ app.post(
 
             }
 
+
+            console.log(
+                "PAYMENT VERIFIED:",
+                razorpay_payment_id
+            );
+
+
             res.json({
 
-                success: true,
+                success:
+                    true,
 
                 message:
                     "Payment verified successfully.",
@@ -1182,30 +1664,37 @@ app.post(
 
             });
 
-        } catch (error) {
+        }
+
+
+        catch (error) {
 
             console.error(
                 "PAYMENT VERIFY ERROR:",
                 error
             );
 
-            res.status(500).json({
 
-                success: false,
+            res.status(500)
+                .json({
 
-                error:
-                    "Payment verification failed."
+                    success:
+                        false,
 
-            });
+                    error:
+                        "Payment verification failed."
+
+                });
 
         }
 
     }
 );
 
-// ============================================================
-// TEST PAYMENT
-// ============================================================
+
+/* ============================================================
+   TEST PAYMENT
+============================================================ */
 
 app.post(
     "/api/test-payment",
@@ -1215,25 +1704,31 @@ app.post(
 
             if (!currentJob) {
 
-                return res.status(400).json({
+                return res.status(400)
+                    .json({
 
-                    success: false,
+                        success:
+                            false,
 
-                    error:
-                        "No print job available."
+                        error:
+                            "No print job available."
 
-                });
+                    });
 
             }
+
 
             currentJob.paymentStatus =
                 "PAID";
 
+
             currentJob.status =
                 "PAYMENT_SUCCESS";
 
+
             currentJob.testPayment =
                 true;
+
 
             addEvent({
 
@@ -1245,9 +1740,11 @@ app.post(
 
             });
 
+
             res.json({
 
-                success: true,
+                success:
+                    true,
 
                 message:
                     "Test payment successful.",
@@ -1260,25 +1757,37 @@ app.post(
 
             });
 
-        } catch (error) {
+        }
 
-            res.status(500).json({
 
-                success: false,
+        catch (error) {
 
-                error:
-                    "Test payment failed."
+            console.error(
+                "TEST PAYMENT ERROR:",
+                error
+            );
 
-            });
+
+            res.status(500)
+                .json({
+
+                    success:
+                        false,
+
+                    error:
+                        "Test payment failed."
+
+                });
 
         }
 
     }
 );
 
-// ============================================================
-// PRINT
-// ============================================================
+
+/* ============================================================
+   PRINT
+============================================================ */
 
 app.post(
     "/api/print",
@@ -1288,35 +1797,42 @@ app.post(
 
             if (!currentJob) {
 
-                return res.status(400).json({
+                return res.status(400)
+                    .json({
 
-                    success: false,
+                        success:
+                            false,
 
-                    error:
-                        "No print job available."
+                        error:
+                            "No print job available."
 
-                });
+                    });
 
             }
+
 
             if (
                 currentJob.paymentStatus !==
                 "PAID"
             ) {
 
-                return res.status(403).json({
+                return res.status(403)
+                    .json({
 
-                    success: false,
+                        success:
+                            false,
 
-                    error:
-                        "Payment is required before printing."
+                        error:
+                            "Payment is required before printing."
 
-                });
+                    });
 
             }
 
+
             currentJob.status =
                 "PRINTING";
+
 
             addEvent({
 
@@ -1328,14 +1844,17 @@ app.post(
 
             });
 
+
             console.log(
                 "PRINT JOB:",
                 currentJob.filename
             );
 
+
             res.json({
 
-                success: true,
+                success:
+                    true,
 
                 message:
                     "Print job is ready.",
@@ -1348,44 +1867,56 @@ app.post(
 
             });
 
-        } catch (error) {
+        }
+
+
+        catch (error) {
 
             console.error(
                 "PRINT ERROR:",
                 error
             );
 
-            res.status(500).json({
 
-                success: false,
+            res.status(500)
+                .json({
 
-                error:
-                    "Unable to start printing."
+                    success:
+                        false,
 
-            });
+                    error:
+                        "Unable to start printing."
+
+                });
 
         }
 
     }
 );
 
-// ============================================================
-// RESET
-// ============================================================
+
+/* ============================================================
+   RESET
+============================================================ */
 
 app.post(
     "/api/reset",
     function (req, res) {
 
-        currentJob = null;
+        currentJob =
+            null;
+
 
         activeSession = {
 
-            token: null,
+            token:
+                null,
 
-            createdAt: 0
+            createdAt:
+                0
 
         };
+
 
         addEvent({
 
@@ -1394,9 +1925,11 @@ app.post(
 
         });
 
+
         res.json({
 
-            success: true,
+            success:
+                true,
 
             message:
                 "AXM machine reset."
@@ -1406,9 +1939,10 @@ app.post(
     }
 );
 
-// ============================================================
-// ERROR HANDLER
-// ============================================================
+
+/* ============================================================
+   ERROR HANDLER
+============================================================ */
 
 app.use(
     function (error, req, res, next) {
@@ -1418,62 +1952,72 @@ app.use(
             error
         );
 
+
         if (
             req.path ===
             "/api/upload"
         ) {
 
-            return res.status(400).json({
+            return res.status(400)
+                .json({
 
-                success: false,
+                    success:
+                        false,
 
-                error:
-                    error.message ||
-                    "Upload failed."
+                    error:
+                        error.message ||
+                        "Upload failed."
 
-            });
+                });
 
         }
 
-        res.status(500).json({
 
-            success: false,
+        res.status(500)
+            .json({
 
-            error:
-                error.message ||
-                "Server error."
+                success:
+                    false,
 
-        });
+                error:
+                    error.message ||
+                    "Server error."
+
+            });
 
     }
 );
 
-// ============================================================
-// API 404
-// ============================================================
+
+/* ============================================================
+   API 404
+============================================================ */
 
 app.use(
     "/api",
     function (req, res) {
 
-        res.status(404).json({
+        res.status(404)
+            .json({
 
-            success: false,
+                success:
+                    false,
 
-            error:
-                "API endpoint not found: " +
-                req.method +
-                " " +
-                req.originalUrl
+                error:
+                    "API endpoint not found: " +
+                    req.method +
+                    " " +
+                    req.originalUrl
 
-        });
+            });
 
     }
 );
 
-// ============================================================
-// START SERVER
-// ============================================================
+
+/* ============================================================
+   START SERVER
+============================================================ */
 
 app.listen(
     PORT,
@@ -1484,14 +2028,23 @@ app.listen(
             "=========================================="
         );
 
+
         console.log(
             "AXM SERVER IS RUNNING"
         );
+
 
         console.log(
             "PORT:",
             PORT
         );
+
+
+        console.log(
+            "PDF PAGE DETECTION:",
+            "ENABLED"
+        );
+
 
         console.log(
             "RAZORPAY:",
@@ -1500,9 +2053,9 @@ app.listen(
                 : "NOT CONFIGURED"
         );
 
+
         console.log(
             "=========================================="
-
         );
 
     }
