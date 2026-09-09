@@ -1,5 +1,1084 @@
-<!doctype html>
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AXM V2.2 — Automatic Xerox Machine</title><link rel="stylesheet" href="/style.css"></head>
-<body><header><div class="brand"><span class="logo">AXM</span><div><b>AXM</b><small>AUTOMATIC XEROX MACHINE • NIET • COIMBATORE</small></div></div><span class="ready">● READY</span></header>
-<main><section class="hero"><h1>Automatic Xerox Machine</h1><p>Touch the screen to begin.</p><a class="button" href="/machine.html">TOUCH TO START</a></section></main></body></html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>NIET AXM — Automated Xerox Machine</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            font-family:
+                "Segoe UI",
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eaf6ff 0%,
+                    #ffffff 48%,
+                    #eaf5ff 100%
+                );
+
+            color: #123b72;
+        }
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .header {
+            width: 100%;
+            min-height: 120px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 18px 5%;
+
+            background: rgba(255, 255, 255, 0.94);
+
+            border-bottom: 1px solid #dcebf8;
+        }
+
+        .college-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .college-logo {
+            width: 90px;
+            height: 90px;
+
+            object-fit: contain;
+
+            flex-shrink: 0;
+        }
+
+        .college-name {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .college-name h2 {
+            font-size: clamp(18px, 2.2vw, 30px);
+
+            line-height: 1.1;
+
+            color: #143b73;
+
+            font-weight: 800;
+        }
+
+        .college-name p {
+            margin-top: 10px;
+
+            font-size: 14px;
+
+            letter-spacing: 4px;
+
+            color: #355b8c;
+        }
+
+        /* =====================================================
+           AXM BRAND
+        ===================================================== */
+
+        .axm-section {
+            text-align: center;
+
+            padding-left: 30px;
+
+            border-left: 1px solid #cbdced;
+        }
+
+        .axm-title {
+            font-size: clamp(35px, 5vw, 65px);
+
+            line-height: 0.95;
+
+            font-weight: 900;
+
+            letter-spacing: 2px;
+
+            color: #14386f;
+        }
+
+        .axm-title span {
+            color: #12a9e8;
+        }
+
+        .axm-subtitle {
+            margin-top: 10px;
+
+            font-size: clamp(10px, 1.2vw, 15px);
+
+            letter-spacing: 5px;
+
+            color: #183d73;
+
+            font-weight: 600;
+        }
+
+        .ready {
+            margin-top: 8px;
+
+            font-size: 13px;
+
+            font-weight: 800;
+
+            color: #159447;
+        }
+
+        .ready-dot {
+            display: inline-block;
+
+            width: 9px;
+            height: 9px;
+
+            margin-right: 5px;
+
+            border-radius: 50%;
+
+            background: #20b65a;
+        }
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        main {
+            width: 100%;
+
+            padding: 30px 4% 35px;
+        }
+
+        /* =====================================================
+           TOP INFORMATION
+        ===================================================== */
+
+        .top-info {
+            max-width: 1450px;
+
+            margin: 0 auto 25px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+        }
+
+        .smart-printing {
+            color: #124b91;
+
+            font-size: clamp(17px, 2vw, 27px);
+
+            font-weight: 700;
+
+            line-height: 1.15;
+        }
+
+        .smart-printing span {
+            display: block;
+
+            font-size: 13px;
+
+            margin-top: 8px;
+
+            color: #4b6d94;
+
+            letter-spacing: 1px;
+        }
+
+        .steps {
+            display: flex;
+
+            align-items: center;
+
+            gap: 35px;
+        }
+
+        .step {
+            min-width: 70px;
+
+            text-align: center;
+
+            font-weight: 700;
+
+            color: #163d73;
+        }
+
+        .step-icon {
+            font-size: 30px;
+
+            margin-bottom: 5px;
+        }
+
+        /* =====================================================
+           START PANEL
+        ===================================================== */
+
+        .start-panel {
+            width: 100%;
+
+            max-width: 1450px;
+
+            min-height: 285px;
+
+            margin: 0 auto 25px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            text-align: center;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    #ffffff 0%,
+                    #f7fcff 55%,
+                    #e7f5ff 100%
+                );
+
+            border: 2px solid #d4ebfb;
+
+            border-radius: 28px;
+
+            box-shadow:
+                0 15px 45px rgba(22, 89, 145, 0.12);
+
+            cursor: pointer;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .start-panel:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 20px 55px rgba(22, 89, 145, 0.17);
+        }
+
+        .touch-icon {
+            width: 105px;
+            height: 105px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #1888e6,
+                    #0752b9
+                );
+
+            border: 10px solid #cceaff;
+
+            box-shadow:
+                0 8px 25px rgba(15, 104, 190, 0.25);
+
+            font-size: 45px;
+
+            color: white;
+        }
+
+        .start-panel h1 {
+            margin-top: 18px;
+
+            font-size: clamp(35px, 5vw, 65px);
+
+            color: #123c75;
+
+            font-weight: 900;
+
+            letter-spacing: 1px;
+        }
+
+        .start-panel p {
+            margin-top: 5px;
+
+            font-size: clamp(14px, 1.5vw, 21px);
+
+            letter-spacing: 7px;
+
+            color: #49678d;
+
+            font-weight: 600;
+        }
+
+        /* =====================================================
+           FEATURE CARDS
+        ===================================================== */
+
+        .features {
+            max-width: 1450px;
+
+            margin: 0 auto 25px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 18px;
+        }
+
+        .feature {
+            min-height: 190px;
+
+            padding: 25px 20px;
+
+            border-radius: 20px;
+
+            text-align: center;
+
+            border: 2px solid rgba(255,255,255,0.9);
+
+            box-shadow:
+                0 8px 25px rgba(35, 83, 130, 0.10);
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+        .feature:nth-child(1) {
+            background: #e3f3ff;
+        }
+
+        .feature:nth-child(2) {
+            background: #e4faf2;
+        }
+
+        .feature:nth-child(3) {
+            background: #fff5cc;
+        }
+
+        .feature:nth-child(4) {
+            background: #eee9ff;
+        }
+
+        .feature-icon {
+            font-size: 48px;
+
+            margin-bottom: 12px;
+        }
+
+        .feature h3 {
+            font-size: 21px;
+
+            color: #123b72;
+
+            margin-bottom: 8px;
+        }
+
+        .feature p {
+            font-size: 15px;
+
+            line-height: 1.35;
+
+            color: #365679;
+
+            max-width: 230px;
+        }
+
+        /* =====================================================
+           PRICING
+        ===================================================== */
+
+        .pricing {
+            max-width: 1450px;
+
+            margin: 0 auto;
+
+            min-height: 135px;
+
+            padding: 18px 25px;
+
+            display: grid;
+
+            grid-template-columns:
+                1.15fr
+                repeat(4, 1fr);
+
+            align-items: center;
+
+            background: rgba(255,255,255,0.95);
+
+            border-radius: 25px;
+
+            border: 2px solid #e4edf6;
+
+            box-shadow:
+                0 8px 25px rgba(35, 83, 130, 0.08);
+        }
+
+        .pricing-title {
+            font-size: 25px;
+
+            font-weight: 900;
+
+            color: #123b72;
+
+            padding-right: 20px;
+        }
+
+        .price-item {
+            min-height: 95px;
+
+            padding: 5px 20px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            border-left: 1px solid #c7d8e8;
+        }
+
+        .price-name {
+            font-size: 16px;
+
+            font-weight: 800;
+
+            color: #163c72;
+        }
+
+        .price {
+            margin-top: 5px;
+
+            font-size: 32px;
+
+            font-weight: 900;
+
+            color: #095dcc;
+        }
+
+        .per-page {
+            font-size: 13px;
+
+            color: #58708e;
+        }
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        footer {
+            width: 100%;
+
+            min-height: 105px;
+
+            margin-top: 30px;
+
+            padding: 20px 5%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            background:
+                linear-gradient(
+                    110deg,
+                    #063e83,
+                    #0756a5
+                );
+
+            color: white;
+        }
+
+        .footer-brand {
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+        }
+
+        .footer-symbol {
+            font-size: 40px;
+        }
+
+        .footer-brand h3 {
+            font-size: 22px;
+        }
+
+        .footer-brand p {
+            margin-top: 5px;
+
+            font-size: 14px;
+
+            opacity: 0.9;
+        }
+
+        .footer-middle {
+            font-size: 15px;
+
+            letter-spacing: 1px;
+
+            text-align: center;
+        }
+
+        .environment {
+            text-align: center;
+
+            font-size: 15px;
+
+            line-height: 1.4;
+        }
+
+        .leaf {
+            font-size: 30px;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 1000px) {
+
+            .header {
+                flex-direction: column;
+
+                gap: 18px;
+
+                text-align: center;
+            }
+
+            .college-section {
+                justify-content: center;
+            }
+
+            .axm-section {
+                border-left: none;
+
+                padding-left: 0;
+            }
+
+            .top-info {
+                flex-direction: column;
+            }
+
+            .features {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .pricing {
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+                gap: 10px;
+            }
+
+            .pricing-title {
+                grid-column: 1 / -1;
+
+                text-align: center;
+
+                padding: 10px;
+            }
+
+            .price-item:nth-child(2) {
+                border-left: none;
+            }
+
+        }
+
+        @media (max-width: 650px) {
+
+            main {
+                padding: 18px 12px;
+            }
+
+            .college-logo {
+                width: 65px;
+                height: 65px;
+            }
+
+            .college-name h2 {
+                font-size: 17px;
+            }
+
+            .college-name p {
+                font-size: 9px;
+
+                letter-spacing: 2px;
+            }
+
+            .steps {
+                gap: 12px;
+            }
+
+            .start-panel {
+                min-height: 260px;
+
+                border-radius: 20px;
+            }
+
+            .touch-icon {
+                width: 85px;
+                height: 85px;
+
+                font-size: 35px;
+            }
+
+            .start-panel h1 {
+                font-size: 34px;
+            }
+
+            .start-panel p {
+                font-size: 12px;
+
+                letter-spacing: 4px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing {
+                grid-template-columns: 1fr;
+            }
+
+            .price-item {
+                border-left: none;
+
+                border-top: 1px solid #d5e0eb;
+
+                padding: 15px;
+
+                text-align: center;
+            }
+
+            .pricing-title {
+                font-size: 22px;
+            }
+
+            footer {
+                flex-direction: column;
+
+                text-align: center;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<header class="header">
+
+    <div class="college-section">
+
+        <img
+            src="/niet-logo.png"
+            alt="NIET Logo"
+            class="college-logo"
+        >
+
+        <div class="college-name">
+
+            <h2>
+                NEHRU INSTITUTE OF<br>
+                ENGINEERING &amp; TECHNOLOGY
+            </h2>
+
+            <p>
+                LEARN &nbsp; • &nbsp; INNOVATE &nbsp; • &nbsp; EXCEL
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="axm-section">
+
+        <div class="axm-title">
+            NIET <span>AXM</span>
+        </div>
+
+        <div class="axm-subtitle">
+            AUTOMATED XEROX MACHINE
+        </div>
+
+        <div class="ready">
+            <span class="ready-dot"></span>
+            MACHINE READY
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main>
+
+
+    <!-- TOP INFORMATION -->
+
+    <section class="top-info">
+
+        <div class="smart-printing">
+
+            Smart Printing
+            <br>
+            for a Smarter Campus
+
+            <span>
+                FAST • SIMPLE • SECURE
+            </span>
+
+        </div>
+
+
+        <div class="steps">
+
+            <div class="step">
+
+                <div class="step-icon">📄</div>
+
+                Scan
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-icon">☁️</div>
+
+                Upload
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-icon">₹</div>
+
+                Pay
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-icon">🖨️</div>
+
+                Print
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- TOUCH TO START -->
+
+    <a
+        href="/machine.html"
+        style="text-decoration:none;color:inherit;"
+    >
+
+        <section class="start-panel">
+
+            <div class="touch-icon">
+                👆
+            </div>
+
+            <h1>
+                TOUCH TO START
+            </h1>
+
+            <p>
+                PRINT &nbsp; • &nbsp; COPY &nbsp; • &nbsp; ANYTIME
+            </p>
+
+        </section>
+
+    </a>
+
+
+    <!-- FEATURES -->
+
+    <section class="features">
+
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                📄
+            </div>
+
+            <h3>
+                Upload Document
+            </h3>
+
+            <p>
+                Upload your PDF file
+                directly from your phone.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                🔎
+            </div>
+
+            <h3>
+                Auto Page Detection
+            </h3>
+
+            <p>
+                The system automatically
+                detects the number of pages.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                🛡️
+            </div>
+
+            <h3>
+                Secure Payment
+            </h3>
+
+            <p>
+                Pay securely using
+                Razorpay UPI.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                🖨️
+            </div>
+
+            <h3>
+                High Quality Print
+            </h3>
+
+            <p>
+                Get clear and properly
+                aligned A4 prints.
+            </p>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- PRICING -->
+
+    <section class="pricing">
+
+
+        <div class="pricing-title">
+            Printing Charges
+        </div>
+
+
+        <div class="price-item">
+
+            <div class="price-name">
+                B&amp;W<br>
+                Single Side
+            </div>
+
+            <div class="price">
+                ₹2
+            </div>
+
+            <div class="per-page">
+                per page
+            </div>
+
+        </div>
+
+
+        <div class="price-item">
+
+            <div class="price-name">
+                B&amp;W<br>
+                Double Side
+            </div>
+
+            <div class="price">
+                ₹3
+            </div>
+
+            <div class="per-page">
+                per page
+            </div>
+
+        </div>
+
+
+        <div class="price-item">
+
+            <div class="price-name">
+                Colour<br>
+                Single Side
+            </div>
+
+            <div class="price">
+                ₹5
+            </div>
+
+            <div class="per-page">
+                per page
+            </div>
+
+        </div>
+
+
+        <div class="price-item">
+
+            <div class="price-name">
+                Colour<br>
+                Double Side
+            </div>
+
+            <div class="price">
+                ₹10
+            </div>
+
+            <div class="per-page">
+                per page
+            </div>
+
+        </div>
+
+
+    </section>
+
+</main>
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer>
+
+
+    <div class="footer-brand">
+
+        <div class="footer-symbol">
+            🎓
+        </div>
+
+        <div>
+
+            <h3>
+                NIET AXM
+            </h3>
+
+            <p>
+                A Self Service Printing Solution
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-middle">
+
+        Clean Campus
+        &nbsp; | &nbsp;
+        Green Future
+        &nbsp; | &nbsp;
+        Digital Convenience
+
+    </div>
+
+
+    <div class="environment">
+
+        <div class="leaf">
+            🌿
+        </div>
+
+        Save Paper<br>
+        Save Environment
+
+    </div>
+
+
+</footer>
+
+
+</body>
+
+</html>
