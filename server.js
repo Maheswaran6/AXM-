@@ -5,22 +5,28 @@ const fs = require("fs");
 const multer = require("multer");
 const QRCode = require("qrcode");
 const Razorpay = require("razorpay");
-const { PDFDocument } = require("pdf-lib");
 
 const app = express();
 
-const PORT = process.env.PORT || 10000;
+const PORT =
+    process.env.PORT || 10000;
 
 
 /* ============================================================
    DIRECTORIES
-============================================================ */
+   ============================================================ */
 
 const DATA_DIR =
-    path.join(__dirname, "data");
+    path.join(
+        __dirname,
+        "data"
+    );
 
 const UPLOAD_DIR =
-    path.join(DATA_DIR, "uploads");
+    path.join(
+        DATA_DIR,
+        "uploads"
+    );
 
 
 fs.mkdirSync(
@@ -33,7 +39,7 @@ fs.mkdirSync(
 
 /* ============================================================
    MIDDLEWARE
-============================================================ */
+   ============================================================ */
 
 app.use(
     express.json({
@@ -41,11 +47,13 @@ app.use(
     })
 );
 
+
 app.use(
     express.urlencoded({
         extended: true
     })
 );
+
 
 app.use(
     express.static(__dirname)
@@ -54,57 +62,52 @@ app.use(
 
 /* ============================================================
    FILE UPLOAD
-============================================================ */
+   ============================================================ */
 
 const storage =
     multer.diskStorage({
 
-        destination: function (
-            req,
-            file,
-            cb
-        ) {
+        destination:
+            function(req, file, cb) {
 
-            cb(
-                null,
-                UPLOAD_DIR
-            );
+                cb(
+                    null,
+                    UPLOAD_DIR
+                );
 
-        },
-
-        filename: function (
-            req,
-            file,
-            cb
-        ) {
-
-            const safeName =
-                path
-                    .basename(
-                        file.originalname
-                    )
-                    .replace(
-                        /[^a-zA-Z0-9._-]/g,
-                        "_"
-                    );
+            },
 
 
-            const uniqueName =
-                Date.now() +
-                "_" +
-                crypto
-                    .randomBytes(6)
-                    .toString("hex") +
-                "_" +
-                safeName;
+        filename:
+            function(req, file, cb) {
+
+                const safeName =
+                    path
+                        .basename(
+                            file.originalname
+                        )
+                        .replace(
+                            /[^a-zA-Z0-9._-]/g,
+                            "_"
+                        );
 
 
-            cb(
-                null,
-                uniqueName
-            );
+                const uniqueName =
+                    Date.now() +
+                    "_" +
+                    crypto
+                        .randomBytes(6)
+                        .toString("hex") +
+                    "_" +
+                    safeName;
 
-        }
+
+                cb(
+                    null,
+                    uniqueName
+                );
+
+            }
 
     });
 
@@ -121,12 +124,9 @@ const upload =
 
         },
 
+
         fileFilter:
-            function (
-                req,
-                file,
-                cb
-            ) {
+            function(req, file, cb) {
 
                 const allowedTypes = [
 
@@ -171,16 +171,18 @@ const upload =
 
 /* ============================================================
    RAZORPAY
-============================================================ */
+   ============================================================ */
 
 const RAZORPAY_KEY_ID =
     process.env.RAZORPAY_KEY_ID;
+
 
 const RAZORPAY_KEY_SECRET =
     process.env.RAZORPAY_KEY_SECRET;
 
 
-let razorpay = null;
+let razorpay =
+    null;
 
 
 if (
@@ -199,6 +201,7 @@ if (
 
         });
 
+
     console.log(
         "Razorpay: CONFIGURED"
     );
@@ -216,13 +219,15 @@ else {
 
 /* ============================================================
    SESSION
-============================================================ */
+   ============================================================ */
 
 let activeSession = {
 
-    token: null,
+    token:
+        null,
 
-    createdAt: 0
+    createdAt:
+        0
 
 };
 
@@ -233,18 +238,22 @@ const SESSION_TIME =
 
 /* ============================================================
    CURRENT JOB
-============================================================ */
+   ============================================================ */
 
-let currentJob = null;
+let currentJob =
+    null;
 
 
 /* ============================================================
    EVENTS
-============================================================ */
+   ============================================================ */
 
-let eventId = 0;
+let eventId =
+    0;
 
-const events = [];
+
+const events =
+    [];
 
 
 function addEvent(data) {
@@ -254,16 +263,20 @@ function addEvent(data) {
 
     const event = {
 
-        id: eventId,
+        id:
+            eventId,
 
-        time: Date.now(),
+        time:
+            Date.now(),
 
         ...data
 
     };
 
 
-    events.push(event);
+    events.push(
+        event
+    );
 
 
     if (
@@ -288,7 +301,7 @@ function addEvent(data) {
 
 /* ============================================================
    BASE URL
-============================================================ */
+   ============================================================ */
 
 function getBaseUrl(req) {
 
@@ -316,51 +329,42 @@ function getBaseUrl(req) {
 
 
     return (
-        `${protocol}://${host}`
+        protocol +
+        "://" +
+        host
     );
 
 }
 
 
 /* ============================================================
-   PRICE CALCULATION
-============================================================ */
+   PRICE FUNCTION
+   ============================================================ */
 
 function getPrintRate(
     colour,
     sides
 ) {
 
-    const normalizedColour =
+    const colourText =
         String(
-            colour || ""
+            colour ||
+            "Black & White"
         ).toLowerCase();
 
 
-    const normalizedSides =
+    const sidesText =
         String(
-            sides || ""
+            sides ||
+            "Single Side"
         ).toLowerCase();
 
 
-    const isColour =
-        normalizedColour.includes(
-            "colour"
-        ) ||
-        normalizedColour.includes(
-            "color"
-        );
-
-
-    const isDouble =
-        normalizedSides.includes(
-            "double"
-        );
-
+    /* B&W SINGLE = ₹3 */
 
     if (
-        !isColour &&
-        !isDouble
+        colourText.includes("black") &&
+        sidesText.includes("single")
     ) {
 
         return 3;
@@ -368,9 +372,11 @@ function getPrintRate(
     }
 
 
+    /* B&W DOUBLE = ₹1.80 */
+
     if (
-        !isColour &&
-        isDouble
+        colourText.includes("black") &&
+        sidesText.includes("double")
     ) {
 
         return 1.80;
@@ -378,9 +384,14 @@ function getPrintRate(
     }
 
 
+    /* COLOUR SINGLE = ₹5 */
+
     if (
-        isColour &&
-        !isDouble
+        (
+            colourText.includes("colour") ||
+            colourText.includes("color")
+        ) &&
+        sidesText.includes("single")
     ) {
 
         return 5;
@@ -388,65 +399,84 @@ function getPrintRate(
     }
 
 
-    return 10;
+    /* COLOUR DOUBLE = ₹10 */
+
+    if (
+        (
+            colourText.includes("colour") ||
+            colourText.includes("color")
+        ) &&
+        sidesText.includes("double")
+    ) {
+
+        return 10;
+
+    }
+
+
+    return 3;
 
 }
 
 
 /* ============================================================
-   PDF PAGE COUNT
-============================================================ */
+   CALCULATE TOTAL
+   ============================================================ */
 
-async function getPdfPageCount(
-    filePath
+function calculatePrintAmount(
+    pages,
+    copies,
+    colour,
+    sides
 ) {
 
-    try {
-
-        const pdfBytes =
-            fs.readFileSync(
-                filePath
-            );
-
-
-        const pdfDoc =
-            await PDFDocument.load(
-                pdfBytes,
-                {
-                    ignoreEncryption: true
-                }
-            );
-
-
-        return pdfDoc.getPageCount();
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "PDF PAGE COUNT ERROR:",
-            error
+    const safePages =
+        Math.max(
+            1,
+            Math.floor(
+                Number(pages) || 1
+            )
         );
 
 
-        return 1;
+    const safeCopies =
+        Math.max(
+            1,
+            Math.floor(
+                Number(copies) || 1
+            )
+        );
 
-    }
+
+    const rate =
+        getPrintRate(
+            colour,
+            sides
+        );
+
+
+    const amount =
+        safePages *
+        safeCopies *
+        rate;
+
+
+    return (
+        Math.round(
+            amount * 100
+        ) / 100
+    );
 
 }
 
 
 /* ============================================================
    HOME
-============================================================ */
+   ============================================================ */
 
 app.get(
     "/",
-    function (
-        req,
-        res
-    ) {
+    function(req, res) {
 
         res.sendFile(
             path.join(
@@ -461,27 +491,26 @@ app.get(
 
 /* ============================================================
    HEALTH
-============================================================ */
+   ============================================================ */
 
 app.get(
     "/api/health",
-    function (
-        req,
-        res
-    ) {
+    function(req, res) {
 
         const sessionValid =
             activeSession.token &&
             Date.now() -
-                activeSession.createdAt <
-                SESSION_TIME;
+            activeSession.createdAt <
+            SESSION_TIME;
 
 
         res.json({
 
-            success: true,
+            success:
+                true,
 
-            status: "online",
+            status:
+                "online",
 
             razorpay:
                 !!razorpay,
@@ -511,18 +540,16 @@ app.get(
 
 /* ============================================================
    PAYMENT CONFIG
-============================================================ */
+   ============================================================ */
 
 app.get(
     "/api/payment-config",
-    function (
-        req,
-        res
-    ) {
+    function(req, res) {
 
         res.json({
 
-            success: true,
+            success:
+                true,
 
             configured:
                 !!razorpay,
@@ -539,14 +566,11 @@ app.get(
 
 /* ============================================================
    MACHINE QR
-============================================================ */
+   ============================================================ */
 
 app.get(
     "/api/machine-qr",
-    async function (
-        req,
-        res
-    ) {
+    async function(req, res) {
 
         try {
 
@@ -575,14 +599,27 @@ app.get(
                 );
 
 
+            console.log(
+                "NEW AXM SESSION CREATED"
+            );
+
+
+            console.log(
+                "UPLOAD URL:",
+                uploadUrl
+            );
+
+
             const qr =
                 await QRCode.toDataURL(
                     uploadUrl,
                     {
 
-                        width: 350,
+                        width:
+                            350,
 
-                        margin: 2,
+                        margin:
+                            2,
 
                         errorCorrectionLevel:
                             "M"
@@ -591,14 +628,10 @@ app.get(
                 );
 
 
-            console.log(
-                "NEW AXM SESSION CREATED"
-            );
-
-
             res.json({
 
-                success: true,
+                success:
+                    true,
 
                 qr:
                     qr,
@@ -620,7 +653,8 @@ app.get(
 
             res.status(500).json({
 
-                success: false,
+                success:
+                    false,
 
                 error:
                     "Unable to generate QR code."
@@ -635,14 +669,11 @@ app.get(
 
 /* ============================================================
    SESSION CHECK
-============================================================ */
+   ============================================================ */
 
 app.get(
     "/api/session-check",
-    function (
-        req,
-        res
-    ) {
+    function(req, res) {
 
         const token =
             req.query.token;
@@ -652,9 +683,11 @@ app.get(
 
             return res.json({
 
-                success: true,
+                success:
+                    true,
 
-                active: false
+                active:
+                    false
 
             });
 
@@ -671,7 +704,8 @@ app.get(
 
         res.json({
 
-            success: true,
+            success:
+                true,
 
             active:
                 valid
@@ -683,23 +717,15 @@ app.get(
 
 
 /* ============================================================
-   UPLOAD
-============================================================ */
+   UPLOAD DOCUMENT
+   ============================================================ */
 
 app.post(
     "/api/upload",
     upload.single("document"),
-    async function (
-        req,
-        res
-    ) {
+    function(req, res) {
 
         try {
-
-            console.log(
-                "UPLOAD REQUEST RECEIVED"
-            );
-
 
             const token =
                 req.query.token ||
@@ -709,13 +735,14 @@ app.post(
                 ];
 
 
+            /* SESSION */
+
             if (!token) {
 
-                return res.status(
-                    403
-                ).json({
+                return res.status(403).json({
 
-                    success: false,
+                    success:
+                        false,
 
                     error:
                         "No AXM session token. Please scan a new QR code."
@@ -731,11 +758,10 @@ app.post(
                     activeSession.token
             ) {
 
-                return res.status(
-                    403
-                ).json({
+                return res.status(403).json({
 
-                    success: false,
+                    success:
+                        false,
 
                     error:
                         "No active AXM session. Please scan a new QR code."
@@ -747,24 +773,25 @@ app.post(
 
             if (
                 Date.now() -
-                    activeSession.createdAt >
+                activeSession.createdAt >
                 SESSION_TIME
             ) {
 
                 activeSession = {
 
-                    token: null,
+                    token:
+                        null,
 
-                    createdAt: 0
+                    createdAt:
+                        0
 
                 };
 
 
-                return res.status(
-                    403
-                ).json({
+                return res.status(403).json({
 
-                    success: false,
+                    success:
+                        false,
 
                     error:
                         "AXM session expired. Please scan a new QR code."
@@ -774,13 +801,14 @@ app.post(
             }
 
 
+            /* FILE */
+
             if (!req.file) {
 
-                return res.status(
-                    400
-                ).json({
+                return res.status(400).json({
 
-                    success: false,
+                    success:
+                        false,
 
                     error:
                         "No document was uploaded."
@@ -790,45 +818,9 @@ app.post(
             }
 
 
-            /* ---------------------------------------------
-               DETECT PDF PAGES
-            --------------------------------------------- */
-
-            let pages = 1;
-
-
-            if (
-                req.file.mimetype ===
-                "application/pdf"
-            ) {
-
-                pages =
-                    await getPdfPageCount(
-                        req.file.path
-                    );
-
-            }
-
-
-            if (
-                !Number.isFinite(
-                    pages
-                ) ||
-                pages < 1
-            ) {
-
-                pages = 1;
-
-            }
-
-
-            pages =
-                Math.floor(pages);
-
-
-            /* ---------------------------------------------
+            /* =================================================
                CREATE JOB
-            --------------------------------------------- */
+               ================================================= */
 
             currentJob = {
 
@@ -862,13 +854,16 @@ app.post(
                     "Single Side",
 
                 pages:
-                    pages,
+                    1,
 
                 copies:
                     1,
 
+                rate:
+                    3,
+
                 amount:
-                    pages * 3,
+                    3,
 
                 paymentStatus:
                     "PENDING",
@@ -898,17 +893,11 @@ app.post(
                 currentJob.filename
             );
 
-            console.log(
-                "PDF PAGES:",
-                pages
-            );
 
+            res.status(200).json({
 
-            return res.status(
-                200
-            ).json({
-
-                success: true,
+                success:
+                    true,
 
                 message:
                     "Document uploaded successfully to AXM.",
@@ -928,11 +917,10 @@ app.post(
             );
 
 
-            return res.status(
-                500
-            ).json({
+            res.status(500).json({
 
-                success: false,
+                success:
+                    false,
 
                 error:
                     error.message ||
@@ -948,18 +936,16 @@ app.post(
 
 /* ============================================================
    CURRENT JOB
-============================================================ */
+   ============================================================ */
 
 app.get(
     "/api/current-job",
-    function (
-        req,
-        res
-    ) {
+    function(req, res) {
 
         res.json({
 
-            success: true,
+            success:
+                true,
 
             job:
                 currentJob
@@ -972,18 +958,16 @@ app.get(
 
 /* ============================================================
    JOB
-============================================================ */
+   ============================================================ */
 
 app.get(
     "/api/job",
-    function (
-        req,
-        res
-    ) {
+    function(req, res) {
 
         res.json({
 
-            success: true,
+            success:
+                true,
 
             job:
                 currentJob
@@ -996,14 +980,11 @@ app.get(
 
 /* ============================================================
    EVENTS
-============================================================ */
+   ============================================================ */
 
 app.get(
     "/api/events",
-    function (
-        req,
-        res
-    ) {
+    function(req, res) {
 
         try {
 
@@ -1016,9 +997,7 @@ app.get(
 
             const result =
                 events.filter(
-                    function (
-                        event
-                    ) {
+                    function(event) {
 
                         return (
                             event.id >
@@ -1029,7 +1008,9 @@ app.get(
                 );
 
 
-            res.json(result);
+            res.json(
+                result
+            );
 
         }
 
@@ -1043,7 +1024,8 @@ app.get(
 
             res.status(500).json({
 
-                success: false,
+                success:
+                    false,
 
                 error:
                     "Unable to read events."
@@ -1057,25 +1039,21 @@ app.get(
 
 
 /* ============================================================
-   SAVE OPTIONS
-============================================================ */
+   SAVE PRINT OPTIONS
+   ============================================================ */
 
 app.post(
     "/api/options",
-    function (
-        req,
-        res
-    ) {
+    function(req, res) {
 
         try {
 
             if (!currentJob) {
 
-                return res.status(
-                    400
-                ).json({
+                return res.status(400).json({
 
-                    success: false,
+                    success:
+                        false,
 
                     error:
                         "No document has been received yet."
@@ -1085,16 +1063,22 @@ app.post(
             }
 
 
+            /* COLOUR */
+
             const colour =
                 req.body.colour ||
                 req.body.color ||
                 "Black & White";
 
 
+            /* SIDES */
+
             const sides =
                 req.body.sides ||
                 "Single Side";
 
+
+            /* PAGES */
 
             let pages =
                 Number(
@@ -1104,6 +1088,8 @@ app.post(
                 );
 
 
+            /* COPIES */
+
             let copies =
                 Number(
                     req.body.copies ||
@@ -1111,24 +1097,22 @@ app.post(
                 );
 
 
+            /* VALIDATE PAGES */
+
             if (
-                !Number.isFinite(
-                    pages
-                ) ||
+                !Number.isFinite(pages) ||
                 pages < 1
             ) {
 
-                pages =
-                    currentJob.pages ||
-                    1;
+                pages = 1;
 
             }
 
 
+            /* VALIDATE COPIES */
+
             if (
-                !Number.isFinite(
-                    copies
-                ) ||
+                !Number.isFinite(copies) ||
                 copies < 1
             ) {
 
@@ -1142,15 +1126,23 @@ app.post(
                     pages
                 );
 
+
             copies =
                 Math.floor(
                     copies
                 );
 
 
-            /* ---------------------------------------------
-               SERVER-SIDE PRICE
-            --------------------------------------------- */
+            /* MAX COPIES */
+
+            if (copies > 50) {
+
+                copies = 50;
+
+            }
+
+
+            /* RATE */
 
             const rate =
                 getPrintRate(
@@ -1159,40 +1151,46 @@ app.post(
                 );
 
 
+            /* TOTAL */
+
             const amount =
-                Number(
-                    (
-                        pages *
-                        copies *
-                        rate
-                    ).toFixed(2)
+                calculatePrintAmount(
+                    pages,
+                    copies,
+                    colour,
+                    sides
                 );
 
 
-            /* ---------------------------------------------
-               UPDATE JOB
-            --------------------------------------------- */
+            /* SAVE */
 
             currentJob.colour =
                 colour;
 
+
             currentJob.sides =
                 sides;
+
 
             currentJob.pages =
                 pages;
 
+
             currentJob.copies =
                 copies;
+
 
             currentJob.rate =
                 rate;
 
+
             currentJob.amount =
                 amount;
 
+
             currentJob.status =
                 "OPTIONS_SELECTED";
+
 
             currentJob.paymentStatus =
                 "PENDING";
@@ -1210,38 +1208,33 @@ app.post(
 
 
             console.log(
-                "PRINT OPTIONS:"
-            );
+                "PRINT OPTIONS:",
+                {
+                    colour:
+                        colour,
 
-            console.log(
-                "Colour:",
-                colour
-            );
+                    sides:
+                        sides,
 
-            console.log(
-                "Sides:",
-                sides
-            );
+                    pages:
+                        pages,
 
-            console.log(
-                "Pages:",
-                pages
-            );
+                    copies:
+                        copies,
 
-            console.log(
-                "Rate:",
-                rate
-            );
+                    rate:
+                        rate,
 
-            console.log(
-                "Amount:",
-                amount
+                    amount:
+                        amount
+                }
             );
 
 
             res.json({
 
-                success: true,
+                success:
+                    true,
 
                 message:
                     "Print options saved.",
@@ -1269,7 +1262,8 @@ app.post(
 
             res.status(500).json({
 
-                success: false,
+                success:
+                    false,
 
                 error:
                     "Unable to save print options."
@@ -1284,24 +1278,20 @@ app.post(
 
 /* ============================================================
    CREATE RAZORPAY ORDER
-============================================================ */
+   ============================================================ */
 
 app.post(
     "/api/create-order",
-    async function (
-        req,
-        res
-    ) {
+    async function(req, res) {
 
         try {
 
             if (!razorpay) {
 
-                return res.status(
-                    500
-                ).json({
+                return res.status(500).json({
 
-                    success: false,
+                    success:
+                        false,
 
                     error:
                         "Razorpay is not configured on the server."
@@ -1313,11 +1303,10 @@ app.post(
 
             if (!currentJob) {
 
-                return res.status(
-                    400
-                ).json({
+                return res.status(400).json({
 
-                    success: false,
+                    success:
+                        false,
 
                     error:
                         "No print job available."
@@ -1334,17 +1323,14 @@ app.post(
 
 
             if (
-                !Number.isFinite(
-                    amount
-                ) ||
+                !Number.isFinite(amount) ||
                 amount <= 0
             ) {
 
-                return res.status(
-                    400
-                ).json({
+                return res.status(400).json({
 
-                    success: false,
+                    success:
+                        false,
 
                     error:
                         "Invalid payment amount."
@@ -1375,7 +1361,12 @@ app.post(
                             "AXM Print Service",
 
                         job_id:
-                            currentJob.id
+                            currentJob.id,
+
+                        copies:
+                            String(
+                                currentJob.copies
+                            )
 
                     }
 
@@ -1384,6 +1375,7 @@ app.post(
 
             currentJob.razorpayOrderId =
                 order.id;
+
 
             currentJob.status =
                 "PAYMENT_STARTED";
@@ -1397,7 +1389,8 @@ app.post(
 
             res.json({
 
-                success: true,
+                success:
+                    true,
 
                 keyId:
                     RAZORPAY_KEY_ID,
@@ -1434,7 +1427,8 @@ app.post(
 
             res.status(500).json({
 
-                success: false,
+                success:
+                    false,
 
                 error:
                     error.error?.description ||
@@ -1450,15 +1444,12 @@ app.post(
 
 
 /* ============================================================
-   VERIFY PAYMENT
-============================================================ */
+   VERIFY RAZORPAY PAYMENT
+   ============================================================ */
 
 app.post(
     "/api/verify-payment",
-    function (
-        req,
-        res
-    ) {
+    function(req, res) {
 
         try {
 
@@ -1479,11 +1470,10 @@ app.post(
                 !razorpay_signature
             ) {
 
-                return res.status(
-                    400
-                ).json({
+                return res.status(400).json({
 
-                    success: false,
+                    success:
+                        false,
 
                     error:
                         "Missing Razorpay payment details."
@@ -1495,11 +1485,10 @@ app.post(
 
             if (!RAZORPAY_KEY_SECRET) {
 
-                return res.status(
-                    500
-                ).json({
+                return res.status(500).json({
 
-                    success: false,
+                    success:
+                        false,
 
                     error:
                         "Razorpay secret is not configured."
@@ -1526,17 +1515,22 @@ app.post(
 
 
             const valid =
-                expectedSignature ===
-                razorpay_signature;
+                crypto.timingSafeEqual(
+                    Buffer.from(
+                        expectedSignature
+                    ),
+                    Buffer.from(
+                        razorpay_signature
+                    )
+                );
 
 
             if (!valid) {
 
-                return res.status(
-                    400
-                ).json({
+                return res.status(400).json({
 
-                    success: false,
+                    success:
+                        false,
 
                     error:
                         "Payment verification failed."
@@ -1551,11 +1545,14 @@ app.post(
                 currentJob.paymentStatus =
                     "PAID";
 
+
                 currentJob.status =
                     "PAYMENT_SUCCESS";
 
+
                 currentJob.razorpayPaymentId =
                     razorpay_payment_id;
+
 
                 currentJob.razorpayOrderId =
                     razorpay_order_id;
@@ -1582,7 +1579,8 @@ app.post(
 
             res.json({
 
-                success: true,
+                success:
+                    true,
 
                 message:
                     "Payment verified successfully.",
@@ -1610,7 +1608,8 @@ app.post(
 
             res.status(500).json({
 
-                success: false,
+                success:
+                    false,
 
                 error:
                     "Payment verification failed."
@@ -1625,24 +1624,20 @@ app.post(
 
 /* ============================================================
    TEST PAYMENT
-============================================================ */
+   ============================================================ */
 
 app.post(
     "/api/test-payment",
-    function (
-        req,
-        res
-    ) {
+    function(req, res) {
 
         try {
 
             if (!currentJob) {
 
-                return res.status(
-                    400
-                ).json({
+                return res.status(400).json({
 
-                    success: false,
+                    success:
+                        false,
 
                     error:
                         "No print job available."
@@ -1655,8 +1650,10 @@ app.post(
             currentJob.paymentStatus =
                 "PAID";
 
+
             currentJob.status =
                 "PAYMENT_SUCCESS";
+
 
             currentJob.testPayment =
                 true;
@@ -1675,13 +1672,17 @@ app.post(
 
             res.json({
 
-                success: true,
+                success:
+                    true,
 
                 message:
                     "Test payment successful.",
 
                 amount:
                     currentJob.amount,
+
+                copies:
+                    currentJob.copies,
 
                 job:
                     currentJob
@@ -1694,7 +1695,8 @@ app.post(
 
             res.status(500).json({
 
-                success: false,
+                success:
+                    false,
 
                 error:
                     "Test payment failed."
@@ -1709,24 +1711,20 @@ app.post(
 
 /* ============================================================
    PRINT
-============================================================ */
+   ============================================================ */
 
 app.post(
     "/api/print",
-    function (
-        req,
-        res
-    ) {
+    function(req, res) {
 
         try {
 
             if (!currentJob) {
 
-                return res.status(
-                    400
-                ).json({
+                return res.status(400).json({
 
-                    success: false,
+                    success:
+                        false,
 
                     error:
                         "No print job available."
@@ -1741,11 +1739,10 @@ app.post(
                 "PAID"
             ) {
 
-                return res.status(
-                    403
-                ).json({
+                return res.status(403).json({
 
-                    success: false,
+                    success:
+                        false,
 
                     error:
                         "Payment is required before printing."
@@ -1755,8 +1752,63 @@ app.post(
             }
 
 
+            /* ================================================
+               PRINT INFORMATION
+               ================================================ */
+
+            const printJob = {
+
+                jobId:
+                    currentJob.id,
+
+                filename:
+                    currentJob.filename,
+
+                filepath:
+                    currentJob.filepath,
+
+                colour:
+                    currentJob.colour,
+
+                sides:
+                    currentJob.sides,
+
+                pages:
+                    currentJob.pages,
+
+                copies:
+                    currentJob.copies,
+
+                amount:
+                    currentJob.amount,
+
+                paymentStatus:
+                    currentJob.paymentStatus
+
+            };
+
+
+            /*
+             * IMPORTANT:
+             *
+             * currentJob.copies contains the exact number
+             * selected by the user.
+             *
+             * Example:
+             *
+             * copies = 2
+             *
+             * The physical printer integration should
+             * send copies = 2 to the printer.
+             */
+
+
             currentJob.status =
                 "PRINTING";
+
+
+            currentJob.printJob =
+                printJob;
 
 
             addEvent({
@@ -1771,14 +1823,60 @@ app.post(
 
 
             console.log(
-                "PRINT JOB:",
+                "================================"
+            );
+
+
+            console.log(
+                "PRINT JOB STARTED"
+            );
+
+
+            console.log(
+                "FILE:",
                 currentJob.filename
+            );
+
+
+            console.log(
+                "COLOUR:",
+                currentJob.colour
+            );
+
+
+            console.log(
+                "SIDES:",
+                currentJob.sides
+            );
+
+
+            console.log(
+                "PAGES:",
+                currentJob.pages
+            );
+
+
+            console.log(
+                "COPIES:",
+                currentJob.copies
+            );
+
+
+            console.log(
+                "AMOUNT:",
+                currentJob.amount
+            );
+
+
+            console.log(
+                "================================"
             );
 
 
             res.json({
 
-                success: true,
+                success:
+                    true,
 
                 message:
                     "Print job is ready.",
@@ -1787,7 +1885,10 @@ app.post(
                     currentJob,
 
                 printUrl:
-                    "/print.html"
+                    "/print.html",
+
+                printJob:
+                    printJob
 
             });
 
@@ -1803,7 +1904,8 @@ app.post(
 
             res.status(500).json({
 
-                success: false,
+                success:
+                    false,
 
                 error:
                     "Unable to start printing."
@@ -1818,23 +1920,23 @@ app.post(
 
 /* ============================================================
    RESET
-============================================================ */
+   ============================================================ */
 
 app.post(
     "/api/reset",
-    function (
-        req,
-        res
-    ) {
+    function(req, res) {
 
-        currentJob = null;
+        currentJob =
+            null;
 
 
         activeSession = {
 
-            token: null,
+            token:
+                null,
 
-            createdAt: 0
+            createdAt:
+                0
 
         };
 
@@ -1849,7 +1951,8 @@ app.post(
 
         res.json({
 
-            success: true,
+            success:
+                true,
 
             message:
                 "AXM machine reset."
@@ -1862,15 +1965,10 @@ app.post(
 
 /* ============================================================
    ERROR HANDLER
-============================================================ */
+   ============================================================ */
 
 app.use(
-    function (
-        error,
-        req,
-        res,
-        next
-    ) {
+    function(error, req, res, next) {
 
         console.error(
             "SERVER ERROR:",
@@ -1883,11 +1981,10 @@ app.use(
             "/api/upload"
         ) {
 
-            return res.status(
-                400
-            ).json({
+            return res.status(400).json({
 
-                success: false,
+                success:
+                    false,
 
                 error:
                     error.message ||
@@ -1900,7 +1997,8 @@ app.use(
 
         res.status(500).json({
 
-            success: false,
+            success:
+                false,
 
             error:
                 error.message ||
@@ -1914,20 +2012,16 @@ app.use(
 
 /* ============================================================
    API 404
-============================================================ */
+   ============================================================ */
 
 app.use(
     "/api",
-    function (
-        req,
-        res
-    ) {
+    function(req, res) {
 
-        res.status(
-            404
-        ).json({
+        res.status(404).json({
 
-            success: false,
+            success:
+                false,
 
             error:
                 "API endpoint not found: " +
@@ -1943,12 +2037,12 @@ app.use(
 
 /* ============================================================
    START SERVER
-============================================================ */
+   ============================================================ */
 
 app.listen(
     PORT,
     "0.0.0.0",
-    function () {
+    function() {
 
         console.log(
             "=========================================="
