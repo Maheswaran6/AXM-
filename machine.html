@@ -3,194 +3,684 @@
 
 <head>
     <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1"
-    >
+    <title>NIET AXM — Automated Xerox Machine</title>
 
-    <title>AXM Machine</title>
-
-    <link
-        rel="stylesheet"
-        href="/style.css"
-    >
+    <link rel="stylesheet" href="/style.css">
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
 
-        .qr-container {
-            width: 280px;
-            height: 280px;
-            margin: 25px auto;
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #eef8ff, #ffffff);
+            color: #123d73;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ================= HEADER ================= */
+
+        header {
+            height: 110px;
+            flex-shrink: 0;
             background: #ffffff;
-            border: 2px solid #d9e2ec;
-            border-radius: 15px;
+            border-bottom: 2px solid #d9eafa;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 12px 45px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .college-logo {
+            width: 78px;
+            height: 78px;
+            object-fit: contain;
+        }
+
+        .college-name {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .college-name strong {
+            font-size: 25px;
+            font-weight: 800;
+            color: #123d73;
+            letter-spacing: .3px;
+        }
+
+        .college-name span {
+            font-size: 14px;
+            letter-spacing: 5px;
+            color: #47719e;
+        }
+
+        .axm-brand {
+            text-align: right;
+        }
+
+        .axm-title {
+            font-size: 42px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: #123d73;
+        }
+
+        .axm-title span {
+            color: #10a9e8;
+        }
+
+        .axm-subtitle {
+            font-size: 12px;
+            letter-spacing: 5px;
+            color: #123d73;
+            margin-top: 3px;
+        }
+
+        .ready {
+            display: inline-block;
+            margin-top: 7px;
+            color: #159447;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        /* ================= MAIN ================= */
+
+        main {
+            flex: 1;
+            min-height: 0;
+            padding: 20px 55px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 50px;
+            flex-shrink: 0;
+        }
+
+        .heading h1 {
+            margin: 0;
+            font-size: 27px;
+            color: #154b8b;
+        }
+
+        .heading p {
+            margin: 5px 0 0;
+            color: #54779b;
+            font-size: 14px;
+        }
+
+        .steps {
+            display: flex;
+            gap: 35px;
+            align-items: center;
+        }
+
+        .step {
+            text-align: center;
+            min-width: 65px;
+        }
+
+        .step-icon {
+            font-size: 25px;
+            display: block;
+        }
+
+        .step-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #173f72;
+        }
+
+        /* ================= QR PANEL ================= */
+
+        .panel {
+            flex: 1;
+            min-height: 0;
+            margin-top: 15px;
+
+            background: rgba(255, 255, 255, .85);
+            border: 2px solid #d2eaff;
+            border-radius: 25px;
+
+            box-shadow: 0 12px 35px rgba(30, 101, 160, .12);
 
             display: flex;
             align-items: center;
             justify-content: center;
 
-            overflow: hidden;
+            padding: 18px 35px;
         }
 
-        .qr-container img {
-            width: 240px;
-            height: 240px;
-            display: block;
+        .content {
+            width: 100%;
+            max-width: 1050px;
+
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 60px;
+            align-items: center;
         }
 
-        .upload-url {
-            max-width: 700px;
-            margin: 15px auto;
-            word-break: break-all;
-            font-size: 14px;
-            color: #315b86;
-        }
+        /* ================= QR ================= */
 
-        .error {
-            color: #d92727;
-            font-weight: bold;
-        }
-
-        .success {
-            color: #079447;
-            font-weight: bold;
-        }
-
-        .button {
-            cursor: pointer;
-            text-decoration: none;
-            border: none;
-            display: inline-block;
-        }
-
-        .button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        #job {
+        .qr-section {
             text-align: center;
         }
 
+        .qr-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #123d73;
+            margin-bottom: 10px;
+        }
+
+        .qr-container {
+            width: 285px;
+            height: 285px;
+            margin: auto;
+
+            background: white;
+            border: 5px solid #e0f0ff;
+            border-radius: 20px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            box-shadow: 0 8px 25px rgba(0, 90, 160, .14);
+        }
+
+        .qr-container img {
+            width: 255px;
+            height: 255px;
+            object-fit: contain;
+        }
+
+        /* ================= INSTRUCTIONS ================= */
+
+        .instructions h2 {
+            font-size: 32px;
+            margin: 0 0 10px;
+            color: #123d73;
+        }
+
+        .instructions .blue {
+            color: #109fe0;
+        }
+
+        .instructions p {
+            font-size: 17px;
+            line-height: 1.5;
+            color: #4d6e8f;
+            margin: 7px 0;
+        }
+
+        .instruction-box {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .instruction {
+            padding: 16px 10px;
+            border-radius: 15px;
+            text-align: center;
+            background: #eef8ff;
+            border: 1px solid #d4ebfb;
+        }
+
+        .instruction strong {
+            display: block;
+            font-size: 14px;
+            color: #123d73;
+        }
+
+        .instruction span {
+            display: block;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #5e7d9b;
+        }
+
+        /* ================= STATUS ================= */
+
+        #job {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 15px;
+            background: #f5fbff;
+            border: 1px solid #d9edfa;
+            text-align: center;
+        }
+
+        #job h2 {
+            margin: 0 0 5px;
+            font-size: 18px;
+        }
+
+        #job p {
+            margin: 5px;
+            font-size: 13px;
+        }
+
+        .success {
+            color: #078c46;
+            font-weight: 800;
+        }
+
+        .error {
+            color: #d82b2b;
+            font-weight: 800;
+        }
+
+        .muted {
+            color: #7189a1;
+        }
+
+        /* ================= BUTTON ================= */
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            min-width: 210px;
+            height: 48px;
+
+            padding: 0 25px;
+
+            border: none;
+            border-radius: 12px;
+
+            background: linear-gradient(135deg, #126fe5, #159fe8);
+            color: white;
+
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: .5px;
+
+            text-decoration: none;
+            cursor: pointer;
+
+            box-shadow: 0 7px 18px rgba(20, 110, 220, .22);
+        }
+
+        .button:hover {
+            transform: translateY(-1px);
+        }
+
+        .button:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+        }
+
+        .new-qr {
+            margin-top: 12px;
+            background: white;
+            color: #126fe5;
+            border: 2px solid #126fe5;
+            box-shadow: none;
+        }
+
+        /* ================= URL ================= */
+
+        .upload-url {
+            max-width: 330px;
+            margin: 10px auto;
+            word-break: break-all;
+            font-size: 10px;
+            color: #7992ab;
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            height: 55px;
+            flex-shrink: 0;
+
+            background: #073f82;
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 55px;
+
+            font-size: 13px;
+        }
+
+        footer strong {
+            font-size: 16px;
+        }
+
+        /* ================= SMALL SCREEN ================= */
+
+        @media (max-width: 900px) {
+
+            header {
+                padding: 10px 20px;
+            }
+
+            .college-name strong {
+                font-size: 18px;
+            }
+
+            .college-name span {
+                font-size: 9px;
+                letter-spacing: 2px;
+            }
+
+            .axm-title {
+                font-size: 30px;
+            }
+
+            main {
+                padding: 15px 20px;
+            }
+
+            .content {
+                grid-template-columns: 300px 1fr;
+                gap: 25px;
+            }
+
+            .qr-container {
+                width: 240px;
+                height: 240px;
+            }
+
+            .qr-container img {
+                width: 215px;
+                height: 215px;
+            }
+
+            .instructions h2 {
+                font-size: 25px;
+            }
+        }
     </style>
 
 </head>
 
+
 <body>
+
+<!-- ============================================================
+     HEADER
+============================================================ -->
 
 <header>
 
     <div class="brand">
 
-        <span class="logo">AXM</span>
+        <img
+            src="/niet-logo.png"
+            class="college-logo"
+            alt="NIET Logo"
+        >
 
-        <div>
-            <b>AXM</b>
+        <div class="college-name">
 
-            <small>
-                AUTOMATIC XEROX MACHINE • NIET • COIMBATORE
-            </small>
+            <strong>
+                NEHRU INSTITUTE OF ENGINEERING & TECHNOLOGY
+            </strong>
+
+            <span>
+                LEARN &nbsp; • &nbsp; INNOVATE &nbsp; • &nbsp; EXCEL
+            </span>
+
         </div>
 
     </div>
 
-    <span class="ready">
-        ● READY
-    </span>
+
+    <div class="axm-brand">
+
+        <div class="axm-title">
+            NIET <span>AXM</span>
+        </div>
+
+        <div class="axm-subtitle">
+            AUTOMATED XEROX MACHINE
+        </div>
+
+        <div class="ready">
+            ● MACHINE READY
+        </div>
+
+    </div>
 
 </header>
 
 
+<!-- ============================================================
+     MAIN
+============================================================ -->
+
 <main>
 
-<section class="panel">
+    <div class="top-line">
 
-    <h1>
-        Send Document From Phone
-    </h1>
+        <div class="heading">
 
-    <p>
-        Scan this QR code using the customer's phone.
-    </p>
+            <h1>
+                Smart Printing for a Smarter Campus
+            </h1>
 
+            <p>
+                FAST • SIMPLE • SECURE
+            </p>
 
-    <!-- ================================================= -->
-    <!-- QR CODE -->
-    <!-- ================================================= -->
-
-    <div class="qr-container">
-
-        <img
-            id="qr"
-            alt="AXM Upload QR Code"
-        >
-
-    </div>
+        </div>
 
 
-    <!-- ================================================= -->
-    <!-- UPLOAD URL -->
-    <!-- ================================================= -->
+        <div class="steps">
 
-    <p
-        id="url"
-        class="upload-url"
-    >
-        Generating secure upload link...
-    </p>
+            <div class="step">
+                <span class="step-icon">📄</span>
+                <span class="step-label">SCAN</span>
+            </div>
 
+            <div class="step">
+                <span class="step-icon">☁️</span>
+                <span class="step-label">UPLOAD</span>
+            </div>
 
-    <p
-        id="qrMessage"
-        class="muted"
-    ></p>
+            <div class="step">
+                <span class="step-icon">₹</span>
+                <span class="step-label">PAY</span>
+            </div>
 
+            <div class="step">
+                <span class="step-icon">🖨️</span>
+                <span class="step-label">PRINT</span>
+            </div>
 
-    <button
-        id="newQrButton"
-        class="button"
-        type="button"
-        onclick="newQR()"
-    >
-        GENERATE NEW QR
-    </button>
-
-
-    <hr>
-
-
-    <!-- ================================================= -->
-    <!-- DOCUMENT STATUS -->
-    <!-- ================================================= -->
-
-    <div id="job">
-
-        <h2>
-            Waiting for document…
-        </h2>
-
-        <p class="muted">
-            Scan the QR code from the customer's phone.
-        </p>
+        </div>
 
     </div>
 
-</section>
+
+    <section class="panel">
+
+        <div class="content">
+
+
+            <!-- QR SECTION -->
+
+            <div class="qr-section">
+
+                <div class="qr-title">
+                    SCAN TO SEND DOCUMENT
+                </div>
+
+                <div class="qr-container">
+
+                    <img
+                        id="qr"
+                        alt="Secure AXM QR Code"
+                    >
+
+                </div>
+
+
+                <p
+                    id="url"
+                    class="upload-url"
+                >
+                    Generating secure QR...
+                </p>
+
+
+                <button
+                    id="newQrButton"
+                    class="button new-qr"
+                    type="button"
+                    onclick="newQR()"
+                >
+                    ↻ GENERATE NEW QR
+                </button>
+
+            </div>
+
+
+            <!-- INSTRUCTIONS -->
+
+            <div class="instructions">
+
+                <h2>
+                    SEND YOUR
+                    <span class="blue">DOCUMENT</span>
+                </h2>
+
+                <p>
+                    Scan the QR code using your mobile phone.
+                </p>
+
+                <p>
+                    Select your PDF or document and press
+                    <b>Send</b>.
+                </p>
+
+                <div class="instruction-box">
+
+                    <div class="instruction">
+
+                        <strong>① SCAN</strong>
+
+                        <span>
+                            Scan QR with phone
+                        </span>
+
+                    </div>
+
+
+                    <div class="instruction">
+
+                        <strong>② UPLOAD</strong>
+
+                        <span>
+                            Select your document
+                        </span>
+
+                    </div>
+
+
+                    <div class="instruction">
+
+                        <strong>③ CONTINUE</strong>
+
+                        <span>
+                            Confirm your print
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DOCUMENT STATUS -->
+
+                <div id="job">
+
+                    <h2 class="muted">
+                        Waiting for document…
+                    </h2>
+
+                    <p class="muted">
+                        Please scan the QR code to begin.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
 
 </main>
+
+
+<!-- ============================================================
+     FOOTER
+============================================================ -->
+
+<footer>
+
+    <div>
+        <strong>NIET AXM</strong>
+        &nbsp; • &nbsp;
+        A Self-Service Printing Solution
+    </div>
+
+    <div>
+        Clean Campus &nbsp; | &nbsp;
+        Green Future &nbsp; | &nbsp;
+        Digital Convenience
+    </div>
+
+</footer>
 
 
 <script>
 
 let last = 0;
-
 let generatingQR = false;
 
 
 /* ============================================================
-   GENERATE SECURE QR
-   ============================================================ */
+   GENERATE QR
+============================================================ */
 
 async function newQR() {
 
@@ -206,9 +696,6 @@ async function newQR() {
     const url =
         document.getElementById("url");
 
-    const message =
-        document.getElementById("qrMessage");
-
     const button =
         document.getElementById("newQrButton");
 
@@ -218,13 +705,7 @@ async function newQR() {
     qr.removeAttribute("src");
 
     url.textContent =
-        "Generating secure upload link...";
-
-    message.className =
-        "muted";
-
-    message.textContent =
-        "";
+        "Generating secure QR...";
 
 
     try {
@@ -245,7 +726,6 @@ async function newQR() {
 
         let data;
 
-
         try {
 
             data =
@@ -254,7 +734,7 @@ async function newQR() {
         } catch {
 
             throw new Error(
-                "AXM server returned an invalid QR response."
+                "Invalid response from AXM server."
             );
 
         }
@@ -276,7 +756,7 @@ async function newQR() {
         if (!data.qr) {
 
             throw new Error(
-                "QR code was not returned by the server."
+                "QR code was not returned."
             );
 
         }
@@ -287,22 +767,8 @@ async function newQR() {
 
 
         url.textContent =
-            data.uploadUrl ||
-            "";
+            data.uploadUrl || "";
 
-
-        message.className =
-            "success";
-
-        message.textContent =
-            "✓ Secure QR code ready. Customer can scan now.";
-
-
-        /*
-         * Start a fresh event position.
-         * This prevents old document events from
-         * immediately appearing as a new document.
-         */
 
         last = 0;
 
@@ -311,12 +777,12 @@ async function newQR() {
             "job"
         ).innerHTML = `
 
-            <h2>
+            <h2 class="muted">
                 Waiting for document…
             </h2>
 
             <p class="muted">
-                Scan the QR code from the customer's phone.
+                Please scan the QR code to begin.
             </p>
 
         `;
@@ -332,18 +798,22 @@ async function newQR() {
 
         qr.removeAttribute("src");
 
-
-        url.textContent =
-            "";
+        url.textContent = "";
 
 
-        message.className =
-            "error";
+        document.getElementById(
+            "job"
+        ).innerHTML = `
 
+            <h2 class="error">
+                Unable to generate QR
+            </h2>
 
-        message.textContent =
-            error.message ||
-            "Unable to connect to AXM server.";
+            <p class="error">
+                ${escapeHTML(error.message)}
+            </p>
+
+        `;
 
     } finally {
 
@@ -357,8 +827,8 @@ async function newQR() {
 
 
 /* ============================================================
-   POLL SERVER EVENTS
-   ============================================================ */
+   CHECK SERVER EVENTS
+============================================================ */
 
 async function poll() {
 
@@ -388,9 +858,7 @@ async function poll() {
         }
 
 
-        for (
-            const event of events
-        ) {
+        for (const event of events) {
 
             if (event.id) {
 
@@ -418,11 +886,10 @@ async function poll() {
 
         }
 
-
     } catch (error) {
 
         console.log(
-            "Waiting for document..."
+            "Waiting for AXM document..."
         );
 
     }
@@ -431,8 +898,8 @@ async function poll() {
 
 
 /* ============================================================
-   SHOW DOCUMENT RECEIVED
-   ============================================================ */
+   DOCUMENT RECEIVED
+============================================================ */
 
 function render(job) {
 
@@ -441,9 +908,8 @@ function render(job) {
         "Document";
 
 
-    const status =
-        job.status ||
-        "RECEIVED";
+    const safeFilename =
+        escapeHTML(filename);
 
 
     document.getElementById(
@@ -451,27 +917,22 @@ function render(job) {
     ).innerHTML = `
 
         <h2 class="success">
-            ✓ Document received
+            ✓ DOCUMENT RECEIVED
         </h2>
 
         <p>
-            <b>${escapeHTML(filename)}</b>
-        </p>
-
-        <p>
-            Status:
-            <b>${escapeHTML(status)}</b>
+            <b>${safeFilename}</b>
         </p>
 
         <p class="success">
-            The document has been successfully received by AXM.
+            Your document has been received successfully.
         </p>
 
         <a
             class="button"
             href="/options.html"
         >
-            CONTINUE
+            CONTINUE →
         </a>
 
     `;
@@ -481,7 +942,7 @@ function render(job) {
 
 /* ============================================================
    HTML ESCAPE
-   ============================================================ */
+============================================================ */
 
 function escapeHTML(value) {
 
@@ -517,7 +978,7 @@ function escapeHTML(value) {
 
 /* ============================================================
    START
-   ============================================================ */
+============================================================ */
 
 newQR();
 
