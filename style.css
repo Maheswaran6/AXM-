@@ -1,11 +1,11 @@
 /* ============================================================
    NIET AXM — HOME SCREEN
+   Clean + Responsive + Machine Display Optimized
    ============================================================ */
 
 * {
     box-sizing: border-box;
 }
-
 
 html,
 body {
@@ -15,6 +15,9 @@ body {
     height: 100%;
 }
 
+html {
+    overflow: hidden;
+}
 
 body {
     font-family:
@@ -23,10 +26,12 @@ body {
         sans-serif;
 
     background: #eef7fd;
-
     color: #123f7a;
 
     overflow: hidden;
+
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
 }
 
 
@@ -35,13 +40,14 @@ body {
    ============================================================ */
 
 .screen {
-
     width: 100%;
+    height: 100vh;
     min-height: 100vh;
 
     display: flex;
     flex-direction: column;
 
+    overflow: hidden;
 }
 
 
@@ -50,23 +56,21 @@ body {
    ============================================================ */
 
 .header {
+    flex: 0 0 118px;
 
-    height: 125px;
+    width: 100%;
 
     background: #ffffff;
 
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
-    padding:
-        8px 5%;
+    padding: 8px 4%;
 
-    border-bottom:
-        2px solid #dcecf8;
+    border-bottom: 2px solid #dcecf8;
 
+    overflow: hidden;
 }
 
 
@@ -75,55 +79,55 @@ body {
    ============================================================ */
 
 .college-brand {
-
     display: flex;
-
     align-items: center;
 
-    gap: 14px;
+    gap: 12px;
 
+    min-width: 0;
 }
-
 
 .college-logo {
+    width: 72px;
+    height: 72px;
 
-    width: 78px;
-    height: 78px;
+    flex: 0 0 72px;
 
     object-fit: contain;
-
 }
 
+.college-text {
+    min-width: 0;
+}
 
 .college-text h1 {
-
     margin: 0;
 
     color: #123f7a;
 
-    font-size: 26px;
-
+    font-size: 25px;
     line-height: 1.12;
 
     font-weight: 800;
 
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
 
+    white-space: nowrap;
 }
 
-
 .tagline {
-
-    margin-top: 8px;
+    margin-top: 7px;
 
     color: #4272a8;
 
-    font-size: 13px;
+    font-size: 12px;
+    line-height: 1.2;
 
-    letter-spacing: 4px;
+    letter-spacing: 3px;
 
     font-weight: 600;
 
+    white-space: nowrap;
 }
 
 
@@ -132,85 +136,78 @@ body {
    ============================================================ */
 
 .axm-brand {
+    flex: 0 0 auto;
 
     text-align: center;
 
-    padding-left: 35px;
+    padding-left: 28px;
 
-    border-left:
-        1px solid #d5e5f2;
+    border-left: 1px solid #d5e5f2;
 
+    min-width: 275px;
 }
 
-
 .axm-title {
+    font-size: 46px;
 
-    font-size: 51px;
-
-    line-height: 0.9;
+    line-height: 0.95;
 
     font-weight: 900;
 
-    letter-spacing: -2px;
+    letter-spacing: -1.5px;
 
+    white-space: nowrap;
 }
-
 
 .axm-title span {
-
     color: #164b8f;
-
 }
-
 
 .axm-title strong {
-
     color: #12a8e0;
-
 }
 
-
 .axm-subtitle {
-
-    margin-top: 8px;
+    margin-top: 7px;
 
     color: #164b8f;
 
-    font-size: 13px;
+    font-size: 11px;
 
-    letter-spacing: 4px;
+    line-height: 1.2;
+
+    letter-spacing: 3px;
 
     font-weight: 700;
 
+    white-space: nowrap;
 }
 
-
 .machine-ready {
-
-    margin-top: 8px;
+    margin-top: 7px;
 
     color: #159447;
 
-    font-size: 13px;
+    font-size: 12px;
+
+    line-height: 1.2;
 
     font-weight: 800;
 
+    white-space: nowrap;
 }
 
-
 .ready-dot {
-
     display: inline-block;
 
-    width: 9px;
-    height: 9px;
+    width: 8px;
+    height: 8px;
 
-    margin-right: 6px;
+    margin-right: 5px;
 
     border-radius: 50%;
 
     background: #18a957;
-
 }
 
 
@@ -219,18 +216,21 @@ body {
    ============================================================ */
 
 .main {
+    flex: 1 1 auto;
 
-    flex: 1;
+    min-height: 0;
+
+    width: 100%;
 
     padding:
-        12px 3.5% 8px;
+        10px 3.5% 7px;
 
     display: flex;
-
     flex-direction: column;
 
     gap: 8px;
 
+    overflow: hidden;
 }
 
 
@@ -239,15 +239,18 @@ body {
    ============================================================ */
 
 .top-row {
+    flex: 0 0 auto;
+
+    width: 100%;
 
     display: flex;
 
     justify-content: space-between;
-
     align-items: center;
 
-    min-height: 80px;
+    min-height: 70px;
 
+    gap: 30px;
 }
 
 
@@ -256,40 +259,37 @@ body {
    ============================================================ */
 
 .intro {
+    padding-left: 3px;
 
-    padding-left: 4px;
-
+    min-width: 0;
 }
 
-
 .intro h2 {
-
     margin: 0;
 
     color: #18508f;
 
-    font-size: 31px;
+    font-size: 29px;
 
-    line-height: 1.12;
+    line-height: 1.18;
 
     font-weight: 800;
 
+    letter-spacing: 0.2px;
 }
 
-
 .intro p {
-
-    margin:
-        7px 0 0;
+    margin: 6px 0 0;
 
     color: #174e8b;
 
-    font-size: 12px;
+    font-size: 11px;
+
+    line-height: 1.2;
 
     font-weight: 800;
 
-    letter-spacing: 3px;
-
+    letter-spacing: 2.5px;
 }
 
 
@@ -298,46 +298,7 @@ body {
    ============================================================ */
 
 .process {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 55px;
-
-    padding-right: 20px;
-
-}
-
-
-.process-item {
-
-    text-align: center;
-
-    min-width: 55px;
-
-}
-
-
-.process-item b {
-
-    display: block;
-
-    margin-top: 3px;
-
-    color: #123f7a;
-
-    font-size: 15px;
-
-}
-
-
-.process-icon {
-
-    width: 42px;
-    height: 42px;
-
-    margin: auto;
+    flex: 0 0 auto;
 
     display: flex;
 
@@ -345,25 +306,64 @@ body {
 
     justify-content: center;
 
-    color: #164f91;
+    gap: 38px;
 
+    padding: 0;
+
+    min-width: 350px;
 }
 
+.process-item {
+    width: 60px;
 
-.process-icon svg {
+    text-align: center;
 
-    width: 38px;
-    height: 38px;
-
+    flex: 0 0 60px;
 }
 
+.process-item b {
+    display: block;
 
-.rupee-icon {
+    margin-top: 5px;
 
-    font-size: 38px;
+    color: #123f7a;
+
+    font-size: 14px;
+
+    line-height: 1.2;
 
     font-weight: 700;
 
+    white-space: nowrap;
+}
+
+.process-icon {
+    width: 40px;
+    height: 40px;
+
+    margin: 0 auto;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #164f91;
+
+    line-height: 1;
+}
+
+.process-icon svg {
+    width: 36px;
+    height: 36px;
+}
+
+.rupee-icon {
+    font-size: 34px;
+
+    font-weight: 700;
+
+    line-height: 1;
 }
 
 
@@ -372,19 +372,18 @@ body {
    ============================================================ */
 
 .start-box {
-
     position: relative;
 
-    flex: 1;
+    flex: 1 1 auto;
 
-    min-height: 225px;
+    min-height: 205px;
+    max-height: 255px;
 
-    max-height: 285px;
+    width: 100%;
 
-    border-radius: 27px;
+    border-radius: 26px;
 
-    border:
-        2px solid #c9e7fa;
+    border: 2px solid #c9e7fa;
 
     background:
         linear-gradient(
@@ -405,7 +404,8 @@ body {
 
     justify-content: flex-end;
 
-    padding-bottom: 22px;
+    padding:
+        0 20px 20px;
 
     text-decoration: none;
 
@@ -416,18 +416,14 @@ body {
     transition:
         transform 0.18s ease,
         box-shadow 0.18s ease;
-
 }
 
-
 .start-box:hover {
-
     transform: translateY(-2px);
 
     box-shadow:
         0 14px 35px
         rgba(41, 111, 169, 0.18);
-
 }
 
 
@@ -436,18 +432,16 @@ body {
    ============================================================ */
 
 .axm-circle {
-
     position: absolute;
 
-    top: -65px;
-
+    top: -54px;
     left: 50%;
 
     transform:
         translateX(-50%);
 
-    width: 135px;
-    height: 135px;
+    width: 116px;
+    height: 116px;
 
     border-radius: 50%;
 
@@ -459,7 +453,7 @@ body {
         );
 
     border:
-        10px solid #d9f0ff;
+        8px solid #d9f0ff;
 
     box-shadow:
         0 8px 25px
@@ -470,58 +464,56 @@ body {
     flex-direction: column;
 
     align-items: center;
-
     justify-content: center;
 
+    z-index: 2;
 }
 
 
-.circle-niet {
+/* ============================================================
+   CIRCLE TEXT
+   ============================================================ */
 
+.circle-niet {
     color: #17a8df;
 
-    font-size: 17px;
+    font-size: 15px;
 
     font-weight: 900;
 
     letter-spacing: 1px;
 
     line-height: 1;
-
 }
 
-
 .circle-axm {
-
     color: #164c8d;
 
-    font-size: 43px;
+    font-size: 38px;
 
-    line-height: 0.9;
+    line-height: 0.95;
 
     font-weight: 900;
 
-    letter-spacing: -3px;
-
+    letter-spacing: -2px;
 }
 
-
 .circle-subtitle {
-
     margin-top: 5px;
 
     color: #164c8d;
 
-    font-size: 7px;
+    font-size: 6px;
 
-    line-height: 1.15;
+    line-height: 1.2;
 
     font-weight: 800;
 
     text-align: center;
 
-    letter-spacing: 1px;
+    letter-spacing: 0.8px;
 
+    white-space: nowrap;
 }
 
 
@@ -530,32 +522,45 @@ body {
    ============================================================ */
 
 .start-title {
+    position: relative;
+
+    z-index: 1;
 
     color: #12498a;
 
-    font-size: 54px;
+    font-size: clamp(38px, 4vw, 52px);
 
-    line-height: 1;
+    line-height: 1.08;
 
     font-weight: 900;
 
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
 
+    white-space: nowrap;
+
+    text-align: center;
 }
 
-
 .start-subtitle {
+    position: relative;
 
-    margin-top: 9px;
+    z-index: 1;
+
+    margin-top: 8px;
 
     color: #416d9e;
 
-    font-size: 17px;
+    font-size: 15px;
+
+    line-height: 1.2;
 
     font-weight: 600;
 
-    letter-spacing: 5px;
+    letter-spacing: 4px;
 
+    white-space: nowrap;
+
+    text-align: center;
 }
 
 
@@ -564,25 +569,27 @@ body {
    ============================================================ */
 
 .features {
+    flex: 0 0 122px;
+
+    width: 100%;
 
     display: grid;
 
     grid-template-columns:
         repeat(4, 1fr);
 
-    gap: 14px;
+    gap: 12px;
 
-    min-height: 135px;
-
+    min-height: 122px;
 }
 
-
 .feature {
+    min-width: 0;
 
-    border-radius: 20px;
+    border-radius: 18px;
 
     padding:
-        14px 10px;
+        10px 8px;
 
     text-align: center;
 
@@ -591,111 +598,95 @@ body {
     flex-direction: column;
 
     align-items: center;
-
     justify-content: center;
 
     border:
-        1px solid rgba(255,255,255,0.8);
+        1px solid
+        rgba(255,255,255,0.8);
 
+    overflow: hidden;
 }
 
-
 .feature.upload {
-
     background:
         linear-gradient(
             145deg,
             #e4f5ff,
             #d9f0ff
         );
-
 }
 
-
 .feature.detection {
-
     background:
         linear-gradient(
             145deg,
             #e5faf4,
             #d5f5eb
         );
-
 }
 
-
 .feature.payment {
-
     background:
         linear-gradient(
             145deg,
             #fff7d1,
             #fff0b0
         );
-
 }
 
-
 .feature.printing {
-
     background:
         linear-gradient(
             145deg,
             #f0eaff,
             #e6ddff
         );
-
 }
 
-
 .feature-icon {
-
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
 
     color: #164f91;
 
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
+    flex: 0 0 40px;
 }
-
 
 .feature-icon svg {
-
-    width: 43px;
-    height: 43px;
-
+    width: 38px;
+    height: 38px;
 }
 
-
 .feature h3 {
-
     margin:
-        6px 0 3px;
+        5px 0 3px;
 
     color: #12498a;
 
-    font-size: 18px;
+    font-size: 16px;
 
-    line-height: 1.1;
+    line-height: 1.18;
 
+    font-weight: 800;
+
+    white-space: nowrap;
 }
 
-
 .feature p {
-
     margin: 0;
 
     color: #416d9e;
 
-    font-size: 14px;
+    font-size: 12px;
 
-    line-height: 1.25;
+    line-height: 1.3;
 
+    white-space: nowrap;
 }
 
 
@@ -704,8 +695,11 @@ body {
    ============================================================ */
 
 .footer {
+    flex: 0 0 43px;
 
-    min-height: 48px;
+    min-height: 43px;
+
+    width: 100%;
 
     background: #ffffff;
 
@@ -719,52 +713,237 @@ body {
     justify-content: space-between;
 
     padding:
-        6px 3.5%;
+        5px 3.5%;
 
     color: #52769c;
 
-    font-size: 11px;
+    font-size: 10px;
 
+    line-height: 1.2;
+
+    overflow: hidden;
 }
 
-
 .footer-left {
-
     display: flex;
 
     flex-direction: column;
 
     gap: 2px;
 
+    white-space: nowrap;
 }
-
 
 .footer-left b {
-
     color: #164f91;
 
-    font-size: 13px;
-
+    font-size: 12px;
 }
 
-
 .footer-center {
-
     text-align: center;
 
     font-weight: 600;
 
+    white-space: nowrap;
 }
 
-
 .footer-right {
-
     text-align: right;
 
     color: #398159;
 
     font-weight: 600;
 
+    white-space: nowrap;
+}
+
+
+/* ============================================================
+   1366 × 768 / COMMON MACHINE SCREEN
+   ============================================================ */
+
+@media (max-height: 800px) and (min-width: 1000px) {
+
+    .header {
+        flex-basis: 105px;
+
+        padding:
+            6px 4%;
+    }
+
+    .college-logo {
+        width: 62px;
+        height: 62px;
+
+        flex-basis: 62px;
+    }
+
+    .college-text h1 {
+        font-size: 21px;
+    }
+
+    .tagline {
+        margin-top: 5px;
+
+        font-size: 10px;
+
+        letter-spacing: 2.5px;
+    }
+
+    .axm-brand {
+        min-width: 245px;
+
+        padding-left: 22px;
+    }
+
+    .axm-title {
+        font-size: 40px;
+    }
+
+    .axm-subtitle {
+        margin-top: 5px;
+
+        font-size: 10px;
+    }
+
+    .machine-ready {
+        margin-top: 5px;
+
+        font-size: 10px;
+    }
+
+    .main {
+        padding:
+            7px 3.5% 5px;
+
+        gap: 6px;
+    }
+
+    .top-row {
+        min-height: 58px;
+    }
+
+    .intro h2 {
+        font-size: 25px;
+    }
+
+    .intro p {
+        margin-top: 4px;
+
+        font-size: 10px;
+    }
+
+    .process {
+        gap: 28px;
+    }
+
+    .process-item {
+        width: 54px;
+        flex-basis: 54px;
+    }
+
+    .process-icon {
+        width: 34px;
+        height: 34px;
+    }
+
+    .process-icon svg {
+        width: 32px;
+        height: 32px;
+    }
+
+    .process-item b {
+        margin-top: 3px;
+
+        font-size: 12px;
+    }
+
+    .start-box {
+        min-height: 185px;
+        max-height: 215px;
+
+        padding-bottom: 17px;
+    }
+
+    .axm-circle {
+        width: 100px;
+        height: 100px;
+
+        top: -47px;
+
+        border-width: 7px;
+    }
+
+    .circle-niet {
+        font-size: 13px;
+    }
+
+    .circle-axm {
+        font-size: 33px;
+    }
+
+    .circle-subtitle {
+        font-size: 5px;
+    }
+
+    .start-title {
+        font-size: 42px;
+    }
+
+    .start-subtitle {
+        margin-top: 6px;
+
+        font-size: 12px;
+
+        letter-spacing: 3px;
+    }
+
+    .features {
+        flex-basis: 105px;
+
+        min-height: 105px;
+    }
+
+    .feature {
+        border-radius: 15px;
+
+        padding: 7px;
+    }
+
+    .feature-icon {
+        width: 32px;
+        height: 32px;
+
+        flex-basis: 32px;
+    }
+
+    .feature-icon svg {
+        width: 31px;
+        height: 31px;
+    }
+
+    .feature h3 {
+        margin-top: 3px;
+
+        font-size: 14px;
+    }
+
+    .feature p {
+        font-size: 10px;
+    }
+
+    .footer {
+        flex-basis: 35px;
+
+        min-height: 35px;
+
+        font-size: 9px;
+    }
+
+    .footer-left b {
+        font-size: 10px;
+    }
 }
 
 
@@ -775,94 +954,71 @@ body {
 @media (max-width: 1200px) {
 
     .header {
-
-        height: 110px;
+        flex-basis: 105px;
 
         padding:
-            7px 4%;
-
+            7px 3%;
     }
-
 
     .college-logo {
+        width: 62px;
+        height: 62px;
 
-        width: 68px;
-        height: 68px;
-
+        flex-basis: 62px;
     }
-
 
     .college-text h1 {
-
-        font-size: 22px;
-
+        font-size: 21px;
     }
-
 
     .tagline {
-
-        font-size: 11px;
-
-        letter-spacing: 3px;
-
+        font-size: 10px;
+        letter-spacing: 2.5px;
     }
 
+    .axm-brand {
+        min-width: 245px;
+
+        padding-left: 22px;
+    }
 
     .axm-title {
-
-        font-size: 43px;
-
+        font-size: 40px;
     }
-
 
     .axm-subtitle {
-
-        font-size: 11px;
-
+        font-size: 10px;
+        letter-spacing: 2.5px;
     }
 
+    .machine-ready {
+        font-size: 10px;
+    }
 
     .intro h2 {
-
-        font-size: 27px;
-
+        font-size: 25px;
     }
-
 
     .process {
-
-        gap: 35px;
-
+        gap: 28px;
     }
-
 
     .start-title {
-
-        font-size: 46px;
-
+        font-size: 42px;
     }
-
 
     .start-subtitle {
-
-        font-size: 15px;
-
+        font-size: 13px;
+        letter-spacing: 3px;
     }
-
 
     .feature h3 {
-
-        font-size: 16px;
-
+        font-size: 15px;
     }
-
 
     .feature p {
-
-        font-size: 12px;
-
+        font-size: 11px;
     }
-
 }
 
 
@@ -872,159 +1028,135 @@ body {
 
 @media (max-width: 850px) {
 
-    body {
-
+    html {
         overflow-y: auto;
-
     }
 
+    body {
+        overflow-y: auto;
+    }
 
     .screen {
-
+        height: auto;
         min-height: 100vh;
 
+        overflow: visible;
     }
 
-
     .header {
-
         height: auto;
 
         min-height: 95px;
 
-        padding: 8px 15px;
+        padding:
+            8px 15px;
 
+        gap: 10px;
     }
 
-
     .college-logo {
-
         width: 55px;
         height: 55px;
 
+        flex-basis: 55px;
     }
-
 
     .college-text h1 {
-
         font-size: 17px;
 
+        white-space: normal;
     }
 
-
     .tagline {
-
         font-size: 9px;
 
         letter-spacing: 2px;
-
     }
-
 
     .axm-brand {
+        min-width: 0;
 
         padding-left: 15px;
-
     }
-
 
     .axm-title {
-
         font-size: 32px;
-
     }
 
-
     .axm-subtitle {
-
         font-size: 8px;
 
         letter-spacing: 2px;
-
     }
-
 
     .machine-ready {
-
         font-size: 9px;
-
     }
 
-
     .main {
-
         padding:
             12px;
 
+        overflow: visible;
     }
 
-
     .top-row {
-
         flex-direction: column;
 
         align-items: stretch;
 
+        gap: 10px;
     }
-
 
     .intro {
-
         text-align: center;
-
     }
-
 
     .process {
-
         justify-content: center;
 
-        padding: 5px 0;
+        gap: 25px;
 
+        min-width: 0;
+
+        padding: 4px 0;
     }
-
 
     .start-box {
-
         min-height: 220px;
-
+        max-height: none;
     }
-
 
     .start-title {
-
         font-size: 38px;
-
     }
 
-
     .start-subtitle {
-
         font-size: 12px;
 
         letter-spacing: 3px;
-
     }
 
-
     .features {
-
         grid-template-columns:
             repeat(2, 1fr);
 
+        min-height: 0;
     }
 
+    .feature {
+        min-height: 115px;
+    }
 
     .footer {
+        height: auto;
 
         flex-direction: column;
 
         gap: 5px;
 
         padding: 10px;
-
     }
-
 }
 
 
@@ -1035,115 +1167,94 @@ body {
 @media (max-width: 550px) {
 
     .header {
-
         flex-direction: column;
 
         gap: 8px;
 
+        padding: 10px;
     }
 
-
     .college-brand {
-
         width: 100%;
 
         justify-content: center;
-
     }
 
+    .college-text h1 {
+        font-size: 15px;
+    }
+
+    .tagline {
+        font-size: 8px;
+
+        letter-spacing: 1.5px;
+    }
 
     .axm-brand {
-
         border-left: none;
 
         padding-left: 0;
-
     }
-
-
-    .college-text h1 {
-
-        font-size: 15px;
-
-    }
-
 
     .axm-title {
-
         font-size: 30px;
-
     }
-
 
     .process {
-
-        gap: 18px;
-
+        gap: 15px;
     }
 
+    .process-item {
+        width: 50px;
+        flex-basis: 50px;
+    }
 
     .process-item b {
-
-        font-size: 12px;
-
+        font-size: 11px;
     }
-
 
     .start-box {
-
         min-height: 190px;
-
     }
-
 
     .axm-circle {
+        width: 100px;
+        height: 100px;
 
-        width: 110px;
-        height: 110px;
+        top: -46px;
 
-        top: -50px;
-
-        border-width: 8px;
-
+        border-width: 7px;
     }
-
 
     .circle-axm {
-
-        font-size: 34px;
-
+        font-size: 32px;
     }
-
 
     .circle-niet {
-
-        font-size: 14px;
-
+        font-size: 13px;
     }
 
-
     .start-title {
-
         font-size: 29px;
 
         letter-spacing: 1px;
-
     }
-
 
     .start-subtitle {
+        font-size: 9px;
 
-        font-size: 10px;
-
-        letter-spacing: 2px;
-
+        letter-spacing: 1.5px;
     }
-
 
     .features {
-
         grid-template-columns: 1fr;
-
     }
 
+    .feature {
+        min-height: 110px;
+    }
+
+    .footer-center {
+        white-space: normal;
+    }
 }
