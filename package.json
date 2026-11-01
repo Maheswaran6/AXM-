@@ -3,13 +3,15 @@
   "version": "3.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "agent": "node local-print-agent.js"
   },
   "dependencies": {
     "express": "^4.21.2",
     "multer": "^1.4.5-lts.1",
     "qrcode": "^1.5.4",
     "razorpay": "^2.9.5",
-    "pdf-lib": "^1.17.1"
+    "pdf-lib": "^1.17.1",
+    "pdf-to-printer": "^5.6.0"
   }
 }
